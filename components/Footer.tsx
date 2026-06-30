@@ -31,8 +31,8 @@ export default function Footer() {
             </span>
           </Link>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-            Association socio-culturelle et environnementale dans la région de
-            l&apos;Oriental au Maroc. Portée par des étudiants engagés.
+            Association socio-culturelle et solidaire dans la région de
+            l&apos;Oriental au Maroc, portée par des étudiants engagés.
           </p>
         </div>
 

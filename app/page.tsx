@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -9,7 +10,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Accueil | Association Jeunes Actifs",
   description:
-    "Association socio-culturelle et environnementale dans la région de l'Oriental au Maroc. Actions solidaires, culturelles et environnementales portées par des étudiants engagés.",
+    "Association socio-culturelle et solidaire dans la région de l'Oriental au Maroc. Actions sociales, culturelles et citoyennes portées par des étudiants engagés.",
 };
 
 export default async function Home() {
@@ -39,16 +40,17 @@ export default async function Home() {
     date_evenement: string;
     lieu: string;
     description: string;
+    a_venir: boolean;
   }[] = [];
 
   try {
     const { data: evtData } = await supabase
       .from("evenements")
-      .select("id, titre, date_evenement, lieu, description")
+      .select("id, titre, date_evenement, lieu, description, a_venir")
       .eq("statut", "publie")
       .order("created_at", { ascending: false })
       .limit(3);
-    derniersEvenements = evtData ?? [];
+    derniersEvenements = (evtData ?? []) as typeof derniersEvenements;
   } catch {
     /* fallback : tableau vide */
   }
@@ -57,299 +59,240 @@ export default async function Home() {
     <>
       <Header />
 
-      {/* Hero */}
-      <section id="hero" className="flex flex-col items-center justify-center px-6 py-24 text-center md:py-36">
-        <h1 className="max-w-3xl text-4xl leading-tight font-extrabold tracking-tight md:text-6xl">
-          Une jeunesse engagée au cœur de{" "}
-          <span className="text-primary">l&apos;Oriental</span>
-        </h1>
-        <p className="mt-6 max-w-xl text-lg text-muted-foreground">
-          L&apos;Association Jeunes Actifs est une association socio-culturelle et
-          environnementale basée dans la région de l&apos;Oriental au Maroc. Nous
-          rassemblons des étudiants de l&apos;enseignement supérieur autour
-          d&apos;actions concrètes pour un avenir solidaire et durable.
-        </p>
-        <a
-          href="#rejoindre"
-          className="mt-10 rounded-full bg-primary px-8 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-primary-dark"
-        >
-          Rejoignez-nous
-        </a>
-      </section>
+      {/* ── 1. HERO ── */}
+      <section className="bg-muted px-6 py-16 md:py-24">
+        <div className="mx-auto grid max-w-5xl items-center gap-10 md:grid-cols-2 md:gap-16">
 
-      {/* À propos */}
-      <section id="about" className="bg-muted px-6 py-20">
-        <div className="mx-auto max-w-4xl text-center">
-          <h2 className="text-3xl font-bold">À propos de nous</h2>
-          <p className="mx-auto mt-6 max-w-2xl text-muted-foreground leading-relaxed">
-            Née dans la région de l&apos;Oriental au Maroc, l&apos;Association Jeunes
-            Actifs regroupe des étudiants de l&apos;enseignement supérieur engagés
-            dans des actions socio-culturelles et environnementales. Nous
-            croyons que la jeunesse est un moteur de changement pour notre
-            communauté et notre territoire.
-          </p>
-          <div className="mt-12 grid gap-8 md:grid-cols-3">
-            <ValueCard
-              title="Socio-culturel"
-              description="Nous organisons des activités culturelles et des événements qui rassemblent les jeunes et valorisent le patrimoine de l'Oriental."
-            />
-            <ValueCard
-              title="Environnement"
-              description="Nous menons des actions de sensibilisation environnementale pour protéger notre région et promouvoir les éco-gestes."
-            />
-            <ValueCard
-              title="Solidarité"
-              description="Nous développons des actions sociales en faveur des populations locales et encourageons le bénévolat chez les étudiants."
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Nos actions */}
-      <section id="actions" className="px-6 py-20">
-        <div className="mx-auto max-w-5xl text-center">
-          <h2 className="text-3xl font-bold">Nos actions</h2>
-          <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
-            Découvrez les initiatives qui font vivre notre association au
-            quotidien dans la région de l&apos;Oriental.
-          </p>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            <ActionCard
-              title="Actions sociales"
-              description="Collectes, maraudes et projets solidaires en faveur des populations locales de l'Oriental."
-              icon="heart"
-            />
-            <ActionCard
-              title="Activités culturelles"
-              description="Événements, expositions et rencontres qui célèbrent la culture locale et rapprochent les communautés."
-              icon="star"
-            />
-            <ActionCard
-              title="Environnement"
-              description="Campagnes de sensibilisation, nettoyages et ateliers pour protéger l'environnement dans notre région."
-              icon="leaf"
-            />
-            <ActionCard
-              title="Formations et ateliers"
-              description="Ateliers pratiques pour développer les compétences des étudiants : leadership, communication et gestion de projets."
-              icon="book"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Événements récents */}
-      <section id="evenements" className="bg-muted px-6 py-20">
-        <div className="mx-auto max-w-5xl text-center">
-          <h2 className="text-3xl font-bold">Événements récents</h2>
-          <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
-            Retrouvez nos derniers événements organisés dans la région de
-            l&apos;Oriental.
-          </p>
-          {derniersEvenements.length > 0 ? (
-            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {derniersEvenements.map((evt) => (
-                <EventCard
-                  key={evt.id}
-                  date_evenement={evt.date_evenement}
-                  titre={evt.titre}
-                  lieu={evt.lieu}
-                  description={evt.description}
-                />
-              ))}
-            </div>
-          ) : (
-            <p className="mt-12 text-sm text-muted-foreground">
-              Aucun événement pour le moment.
+          {/* Texte */}
+          <div>
+            <span className="inline-block rounded-full border border-primary/30 bg-primary/10 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-primary">
+              Association jeunesse &amp; solidarité
+            </span>
+            <h1 className="mt-5 text-4xl font-extrabold leading-tight tracking-tight text-foreground md:text-5xl">
+              Jeunes Actifs,<br />
+              <span className="text-primary">engagés dans l&apos;Oriental</span>
+            </h1>
+            <p className="mt-5 text-base leading-relaxed text-muted-foreground">
+              Nous réunissons des étudiants de la région de l&apos;Oriental autour
+              d&apos;actions sociales, culturelles et citoyennes concrètes. Ensemble,
+              nous agissons pour un avenir plus solidaire et plus humain.
             </p>
-          )}
-        </div>
-      </section>
-
-      {/* Témoignages — contenu temporaire, à remplacer par de vrais témoignages validés par l'association */}
-      <section className="px-6 py-20">
-        <div className="mx-auto max-w-5xl text-center">
-          <h2 className="text-3xl font-bold">Ils s&apos;engagent avec nous</h2>
-          <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
-            Découvrez les parcours de nos bénévoles et membres actifs.
-          </p>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            <TemoignageCard
-              initiales="S"
-              prenom="Sara"
-              role="Bénévole — étudiante en biologie"
-              temoignage="Rejoindre les Jeunes Actifs m'a permis de participer à des actions concrètes pour l'environnement tout en rencontrant des étudiants passionnés. Le nettoyage du Parc Lalla Aïcha restera un de mes meilleurs souvenirs."
-            />
-            <TemoignageCard
-              initiales="Y"
-              prenom="Youssef"
-              role="Membre actif — étudiant en droit"
-              temoignage="L'association m'a appris à organiser des événements et à travailler en équipe. La formation en gestion de projets m'a été utile même dans mes études. Je recommande à tous les étudiants de s'engager."
-            />
-            <TemoignageCard
-              initiales="N"
-              prenom="Nadia"
-              role="Bénévole — étudiante en lettres"
-              temoignage="La soirée culturelle sur le patrimoine musical de l'Oriental était magnifique. C'est formidable de voir des jeunes s'investir pour valoriser la culture de notre région."
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Partenaires — réseau en construction, types de partenaires uniquement */}
-      <section className="bg-muted px-6 py-20">
-        <div className="mx-auto max-w-5xl text-center">
-          <h2 className="text-3xl font-bold">Un réseau local en construction</h2>
-          <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
-            L&apos;association développe progressivement son réseau de partenaires
-            dans la région de l&apos;Oriental. Nous collaborons avec différents
-            acteurs locaux pour renforcer l&apos;impact de nos actions.
-          </p>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            <PartenaireCard
-              emoji="🎓"
-              titre="Établissements d&apos;enseignement supérieur"
-              description="Universités et écoles avec lesquelles nous organisons des événements et des formations."
-            />
-            <PartenaireCard
-              emoji="🤝"
-              titre="Associations locales"
-              description="Acteurs associatifs de la région avec qui nous menons des actions communes."
-            />
-            <PartenaireCard
-              emoji="🏛"
-              titre="Acteurs institutionnels"
-              description="Collectivités et institutions qui soutiennent nos projets citoyens et environnementaux."
-            />
-            <PartenaireCard
-              emoji="🌿"
-              titre="Partenaires culturels et environnementaux"
-              description="Organisations engagées dans la culture et la protection de l&apos;environnement dans l&apos;Oriental."
-            />
-          </div>
-          <Link
-            href="/contact"
-            className="mt-10 inline-block rounded-full border border-primary px-8 py-3 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
-          >
-            Proposer un partenariat
-          </Link>
-        </div>
-      </section>
-
-      {/* Dernières actualités */}
-      <section id="actualites" className="px-6 py-20">
-        <div className="mx-auto max-w-5xl text-center">
-          <h2 className="text-3xl font-bold">Dernières actualités</h2>
-          <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
-            Suivez les nouvelles de l&apos;association et de nos projets en cours.
-          </p>
-          {derniersArticles.length > 0 ? (
-            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {derniersArticles.map((article) => (
-                <NewsCard
-                  key={article.id}
-                  categorie={article.categorie}
-                  titre={article.titre}
-                  extrait={article.extrait}
-                  created_at={article.created_at}
-                />
-              ))}
+            <div className="mt-8 flex flex-wrap gap-4">
+              <Link
+                href="/activites"
+                className="rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-dark"
+              >
+                Découvrir nos actions
+              </Link>
+              <Link
+                href="/devenir-membre"
+                className="rounded-lg border border-primary px-6 py-3 text-sm font-semibold text-primary transition hover:bg-primary/10"
+              >
+                Devenir membre
+              </Link>
             </div>
-          ) : (
-            <p className="mt-12 text-sm text-muted-foreground">
-              Aucune actualité pour le moment.
+          </div>
+
+          {/* Photo réelle de l'association */}
+          <div>
+            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-md">
+              <Image
+                src="/images/accueil/animation-enfants.jpg"
+                alt="Membres de l'association Jeunes Actifs lors d'une animation avec des enfants dans la région de l'Oriental"
+                fill
+                className="object-cover"
+                priority
+              />
+            </div>
+            <p className="mt-3 text-center text-xs text-muted-foreground">
+              Des actions concrètes au service des jeunes et des familles
             </p>
-          )}
-          <Link
-            href="/actualites"
-            className="mt-10 inline-block rounded-full border border-primary px-8 py-3 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
-          >
-            Voir toutes les actualités
-          </Link>
-        </div>
-      </section>
-
-      {/* Nous soutenir */}
-      <section className="px-6 py-20">
-        <div className="mx-auto max-w-5xl text-center">
-          <h2 className="text-3xl font-bold">Nous soutenir</h2>
-          <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
-            Vous souhaitez contribuer à nos actions ? Il existe plusieurs façons
-            de soutenir l&apos;association, même sans devenir membre.
-          </p>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            <SoutienCard
-              emoji="🙋"
-              titre="Devenir bénévole"
-              description="Engagez-vous sur le terrain lors de nos actions solidaires, culturelles et environnementales."
-              href="/devenir-membre"
-              label="Rejoindre l&apos;équipe"
-            />
-            <SoutienCard
-              emoji="📦"
-              titre="Faire un don matériel"
-              description="Contribuez en fournitures, équipements ou matériel pour nos actions et événements."
-              href="/contact"
-              label="Nous contacter"
-            />
-            <SoutienCard
-              emoji="💚"
-              titre="Soutenir financièrement"
-              description="Contribuez au financement de nos actions. Contactez-nous pour connaître les modalités validées par l&apos;association."
-              href="/contact"
-              label="En savoir plus"
-            />
-            <SoutienCard
-              emoji="🤝"
-              titre="Proposer un partenariat"
-              description="Rejoignez notre réseau de partenaires locaux et contribuez au développement de la région."
-              href="/contact"
-              label="Proposer un partenariat"
-            />
           </div>
         </div>
       </section>
 
-      <section id="galerie" className="bg-muted px-6 py-20">
-        <div className="mx-auto max-w-5xl text-center">
-          <h2 className="text-3xl font-bold">Galerie</h2>
-          <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
-            Retrouvez les moments forts de nos actions et événements dans la région de l&apos;Oriental.
-          </p>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            <GaleriePreviewCard emoji="🌿" titre="Environnement" description="Nettoyages, sensibilisation et sorties éducatives." />
-            <GaleriePreviewCard emoji="🎭" titre="Culture" description="Soirées, ateliers et célébrations du patrimoine local." />
-            <GaleriePreviewCard emoji="🤝" titre="Solidarité" description="Collectes, distributions et actions sociales." />
-            <GaleriePreviewCard emoji="📖" titre="Formations" description="Ateliers pratiques et cycles de formation." />
-          </div>
-          <p className="mt-8 text-sm text-muted-foreground">
-            📸 Les photos officielles de nos actions seront ajoutées prochainement.
-          </p>
-          <Link
-            href="/galerie"
-            className="mt-6 inline-block rounded-full border border-primary px-8 py-3 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
-          >
-            Voir la galerie complète
-          </Link>
-        </div>
-      </section>
-
-      {/* Rejoindre */}
-      <section id="rejoindre" className="bg-primary px-6 py-20 text-white">
+      {/* ── 2. PRÉSENTATION ── */}
+      <section className="px-6 py-10">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-3xl font-bold">Engagez-vous avec nous</h2>
-          <p className="mx-auto mt-4 max-w-xl text-green-100">
+          <h2 className="text-2xl font-bold text-foreground">Qui sommes-nous ?</h2>
+          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
+            L&apos;Association Jeunes Actifs est une association socio-culturelle
+            basée dans la région de l&apos;Oriental au Maroc. Elle réunit des étudiants
+            de l&apos;enseignement supérieur engagés dans des actions sociales,
+            culturelles, solidaires et citoyennes au service de leur communauté.
+          </p>
+          <Link
+            href="/a-propos"
+            className="mt-6 inline-block text-sm font-medium text-primary underline-offset-4 hover:underline"
+          >
+            En savoir plus sur l&apos;association →
+          </Link>
+        </div>
+      </section>
+
+      {/* ── 3. NOS ACTIONS ── */}
+      <section className="bg-muted px-6 py-16">
+        <div className="mx-auto max-w-5xl">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-foreground">Nos domaines d&apos;action</h2>
+            <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
+              L&apos;association intervient sur quatre axes principaux dans la région de l&apos;Oriental.
+            </p>
+          </div>
+          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <ActionCard
+              iconPath="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
+              titre="Solidarité et accompagnement"
+              description="Collectes, maraudes et projets solidaires en faveur des populations locales."
+            />
+            <ActionCard
+              iconPath="M9 9l10.5-3m0 6.553v3.75a2.25 2.25 0 01-1.632 2.163l-1.32.377a1.803 1.803 0 11-.99-3.467l2.31-.66a2.25 2.25 0 001.632-2.163zm0 0V2.25L9 5.25v10.303m0 0v3.75a2.25 2.25 0 01-1.632 2.163l-1.32.377a1.803 1.803 0 01-.99-3.467l2.31-.66A2.25 2.25 0 009 15.553z"
+              titre="Culture et événements"
+              description="Soirées culturelles, expositions et rencontres autour du patrimoine de l'Oriental."
+            />
+            <ActionCard
+              iconPath="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+              titre="Santé et sensibilisation"
+              description="Actions médicales et campagnes de sensibilisation pour les jeunes et les familles."
+            />
+            <ActionCard
+              iconPath="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
+              titre="Jeunesse et citoyenneté"
+              description="Formations, ateliers et forums pour développer l'engagement étudiant."
+            />
+          </div>
+          <div className="mt-8 text-center">
+            <Link
+              href="/activites"
+              className="inline-block rounded-lg border border-primary px-6 py-2.5 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
+            >
+              Toutes nos activités →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 4. NOS VALEURS — illustration générale (photo externe) ── */}
+      <section className="px-6 py-16">
+        <div className="mx-auto grid max-w-5xl items-center gap-10 md:grid-cols-2 md:gap-16">
+
+          {/* Photo externe — ne représente pas une action de l'association */}
+          <div className="order-2 md:order-1">
+            <div className="relative aspect-[3/2] overflow-hidden rounded-2xl shadow-sm">
+              <Image
+                src="/images/accueil/valeurs-esprit-equipe.jpg"
+                alt="Illustration symbolisant la solidarité et l'esprit d'équipe"
+                fill
+                className="object-cover"
+              />
+            </div>
+          </div>
+
+          {/* Valeurs */}
+          <div className="order-1 md:order-2">
+            <h2 className="text-2xl font-bold text-foreground">Nos valeurs</h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+              Ces valeurs guident chacune de nos actions et rassemblent nos membres
+              au quotidien dans la région de l&apos;Oriental.
+            </p>
+            <ul className="mt-6 space-y-5">
+              <ValeurItem
+                titre="Solidarité"
+                description="Nous agissons ensemble pour ceux qui en ont besoin, sans distinction."
+              />
+              <ValeurItem
+                titre="Engagement"
+                description="Chaque membre s'investit concrètement sur le terrain, au service de la communauté."
+              />
+              <ValeurItem
+                titre="Esprit d'équipe"
+                description="Nos projets sont collectifs : chaque contribution compte et nous avançons ensemble."
+              />
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 5. DERNIÈRES ACTUALITÉS (dynamique Supabase) ── */}
+      <section className="bg-muted px-6 py-12">
+        <div className="mx-auto max-w-5xl">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-foreground">Dernières actualités</h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Suivez les nouvelles de l&apos;association et de nos actions en cours.
+            </p>
+          </div>
+          {derniersArticles.length > 0 ? (
+            <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {derniersArticles.map((article) => (
+                <ActualiteCard key={article.id} article={article} />
+              ))}
+            </div>
+          ) : (
+            <div className="mt-5 rounded-lg border border-muted bg-background px-5 py-4 text-center">
+              <p className="text-sm text-muted-foreground">
+                Aucune actualité pour le moment — revenez bientôt.
+              </p>
+            </div>
+          )}
+          <div className="mt-6 text-center">
+            <Link
+              href="/actualites"
+              className="inline-block rounded-lg border border-primary px-6 py-2.5 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
+            >
+              Voir toutes les actualités →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 6. ÉVÉNEMENTS (dynamique Supabase) ── */}
+      <section className="px-6 py-12">
+        <div className="mx-auto max-w-5xl">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-foreground">Événements</h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Retrouvez nos prochains événements et actions dans la région de l&apos;Oriental.
+            </p>
+          </div>
+          {derniersEvenements.length > 0 ? (
+            <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {derniersEvenements.map((evt) => (
+                <EvenementCard key={evt.id} evenement={evt} />
+              ))}
+            </div>
+          ) : (
+            <div className="mt-5 rounded-lg border border-muted bg-background px-5 py-4 text-center">
+              <p className="text-sm text-muted-foreground">
+                Aucun événement pour le moment — revenez bientôt.
+              </p>
+            </div>
+          )}
+          <div className="mt-6 text-center">
+            <Link
+              href="/evenements"
+              className="inline-block rounded-lg border border-primary px-6 py-2.5 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
+            >
+              Voir tous les événements →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 7. CTA DEVENIR MEMBRE ── */}
+      <section className="bg-primary px-6 py-10 text-white">
+        <div className="mx-auto max-w-2xl text-center">
+          <h2 className="text-2xl font-bold">Rejoignez l&apos;association</h2>
+          <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-green-100">
             Vous êtes étudiant dans l&apos;enseignement supérieur et vous souhaitez
-            vous investir dans le bénévolat ? Rejoignez l&apos;Association Jeunes
-            Actifs et participez à des projets socio-culturels et
-            environnementaux qui ont un impact réel dans la région de
-            l&apos;Oriental.
+            vous engager ? Rejoignez Jeunes Actifs et participez à des actions qui
+            ont un impact réel dans la région de l&apos;Oriental.
           </p>
           <Link
             href="/devenir-membre"
-            className="mt-10 inline-block rounded-full bg-white px-8 py-3 text-sm font-semibold text-primary shadow-md transition hover:bg-green-50"
+            className="mt-8 inline-block rounded-lg bg-white px-8 py-3 text-sm font-semibold text-primary shadow-sm transition hover:bg-green-50"
           >
-            Devenir bénévole
+            Devenir membre
           </Link>
         </div>
       </section>
@@ -359,217 +302,140 @@ export default async function Home() {
   );
 }
 
-/* --- Composants utilitaires --- */
-
-function ValueCard({
-  title,
-  description,
-}: {
-  title: string;
-  description: string;
-}) {
-  return (
-    <div className="rounded-xl bg-background p-6 shadow-sm">
-      <h3 className="text-lg font-semibold">{title}</h3>
-      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-        {description}
-      </p>
-    </div>
-  );
-}
+/* ── Composants ── */
 
 function ActionCard({
-  title,
+  iconPath,
+  titre,
   description,
-  icon,
 }: {
-  title: string;
+  iconPath: string;
+  titre: string;
   description: string;
-  icon: "heart" | "star" | "leaf" | "book";
 }) {
   return (
-    <div className="rounded-xl border border-muted bg-background p-6 text-left shadow-sm transition hover:shadow-md">
-      <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary text-lg">
-        <ActionEmoji icon={icon} />
+    <div className="rounded-xl border border-muted bg-background p-5 shadow-sm transition hover:shadow-md">
+      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary">
+        <svg
+          className="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth="1.5"
+          stroke="currentColor"
+          aria-hidden="true"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d={iconPath} />
+        </svg>
       </div>
-      <h3 className="font-semibold">{title}</h3>
-      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-        {description}
-      </p>
+      <h3 className="mt-3 text-sm font-semibold text-foreground">{titre}</h3>
+      <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">{description}</p>
     </div>
   );
 }
 
-function ActionEmoji({ icon }: { icon: string }) {
-  const map: Record<string, string> = {
-    heart: "🤝",
-    star: "🎭",
-    leaf: "🌿",
-    book: "📖",
-  };
-  return <span>{map[icon] ?? ""}</span>;
-}
-
-function EventCard({
-  date_evenement,
+function ValeurItem({
   titre,
-  lieu,
   description,
 }: {
-  date_evenement: string;
   titre: string;
-  lieu: string;
   description: string;
 }) {
   return (
-    <div className="rounded-xl bg-background p-6 text-left shadow-sm">
-      <span className="inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-        {date_evenement}
+    <li className="flex gap-4">
+      <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+        ✓
       </span>
-      <h3 className="mt-3 font-semibold">{titre}</h3>
-      <p className="mt-1 text-xs text-primary">{lieu}</p>
-      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-        {description}
-      </p>
-    </div>
+      <div>
+        <p className="font-semibold text-foreground">{titre}</p>
+        <p className="mt-0.5 text-sm text-muted-foreground">{description}</p>
+      </div>
+    </li>
   );
 }
 
-function NewsCard({
-  categorie,
-  titre,
-  extrait,
-  created_at,
-}: {
-  categorie: string;
-  titre: string;
-  extrait: string;
-  created_at: string;
-}) {
-  const categorieLabels: Record<string, string> = {
-    environnement: "Environnement",
-    culture: "Culture",
-    solidarite: "Solidarité",
-    formation: "Formation",
-    "vie-associative": "Vie associative",
-  };
+const categorieLabels: Record<string, string> = {
+  environnement: "Environnement",
+  culture: "Culture",
+  solidarite: "Solidarité",
+  formation: "Formation",
+  "vie-associative": "Vie associative",
+};
 
+function ActualiteCard({
+  article,
+}: {
+  article: {
+    id: string;
+    titre: string;
+    categorie: string;
+    extrait: string;
+    created_at: string;
+  };
+}) {
   return (
-    <div className="rounded-xl border border-muted bg-background p-6 text-left shadow-sm transition hover:shadow-md">
-      <div className="flex items-center gap-3">
-        <span className="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-white">
-          {categorieLabels[categorie] ?? categorie}
+    <div className="flex flex-col rounded-xl border border-muted bg-background p-5 shadow-sm transition hover:shadow-md">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="rounded-full bg-primary px-2.5 py-0.5 text-xs font-semibold text-white">
+          {categorieLabels[article.categorie] ?? article.categorie}
         </span>
         <span className="text-xs text-muted-foreground">
-          {new Date(created_at).toLocaleDateString("fr-FR", {
+          {new Date(article.created_at).toLocaleDateString("fr-FR", {
             day: "numeric",
             month: "long",
             year: "numeric",
           })}
         </span>
       </div>
-      <h3 className="mt-3 font-semibold">{titre}</h3>
-      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-        {extrait}
-      </p>
-    </div>
-  );
-}
-
-function GaleriePreviewCard({
-  emoji,
-  titre,
-  description,
-}: {
-  emoji: string;
-  titre: string;
-  description: string;
-}) {
-  return (
-    <div className="rounded-xl border border-muted bg-background p-6 text-center shadow-sm transition hover:shadow-md">
-      <span className="text-3xl">{emoji}</span>
-      <h3 className="mt-3 text-sm font-semibold">{titre}</h3>
-      <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-        {description}
-      </p>
-    </div>
-  );
-}
-
-function PartenaireCard({
-  emoji,
-  titre,
-  description,
-}: {
-  emoji: string;
-  titre: string;
-  description: string;
-}) {
-  return (
-    <div className="rounded-xl bg-background p-6 text-center shadow-sm">
-      <span className="text-3xl">{emoji}</span>
-      <h3 className="mt-3 text-sm font-semibold">{titre}</h3>
-      <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-        {description}
-      </p>
-    </div>
-  );
-}
-
-function TemoignageCard({
-  initiales,
-  prenom,
-  role,
-  temoignage,
-}: {
-  initiales: string;
-  prenom: string;
-  role: string;
-  temoignage: string;
-}) {
-  return (
-    <div className="rounded-xl border border-muted bg-background p-6 text-left shadow-sm">
-      <div className="flex items-center gap-4">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary/10 text-lg font-bold text-primary">
-          {initiales}
-        </div>
-        <div>
-          <h3 className="font-semibold">{prenom}</h3>
-          <p className="text-xs text-muted-foreground">{role}</p>
-        </div>
-      </div>
-      <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-        &ldquo;{temoignage}&rdquo;
-      </p>
-    </div>
-  );
-}
-
-function SoutienCard({
-  emoji,
-  titre,
-  description,
-  href,
-  label,
-}: {
-  emoji: string;
-  titre: string;
-  description: string;
-  href: string;
-  label: string;
-}) {
-  return (
-    <div className="flex flex-col rounded-xl border border-muted bg-background p-6 text-left shadow-sm">
-      <span className="text-3xl">{emoji}</span>
-      <h3 className="mt-3 font-semibold">{titre}</h3>
-      <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
-        {description}
+      <h3 className="mt-3 text-sm font-semibold text-foreground">{article.titre}</h3>
+      <p className="mt-2 flex-1 text-xs leading-relaxed text-muted-foreground">
+        {article.extrait}
       </p>
       <Link
-        href={href}
-        className="mt-4 inline-block rounded-lg bg-primary/10 px-4 py-2 text-center text-sm font-medium text-primary transition hover:bg-primary hover:text-white"
+        href="/actualites"
+        className="mt-4 text-xs font-medium text-primary underline-offset-4 hover:underline"
       >
-        {label}
+        Voir les actualités →
+      </Link>
+    </div>
+  );
+}
+
+function EvenementCard({
+  evenement,
+}: {
+  evenement: {
+    id: string;
+    titre: string;
+    date_evenement: string;
+    lieu: string;
+    description: string;
+    a_venir: boolean;
+  };
+}) {
+  return (
+    <div className="flex flex-col rounded-xl border border-muted bg-background p-5 shadow-sm transition hover:shadow-md">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
+          {evenement.date_evenement}
+        </span>
+        {evenement.a_venir && (
+          <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-semibold text-green-700">
+            À venir
+          </span>
+        )}
+      </div>
+      <h3 className="mt-3 text-sm font-semibold text-foreground">{evenement.titre}</h3>
+      {evenement.lieu && (
+        <p className="mt-1 text-xs text-primary">{evenement.lieu}</p>
+      )}
+      <p className="mt-2 flex-1 text-xs leading-relaxed text-muted-foreground">
+        {evenement.description}
+      </p>
+      <Link
+        href="/evenements"
+        className="mt-4 text-xs font-medium text-primary underline-offset-4 hover:underline"
+      >
+        Voir les événements →
       </Link>
     </div>
   );
