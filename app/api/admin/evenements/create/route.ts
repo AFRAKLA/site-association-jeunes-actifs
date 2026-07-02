@@ -1,5 +1,13 @@
 import { NextResponse } from "next/server";
+import { randomUUID } from "crypto";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+import {
+  validateImageFile,
+  uploadImage,
+  deleteStorageFiles,
+} from "@/lib/storage-upload";
+
+const BUCKET = "evenements";
 
 const CATEGORIES = [
   "Événement étudiant",
@@ -20,22 +28,31 @@ function generateBaseSlug(titre: string): string {
     .replace(/-+/g, "-");
 }
 
-export async function PATCH(request: Request) {
+export async function POST(request: Request) {
   try {
-    const {
-      password,
-      titre,
-      categorie,
-      description,
-      description_complete,
-      date_debut,
-      heure,
-      lieu,
-      statut,
-      image_url,
-      video_url,
-      photos_supplementaires,
-    } = await request.json();
+    const formData = await request.formData();
+
+    const password = formData.get("password") as string;
+    const titre = (formData.get("titre") as string)?.trim();
+    const categorie = formData.get("categorie") as string;
+    const description = (formData.get("description") as string)?.trim();
+    const description_complete =
+      (formData.get("description_complete") as string)?.trim() || null;
+    const date_debut = (formData.get("date_debut") as string) || null;
+    const heure = (formData.get("heure") as string) || null;
+    const lieu = (formData.get("lieu") as string)?.trim() || null;
+    const statut = formData.get("statut") as string;
+    const video_url = (formData.get("video_url") as string)?.trim() || null;
+    const imageFile = formData.get("image") as File | null;
+
+    // Collect supplementary photo files
+    const photoFiles: File[] = [];
+    let i = 0;
+    while (formData.has(`photo_${i}`)) {
+      const f = formData.get(`photo_${i}`) as File;
+      if (f && f.size > 0) photoFiles.push(f);
+      i++;
+    }
 
     if (password !== process.env.ADMIN_PASSWORD) {
       return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
@@ -43,45 +60,41 @@ export async function PATCH(request: Request) {
 
     if (!titre || !categorie || !description || !statut) {
       return NextResponse.json(
-        { error: "Les champs titre, catégorie, description et statut sont obligatoires." },
+        {
+          error:
+            "Les champs titre, catégorie, description et statut sont obligatoires.",
+        },
         { status: 400 }
       );
     }
 
     if (!CATEGORIES.includes(categorie)) {
-      return NextResponse.json({ error: "Catégorie invalide." }, { status: 400 });
+      return NextResponse.json(
+        { error: "Catégorie invalide." },
+        { status: 400 }
+      );
     }
 
     if (!["brouillon", "publie"].includes(statut)) {
       return NextResponse.json({ error: "Statut invalide." }, { status: 400 });
     }
 
-    const cleanImageUrl = image_url ? String(image_url).trim() : "";
-    if (cleanImageUrl && !cleanImageUrl.startsWith("/images/")) {
-      return NextResponse.json(
-        { error: "Pour le moment, utilisez un chemin local commençant par /images/." },
-        { status: 400 }
-      );
+    // Validate image files before any upload
+    if (imageFile && imageFile.size > 0) {
+      const err = validateImageFile(imageFile);
+      if (err) return NextResponse.json({ error: err }, { status: 400 });
     }
-
-    const photos: string[] = Array.isArray(photos_supplementaires)
-      ? photos_supplementaires
-      : [];
-    const invalidPhoto = photos.find((p: string) => p && !p.startsWith("/images/"));
-    if (invalidPhoto) {
-      return NextResponse.json(
-        { error: "Pour le moment, utilisez un chemin local commençant par /images/." },
-        { status: 400 }
-      );
+    for (const f of photoFiles) {
+      const err = validateImageFile(f);
+      if (err) return NextResponse.json({ error: err }, { status: 400 });
     }
 
     const admin = getSupabaseAdmin();
 
-    // Generate unique slug from titre
+    // Generate unique slug
     const baseSlug = generateBaseSlug(titre);
     let slug = baseSlug;
     let suffix = 2;
-
     while (true) {
       const { data: existing } = await admin
         .from("evenements")
@@ -92,30 +105,94 @@ export async function PATCH(request: Request) {
       slug = `${baseSlug}-${suffix++}`;
     }
 
+    // Generate event ID first — used to organise Storage paths
+    const eventId = randomUUID();
+    const uploadedPaths: string[] = [];
+
+    // Upload main image
+    let imageUrl: string | null = null;
+    let imageStoragePath: string | null = null;
+
+    if (imageFile && imageFile.size > 0) {
+      try {
+        const result = await uploadImage(
+          admin,
+          BUCKET,
+          `${eventId}/principale`,
+          imageFile
+        );
+        imageUrl = result.url;
+        imageStoragePath = result.storagePath;
+        uploadedPaths.push(result.storagePath);
+      } catch (e) {
+        return NextResponse.json(
+          {
+            error: `Erreur lors de l'envoi de l'image principale : ${(e as Error).message}`,
+          },
+          { status: 500 }
+        );
+      }
+    }
+
+    // Upload supplementary photos
+    const photoUrls: string[] = [];
+    const photoStoragePaths: string[] = [];
+
+    for (const f of photoFiles) {
+      try {
+        const result = await uploadImage(
+          admin,
+          BUCKET,
+          `${eventId}/galerie`,
+          f
+        );
+        photoUrls.push(result.url);
+        photoStoragePaths.push(result.storagePath);
+        uploadedPaths.push(result.storagePath);
+      } catch (e) {
+        await deleteStorageFiles(admin, BUCKET, uploadedPaths);
+        return NextResponse.json(
+          {
+            error: `Erreur lors de l'envoi d'une photo : ${(e as Error).message}`,
+          },
+          { status: 500 }
+        );
+      }
+    }
+
+    // Insert row with explicit id
     const { data, error } = await admin
       .from("evenements")
       .insert([
         {
+          id: eventId,
           titre,
           slug,
           categorie,
           description,
-          description_complete: description_complete || null,
-          date_debut: date_debut || null,
-          heure: heure || null,
-          lieu: lieu || null,
+          description_complete,
+          date_debut,
+          heure,
+          lieu,
           statut,
-          image_url: cleanImageUrl || null,
-          video_url: video_url || null,
-          photos_supplementaires: photos,
+          video_url,
+          image_url: imageUrl,
+          image_storage_path: imageStoragePath,
+          photos_supplementaires: photoUrls,
+          photos_storage_paths: photoStoragePaths,
         },
       ])
       .select()
       .single();
 
     if (error) {
+      // Rollback all uploaded files
+      await deleteStorageFiles(admin, BUCKET, uploadedPaths);
       console.error("Erreur création événement :", error.message);
-      return NextResponse.json({ error: "Erreur lors de la création." }, { status: 500 });
+      return NextResponse.json(
+        { error: "Erreur lors de la création." },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({ success: true, evenement: data });
