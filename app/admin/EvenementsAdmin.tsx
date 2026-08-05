@@ -1,6 +1,10 @@
 "use client";
 
 import { useState, useEffect, type FormEvent } from "react";
+import ImageUploader from "@/components/admin/ImageUploader";
+import MultiImageUploader, {
+  type ExistingPhoto,
+} from "@/components/admin/MultiImageUploader";
 
 /* --- Types --- */
 
@@ -81,9 +85,7 @@ const defaultEditForm = {
   heure: "",
   lieu: "",
   statut: "brouillon" as Statut,
-  image_url: "",
   video_url: "",
-  photos_supplementaires: "",
 };
 
 /* --- Composant principal --- */
@@ -102,9 +104,9 @@ export default function EvenementsAdmin({ password }: { password: string }) {
   const [formHeure, setFormHeure] = useState("");
   const [formLieu, setFormLieu] = useState("");
   const [formStatut, setFormStatut] = useState<Statut>("brouillon");
-  const [formImageUrl, setFormImageUrl] = useState("");
+  const [formImageFile, setFormImageFile] = useState<File | null>(null);
   const [formVideoUrl, setFormVideoUrl] = useState("");
-  const [formPhotosSupp, setFormPhotosSupp] = useState("");
+  const [formPhotoFiles, setFormPhotoFiles] = useState<File[]>([]);
   const [formLoading, setFormLoading] = useState(false);
   const [formSuccess, setFormSuccess] = useState("");
   const [formError, setFormError] = useState("");
@@ -115,6 +117,12 @@ export default function EvenementsAdmin({ password }: { password: string }) {
   const [editSuccess, setEditSuccess] = useState("");
   const [editError, setEditError] = useState("");
   const [editForm, setEditForm] = useState(defaultEditForm);
+  const [editCurrentImageUrl, setEditCurrentImageUrl] = useState<string | null>(null);
+  const [editImageFile, setEditImageFile] = useState<File | null>(null);
+  const [editRemoveImage, setEditRemoveImage] = useState(false);
+  const [editExistingPhotos, setEditExistingPhotos] = useState<ExistingPhoto[]>([]);
+  const [editRemovedPhotoUrls, setEditRemovedPhotoUrls] = useState<string[]>([]);
+  const [editNewPhotoFiles, setEditNewPhotoFiles] = useState<File[]>([]);
 
   /* Charger au mount */
   useEffect(() => {
@@ -152,9 +160,9 @@ export default function EvenementsAdmin({ password }: { password: string }) {
     setFormHeure("");
     setFormLieu("");
     setFormStatut("brouillon");
-    setFormImageUrl("");
+    setFormImageFile(null);
     setFormVideoUrl("");
-    setFormPhotosSupp("");
+    setFormPhotoFiles([]);
   }
 
   async function handleCreate(e: FormEvent) {
@@ -164,26 +172,24 @@ export default function EvenementsAdmin({ password }: { password: string }) {
     setFormSuccess("");
 
     try {
+      const fd = new FormData();
+      fd.append("password", password);
+      fd.append("titre", formTitre);
+      fd.append("categorie", formCategorie);
+      fd.append("description", formDescription);
+      if (formDescriptionComplete)
+        fd.append("description_complete", formDescriptionComplete);
+      if (formDateDebut) fd.append("date_debut", formDateDebut);
+      if (formHeure) fd.append("heure", formHeure);
+      if (formLieu) fd.append("lieu", formLieu);
+      fd.append("statut", formStatut);
+      if (formVideoUrl) fd.append("video_url", formVideoUrl);
+      if (formImageFile) fd.append("image", formImageFile);
+      formPhotoFiles.forEach((f, i) => fd.append(`photo_${i}`, f));
+
       const res = await fetch("/api/admin/evenements/create", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          password,
-          titre: formTitre,
-          categorie: formCategorie,
-          description: formDescription,
-          description_complete: formDescriptionComplete || undefined,
-          date_debut: formDateDebut || undefined,
-          heure: formHeure || undefined,
-          lieu: formLieu || undefined,
-          statut: formStatut,
-          image_url: formImageUrl || undefined,
-          video_url: formVideoUrl || undefined,
-          photos_supplementaires: formPhotosSupp
-            .split("\n")
-            .map((s) => s.trim())
-            .filter(Boolean),
-        }),
+        method: "POST",
+        body: fd,
       });
 
       const data = await res.json();
@@ -216,10 +222,16 @@ export default function EvenementsAdmin({ password }: { password: string }) {
       heure: evt.heure ? evt.heure.substring(0, 5) : "",
       lieu: evt.lieu || "",
       statut: (evt.statut as Statut) || "brouillon",
-      image_url: evt.image_url || "",
       video_url: evt.video_url || "",
-      photos_supplementaires: (evt.photos_supplementaires || []).join("\n"),
     });
+    setEditCurrentImageUrl(evt.image_url);
+    setEditImageFile(null);
+    setEditRemoveImage(false);
+    setEditExistingPhotos(
+      (evt.photos_supplementaires || []).map((url) => ({ url, storagePath: url }))
+    );
+    setEditRemovedPhotoUrls([]);
+    setEditNewPhotoFiles([]);
   }
 
   async function handleUpdate(e: FormEvent, id: string) {
@@ -229,27 +241,30 @@ export default function EvenementsAdmin({ password }: { password: string }) {
     setEditSuccess("");
 
     try {
+      const fd = new FormData();
+      fd.append("password", password);
+      fd.append("id", id);
+      fd.append("titre", editForm.titre);
+      fd.append("categorie", editForm.categorie);
+      fd.append("description", editForm.description);
+      fd.append("description_complete", editForm.description_complete);
+      fd.append("date_debut", editForm.date_debut);
+      fd.append("heure", editForm.heure);
+      fd.append("lieu", editForm.lieu);
+      fd.append("statut", editForm.statut);
+      fd.append("video_url", editForm.video_url);
+
+      if (editImageFile) fd.append("image", editImageFile);
+      if (editRemoveImage) fd.append("remove_image", "true");
+
+      if (editRemovedPhotoUrls.length > 0) {
+        fd.append("remove_photo_urls", JSON.stringify(editRemovedPhotoUrls));
+      }
+      editNewPhotoFiles.forEach((f, i) => fd.append(`photo_${i}`, f));
+
       const res = await fetch("/api/admin/evenements/update", {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          password,
-          id,
-          titre: editForm.titre,
-          categorie: editForm.categorie,
-          description: editForm.description,
-          description_complete: editForm.description_complete || undefined,
-          date_debut: editForm.date_debut || undefined,
-          heure: editForm.heure || undefined,
-          lieu: editForm.lieu || undefined,
-          statut: editForm.statut,
-          image_url: editForm.image_url || undefined,
-          video_url: editForm.video_url || undefined,
-          photos_supplementaires: editForm.photos_supplementaires
-            .split("\n")
-            .map((s) => s.trim())
-            .filter(Boolean),
-        }),
+        body: fd,
       });
 
       const data = await res.json();
@@ -451,23 +466,12 @@ export default function EvenementsAdmin({ password }: { password: string }) {
                 />
               </div>
 
-              {/* Image URL */}
-              <div>
-                <label htmlFor="evt-image-url" className={labelCls}>
-                  Image principale
-                </label>
-                <input
-                  id="evt-image-url"
-                  type="text"
-                  value={formImageUrl}
-                  onChange={(e) => setFormImageUrl(e.target.value)}
-                  placeholder="/images/evenements/mon-evenement.jpg"
-                  className={inputCls}
-                />
-                <p className="mt-1 text-xs text-gray-400">
-                  Exemple : /images/evenements/concert-rebelle-fusion.jpg
-                </p>
-              </div>
+              {/* Image principale */}
+              <ImageUploader
+                label="Image principale"
+                currentUrl={null}
+                onChange={(file) => setFormImageFile(file)}
+              />
 
               {/* Vidéo URL */}
               <div>
@@ -485,19 +489,13 @@ export default function EvenementsAdmin({ password }: { password: string }) {
               </div>
 
               {/* Photos supplémentaires */}
-              <div>
-                <label htmlFor="evt-photos-supp" className={labelCls}>
-                  Photos supplémentaires (une URL par ligne)
-                </label>
-                <textarea
-                  id="evt-photos-supp"
-                  rows={3}
-                  value={formPhotosSupp}
-                  onChange={(e) => setFormPhotosSupp(e.target.value)}
-                  placeholder="/images/evenements/photo1.jpg&#10;/images/evenements/photo2.jpg"
-                  className={`${inputCls} resize-y`}
-                />
-              </div>
+              <MultiImageUploader
+                label="Photos supplémentaires"
+                existingPhotos={[]}
+                removedUrls={[]}
+                onRemoveExisting={() => {}}
+                onNewFilesChange={(files) => setFormPhotoFiles(files)}
+              />
 
               <button
                 type="submit"
@@ -734,24 +732,15 @@ export default function EvenementsAdmin({ password }: { password: string }) {
                         />
                       </div>
 
-                      <div>
-                        <label className={labelCls}>Image principale</label>
-                        <input
-                          type="text"
-                          value={editForm.image_url}
-                          onChange={(ev) =>
-                            setEditForm((f) => ({
-                              ...f,
-                              image_url: ev.target.value,
-                            }))
-                          }
-                          placeholder="/images/evenements/..."
-                          className={inputCls}
-                        />
-                        <p className="mt-1 text-xs text-gray-400">
-                          Exemple : /images/evenements/concert-rebelle-fusion.jpg
-                        </p>
-                      </div>
+                      <ImageUploader
+                        key={`img-${e.id}`}
+                        label="Image principale"
+                        currentUrl={editCurrentImageUrl}
+                        onChange={(file, removeCurrent) => {
+                          setEditImageFile(file);
+                          setEditRemoveImage(removeCurrent);
+                        }}
+                      />
 
                       <div>
                         <label className={labelCls}>
@@ -770,22 +759,16 @@ export default function EvenementsAdmin({ password }: { password: string }) {
                         />
                       </div>
 
-                      <div>
-                        <label className={labelCls}>
-                          Photos supplémentaires (une URL par ligne)
-                        </label>
-                        <textarea
-                          rows={3}
-                          value={editForm.photos_supplementaires}
-                          onChange={(ev) =>
-                            setEditForm((f) => ({
-                              ...f,
-                              photos_supplementaires: ev.target.value,
-                            }))
-                          }
-                          className={`${inputCls} resize-y`}
-                        />
-                      </div>
+                      <MultiImageUploader
+                        key={`photos-${e.id}`}
+                        label="Photos supplémentaires"
+                        existingPhotos={editExistingPhotos}
+                        removedUrls={editRemovedPhotoUrls}
+                        onRemoveExisting={(url) =>
+                          setEditRemovedPhotoUrls((prev) => [...prev, url])
+                        }
+                        onNewFilesChange={(files) => setEditNewPhotoFiles(files)}
+                      />
 
                       <div className="flex items-center gap-3">
                         <button
