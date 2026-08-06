@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, type FormEvent } from "react";
+import { useState, useEffect, Fragment, type FormEvent } from "react";
 
 /* --- Types --- */
 
@@ -45,6 +45,17 @@ export default function ActualitesAdmin({ password }: { password: string }) {
   const [actualites, setActualites] = useState<Actualite[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
+
+  /* Édition */
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editTitre, setEditTitre] = useState("");
+  const [editCategorie, setEditCategorie] = useState<Categorie>("environnement");
+  const [editExtrait, setEditExtrait] = useState("");
+  const [editContenu, setEditContenu] = useState("");
+  const [editStatut, setEditStatut] = useState<"brouillon" | "publie">("brouillon");
+  const [editLoading, setEditLoading] = useState(false);
+  const [editSuccess, setEditSuccess] = useState("");
+  const [editError, setEditError] = useState("");
 
   /* Formulaire */
   const [formTitre, setFormTitre] = useState("");
@@ -142,6 +153,63 @@ export default function ActualitesAdmin({ password }: { password: string }) {
       /* silencieux */
     } finally {
       setDeleting(null);
+    }
+  }
+
+  function openEdit(a: Actualite) {
+    setEditingId(a.id);
+    setEditTitre(a.titre);
+    setEditCategorie(a.categorie);
+    setEditExtrait(a.extrait);
+    setEditContenu(a.contenu);
+    setEditStatut((a.statut as "brouillon" | "publie") || "brouillon");
+    setEditSuccess("");
+    setEditError("");
+  }
+
+  function closeEdit() {
+    setEditingId(null);
+  }
+
+  async function handleUpdate(e: FormEvent, id: string) {
+    e.preventDefault();
+    setEditLoading(true);
+    setEditError("");
+    setEditSuccess("");
+
+    try {
+      const res = await fetch("/api/admin/actualites/update", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          password,
+          id,
+          titre: editTitre,
+          categorie: editCategorie,
+          extrait: editExtrait,
+          contenu: editContenu,
+          statut: editStatut,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setEditError(data.error || "Erreur lors de la mise à jour.");
+        return;
+      }
+
+      setEditSuccess("Actualité mise à jour.");
+      if (data.actualite) {
+        setActualites((prev) =>
+          prev.map((a) => (a.id === id ? data.actualite : a))
+        );
+      }
+      setEditingId(null);
+    } catch {
+      setEditError("Erreur serveur.");
+    } finally {
+      setEditLoading(false);
     }
   }
 
@@ -285,35 +353,177 @@ export default function ActualitesAdmin({ password }: { password: string }) {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {actualites.map((a) => (
-                <tr key={a.id} className="transition hover:bg-gray-50">
-                  <td className="px-4 py-3">
-                    {a.statut === "publie" ? (
-                      <span className="inline-flex items-center rounded border border-green-200 bg-green-50 px-2 py-0.5 text-xs font-semibold text-green-700">
-                        Publié
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center rounded border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-700">
-                        Brouillon
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3 font-medium text-gray-800">{a.titre}</td>
-                  <td className="hidden px-4 py-3 text-gray-500 sm:table-cell">
-                    {categorieLabel[a.categorie as Categorie] ?? a.categorie}
-                  </td>
-                  <td className="hidden whitespace-nowrap px-4 py-3 text-gray-400 md:table-cell">
-                    {formatDate(a.created_at)}
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    <button
-                      onClick={() => handleDelete(a.id)}
-                      disabled={deleting === a.id}
-                      className="text-sm font-medium text-red-600 transition hover:text-red-700 disabled:opacity-50"
-                    >
-                      {deleting === a.id ? "…" : "Supprimer"}
-                    </button>
-                  </td>
-                </tr>
+                <Fragment key={a.id}>
+                  <tr className="transition hover:bg-gray-50">
+                    <td className="px-4 py-3">
+                      {a.statut === "publie" ? (
+                        <span className="inline-flex items-center rounded border border-green-200 bg-green-50 px-2 py-0.5 text-xs font-semibold text-green-700">
+                          Publié
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center rounded border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-700">
+                          Brouillon
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 font-medium text-gray-800">{a.titre}</td>
+                    <td className="hidden px-4 py-3 text-gray-500 sm:table-cell">
+                      {categorieLabel[a.categorie as Categorie] ?? a.categorie}
+                    </td>
+                    <td className="hidden whitespace-nowrap px-4 py-3 text-gray-400 md:table-cell">
+                      {formatDate(a.created_at)}
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <div className="flex items-center justify-end gap-3">
+                        <button
+                          onClick={() =>
+                            editingId === a.id ? closeEdit() : openEdit(a)
+                          }
+                          className="text-sm font-medium text-emerald-600 transition hover:text-emerald-700"
+                        >
+                          {editingId === a.id ? "Annuler" : "Modifier"}
+                        </button>
+                        <button
+                          onClick={() => handleDelete(a.id)}
+                          disabled={deleting === a.id}
+                          className="text-sm font-medium text-red-600 transition hover:text-red-700 disabled:opacity-50"
+                        >
+                          {deleting === a.id ? "…" : "Supprimer"}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  {editingId === a.id && (
+                    <tr className="border-b border-gray-100 bg-gray-50">
+                      <td colSpan={5} className="px-4 py-4">
+                        <form
+                          onSubmit={(e) => handleUpdate(e, a.id)}
+                          className="space-y-3"
+                        >
+                          <div>
+                            <label
+                              htmlFor={`edit-titre-${a.id}`}
+                              className="mb-1 block text-sm font-medium text-gray-700"
+                            >
+                              Titre
+                            </label>
+                            <input
+                              id={`edit-titre-${a.id}`}
+                              type="text"
+                              required
+                              value={editTitre}
+                              onChange={(e) => setEditTitre(e.target.value)}
+                              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                            />
+                          </div>
+
+                          <div className="grid gap-3 sm:grid-cols-2">
+                            <div>
+                              <label
+                                htmlFor={`edit-categorie-${a.id}`}
+                                className="mb-1 block text-sm font-medium text-gray-700"
+                              >
+                                Catégorie
+                              </label>
+                              <select
+                                id={`edit-categorie-${a.id}`}
+                                value={editCategorie}
+                                onChange={(e) =>
+                                  setEditCategorie(e.target.value as Categorie)
+                                }
+                                className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                              >
+                                {CATEGORIES.map((c) => (
+                                  <option key={c.valeur} value={c.valeur}>
+                                    {c.label}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                            <div>
+                              <label
+                                htmlFor={`edit-statut-${a.id}`}
+                                className="mb-1 block text-sm font-medium text-gray-700"
+                              >
+                                Statut
+                              </label>
+                              <select
+                                id={`edit-statut-${a.id}`}
+                                value={editStatut}
+                                onChange={(e) =>
+                                  setEditStatut(
+                                    e.target.value as "brouillon" | "publie"
+                                  )
+                                }
+                                className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                              >
+                                <option value="brouillon">Brouillon</option>
+                                <option value="publie">Publié</option>
+                              </select>
+                            </div>
+                          </div>
+
+                          <div>
+                            <label
+                              htmlFor={`edit-extrait-${a.id}`}
+                              className="mb-1 block text-sm font-medium text-gray-700"
+                            >
+                              Extrait
+                            </label>
+                            <textarea
+                              id={`edit-extrait-${a.id}`}
+                              required
+                              rows={3}
+                              value={editExtrait}
+                              onChange={(e) => setEditExtrait(e.target.value)}
+                              className="w-full resize-y rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                            />
+                          </div>
+
+                          <div>
+                            <label
+                              htmlFor={`edit-contenu-${a.id}`}
+                              className="mb-1 block text-sm font-medium text-gray-700"
+                            >
+                              Contenu complet
+                            </label>
+                            <textarea
+                              id={`edit-contenu-${a.id}`}
+                              rows={5}
+                              value={editContenu}
+                              onChange={(e) => setEditContenu(e.target.value)}
+                              className="w-full resize-y rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                            />
+                          </div>
+
+                          <div className="flex items-center gap-3">
+                            <button
+                              type="submit"
+                              disabled={editLoading}
+                              className="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-700 disabled:opacity-50"
+                            >
+                              {editLoading ? "Enregistrement…" : "Enregistrer"}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={closeEdit}
+                              className="text-sm text-gray-500 hover:text-gray-700"
+                            >
+                              Annuler
+                            </button>
+                          </div>
+
+                          {editSuccess && (
+                            <p className="text-sm text-green-600">{editSuccess}</p>
+                          )}
+                          {editError && (
+                            <p className="text-sm text-red-600">{editError}</p>
+                          )}
+                        </form>
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
               ))}
             </tbody>
           </table>
