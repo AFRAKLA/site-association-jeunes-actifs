@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, type FormEvent, type ChangeEvent } from "react";
+import ImageUploader from "@/components/admin/ImageUploader";
 
 /* --- Types --- */
 
@@ -32,6 +33,18 @@ export default function GalerieAdmin({ password }: { password: string }) {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
+
+  /* Édition */
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editTitre, setEditTitre] = useState("");
+  const [editCategorie, setEditCategorie] = useState<Categorie>("environnement");
+  const [editDescription, setEditDescription] = useState("");
+  const [editStatut, setEditStatut] = useState<"brouillon" | "publie">("brouillon");
+  const [editCurrentImageUrl, setEditCurrentImageUrl] = useState<string | null>(null);
+  const [editImageFile, setEditImageFile] = useState<File | null>(null);
+  const [editLoading, setEditLoading] = useState(false);
+  const [editSuccess, setEditSuccess] = useState("");
+  const [editError, setEditError] = useState("");
 
   /* Formulaire */
   const [formTitre, setFormTitre] = useState("");
@@ -147,6 +160,62 @@ export default function GalerieAdmin({ password }: { password: string }) {
       /* silencieux */
     } finally {
       setDeleting(null);
+    }
+  }
+
+  function openEdit(p: Photo) {
+    setEditingId(p.id);
+    setEditTitre(p.titre);
+    setEditCategorie(p.categorie);
+    setEditDescription(p.description);
+    setEditStatut((p.statut as "brouillon" | "publie") || "brouillon");
+    setEditCurrentImageUrl(p.image_url);
+    setEditImageFile(null);
+    setEditSuccess("");
+    setEditError("");
+  }
+
+  function closeEdit() {
+    setEditingId(null);
+  }
+
+  async function handleUpdate(e: FormEvent, id: string) {
+    e.preventDefault();
+    setEditLoading(true);
+    setEditError("");
+    setEditSuccess("");
+
+    try {
+      const fd = new FormData();
+      fd.append("password", password);
+      fd.append("id", id);
+      fd.append("titre", editTitre);
+      fd.append("categorie", editCategorie);
+      fd.append("description", editDescription);
+      fd.append("statut", editStatut);
+      if (editImageFile) fd.append("file", editImageFile);
+
+      const res = await fetch("/api/admin/galerie/update", {
+        method: "PATCH",
+        body: fd,
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setEditError(data.error || "Erreur lors de la mise à jour.");
+        return;
+      }
+
+      setEditSuccess("Photo mise à jour.");
+      if (data.photo) {
+        setPhotos((prev) => prev.map((p) => (p.id === id ? data.photo : p)));
+      }
+      setEditingId(null);
+    } catch {
+      setEditError("Erreur serveur.");
+    } finally {
+      setEditLoading(false);
     }
   }
 
@@ -312,16 +381,140 @@ export default function GalerieAdmin({ password }: { password: string }) {
                     )}
                     <span className="text-xs text-gray-400">{formatDate(p.created_at)}</span>
                   </div>
-                  <button
-                    onClick={() => handleDelete(p.id)}
-                    disabled={deleting === p.id}
-                    className="text-xs font-medium text-red-600 transition hover:text-red-700 disabled:opacity-50"
-                  >
-                    {deleting === p.id ? "…" : "Supprimer"}
-                  </button>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() =>
+                        editingId === p.id ? closeEdit() : openEdit(p)
+                      }
+                      className="text-xs font-medium text-emerald-600 transition hover:text-emerald-700"
+                    >
+                      {editingId === p.id ? "Annuler" : "Modifier"}
+                    </button>
+                    <button
+                      onClick={() => handleDelete(p.id)}
+                      disabled={deleting === p.id}
+                      className="text-xs font-medium text-red-600 transition hover:text-red-700 disabled:opacity-50"
+                    >
+                      {deleting === p.id ? "…" : "Supprimer"}
+                    </button>
+                  </div>
                 </div>
                 <p className="mt-1.5 text-sm font-medium text-gray-800">{p.titre}</p>
                 <p className="mt-0.5 text-sm text-gray-500">{p.description}</p>
+
+                {editingId === p.id && (
+                  <form
+                    onSubmit={(e) => handleUpdate(e, p.id)}
+                    className="mt-3 space-y-3 border-t border-gray-100 pt-3"
+                  >
+                    <div>
+                      <label
+                        htmlFor={`edit-titre-${p.id}`}
+                        className="mb-1 block text-sm font-medium text-gray-700"
+                      >
+                        Titre
+                      </label>
+                      <input
+                        id={`edit-titre-${p.id}`}
+                        type="text"
+                        required
+                        value={editTitre}
+                        onChange={(e) => setEditTitre(e.target.value)}
+                        className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                      />
+                    </div>
+
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <div>
+                        <label
+                          htmlFor={`edit-categorie-${p.id}`}
+                          className="mb-1 block text-sm font-medium text-gray-700"
+                        >
+                          Catégorie
+                        </label>
+                        <select
+                          id={`edit-categorie-${p.id}`}
+                          value={editCategorie}
+                          onChange={(e) =>
+                            setEditCategorie(e.target.value as Categorie)
+                          }
+                          className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                        >
+                          {CATEGORIES.map((c) => (
+                            <option key={c.valeur} value={c.valeur}>
+                              {c.label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label
+                          htmlFor={`edit-statut-${p.id}`}
+                          className="mb-1 block text-sm font-medium text-gray-700"
+                        >
+                          Statut
+                        </label>
+                        <select
+                          id={`edit-statut-${p.id}`}
+                          value={editStatut}
+                          onChange={(e) =>
+                            setEditStatut(e.target.value as "brouillon" | "publie")
+                          }
+                          className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                        >
+                          <option value="brouillon">Brouillon</option>
+                          <option value="publie">Publié</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor={`edit-description-${p.id}`}
+                        className="mb-1 block text-sm font-medium text-gray-700"
+                      >
+                        Description
+                      </label>
+                      <textarea
+                        id={`edit-description-${p.id}`}
+                        required
+                        rows={3}
+                        value={editDescription}
+                        onChange={(e) => setEditDescription(e.target.value)}
+                        className="w-full resize-y rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                      />
+                    </div>
+
+                    <ImageUploader
+                      key={p.id}
+                      label="Image"
+                      currentUrl={editCurrentImageUrl}
+                      onChange={(file) => setEditImageFile(file)}
+                    />
+
+                    <div className="flex items-center gap-3">
+                      <button
+                        type="submit"
+                        disabled={editLoading}
+                        className="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-700 disabled:opacity-50"
+                      >
+                        {editLoading ? "Enregistrement…" : "Enregistrer"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={closeEdit}
+                        className="text-sm text-gray-500 hover:text-gray-700"
+                      >
+                        Annuler
+                      </button>
+                    </div>
+
+                    {editSuccess && (
+                      <p className="text-sm text-green-600">{editSuccess}</p>
+                    )}
+                    {editError && <p className="text-sm text-red-600">{editError}</p>}
+                  </form>
+                )}
               </div>
             </div>
           ))}
