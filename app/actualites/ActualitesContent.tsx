@@ -66,6 +66,7 @@ export default function ActualitesContent({
     <>
       <Header />
 
+      <main id="main-content">
       {/* Titre + introduction */}
       <section className="px-6 py-20 text-center">
         <div className="mx-auto max-w-2xl">
@@ -160,6 +161,7 @@ export default function ActualitesContent({
           </div>
         </div>
       </section>
+      </main>
 
       <Footer />
     </>

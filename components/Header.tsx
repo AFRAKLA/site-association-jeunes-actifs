@@ -40,7 +40,7 @@ export default function Header() {
         </Link>
 
         {/* Navigation desktop */}
-        <nav className="hidden gap-6 text-sm font-medium md:flex">
+        <nav className="hidden gap-6 text-sm font-medium lg:flex">
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -58,7 +58,7 @@ export default function Header() {
 
         {/* Bouton hamburger mobile */}
         <button
-          className="md:hidden text-foreground"
+          className="lg:hidden text-foreground"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
         >
@@ -98,7 +98,7 @@ export default function Header() {
 
       {/* Menu mobile déroulant */}
       {menuOpen && (
-        <nav className="border-t border-muted bg-background px-6 pb-4 md:hidden">
+        <nav className="border-t border-muted bg-background px-6 pb-4 lg:hidden">
           <div className="flex flex-col gap-4 pt-4 text-sm font-medium">
             {navLinks.map((link) => (
               <Link

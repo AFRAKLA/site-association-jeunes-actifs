@@ -94,6 +94,7 @@ export default async function EvenementDetail({ params }: Props) {
     <>
       <Header />
 
+      <main id="main-content">
       <article className="mx-auto max-w-3xl px-6 py-12">
         {/* Retour */}
         <Link
@@ -273,6 +274,7 @@ export default async function EvenementDetail({ params }: Props) {
           </Link>
         </div>
       </article>
+      </main>
 
       <Footer />
     </>

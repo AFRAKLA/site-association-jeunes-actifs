@@ -87,6 +87,7 @@ export default async function Evenements() {
     <>
       <Header />
 
+      <main id="main-content">
       {/* En-tête */}
       <section className="px-6 py-20 text-center">
         <div className="mx-auto max-w-2xl">
@@ -275,6 +276,7 @@ export default async function Evenements() {
           </div>
         </div>
       </section>
+      </main>
 
       <Footer />
     </>

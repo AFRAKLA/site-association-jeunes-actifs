@@ -59,6 +59,7 @@ export default async function Home() {
     <>
       <Header />
 
+      <main id="main-content">
       {/* ── 1. HERO ── */}
       <section className="bg-muted px-6 py-16 md:py-24">
         <div className="mx-auto grid max-w-5xl items-center gap-10 md:grid-cols-2 md:gap-16">
@@ -296,6 +297,7 @@ export default async function Home() {
           </Link>
         </div>
       </section>
+      </main>
 
       <Footer />
     </>

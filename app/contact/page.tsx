@@ -14,6 +14,7 @@ export default function Contact() {
     <>
       <Header />
 
+      <main id="main-content">
       {/* Titre + introduction */}
       <section className="px-6 py-20 text-center">
         <div className="mx-auto max-w-2xl">
@@ -91,6 +92,7 @@ export default function Contact() {
           <ContactForm />
         </div>
       </section>
+      </main>
 
       <Footer />
     </>

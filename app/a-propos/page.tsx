@@ -13,6 +13,7 @@ export default function APropos() {
     <>
       <Header />
 
+      <main id="main-content">
       {/* Titre + présentation */}
       <section className="px-6 py-20 text-center">
         <div className="mx-auto max-w-2xl">
@@ -103,6 +104,7 @@ export default function APropos() {
           </div>
         </div>
       </section>
+      </main>
 
       <Footer />
     </>
