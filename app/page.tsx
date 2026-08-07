@@ -76,42 +76,74 @@ export default async function Home() {
 
       <main id="main-content">
       {/* ── 1. HERO ── */}
-      <section className="bg-muted px-6 py-16 md:py-24">
-        <div className="mx-auto grid max-w-5xl items-center gap-10 md:grid-cols-2 md:gap-16">
+      <section className="relative overflow-hidden bg-muted px-6 py-20 md:py-28">
+        {/* Accents décoratifs — purement visuels, aria-hidden */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full bg-primary/10 blur-3xl"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-16 -bottom-24 h-80 w-80 rounded-full bg-primary/10 blur-3xl"
+        />
 
+        <div className="relative mx-auto grid max-w-5xl items-center gap-12 md:grid-cols-2 md:gap-16">
           {/* Texte */}
           <div>
-            <span className="inline-block rounded-full border border-primary/30 bg-primary/10 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-primary">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-primary">
               Association jeunesse &amp; solidarité
             </span>
-            <h1 className="mt-5 text-4xl font-extrabold leading-tight tracking-tight text-foreground md:text-5xl">
+            <h1 className="mt-6 text-4xl font-extrabold leading-[1.1] tracking-tight text-foreground md:text-6xl">
               Jeunes Actifs,<br />
               <span className="text-primary">engagés dans l&apos;Oriental</span>
             </h1>
-            <p className="mt-5 text-base leading-relaxed text-muted-foreground">
-              Nous réunissons des étudiants de la région de l&apos;Oriental autour
-              d&apos;actions sociales, culturelles et citoyennes concrètes. Ensemble,
-              nous agissons pour un avenir plus solidaire et plus humain.
+            <p className="mt-6 max-w-md text-lg leading-relaxed text-muted-foreground">
+              Nous réunissons des étudiants de l&apos;Oriental autour d&apos;actions
+              sociales, culturelles et citoyennes concrètes, pour un avenir plus
+              solidaire et plus humain.
             </p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Link
-                href="/activites"
-                className="rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-dark"
-              >
-                Découvrir nos actions
-              </Link>
+            <div className="mt-9 flex flex-wrap gap-4">
               <Link
                 href="/devenir-membre"
-                className="rounded-lg border border-primary px-6 py-3 text-sm font-semibold text-primary transition hover:bg-primary/10"
+                className="rounded-lg bg-primary px-7 py-3.5 text-sm font-semibold text-white shadow-md transition hover:bg-primary-dark hover:shadow-lg"
               >
                 Devenir membre
               </Link>
+              <Link
+                href="/activites"
+                className="rounded-lg border border-primary px-7 py-3.5 text-sm font-semibold text-primary transition hover:bg-primary/10"
+              >
+                Découvrir nos actions
+              </Link>
             </div>
+            <p className="mt-7 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4 shrink-0 text-primary"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
+                />
+              </svg>
+              Basée à Oujda, région de l&apos;Oriental
+            </p>
           </div>
 
-          {/* Photo réelle de l'association */}
+          {/* Photo réelle de l'association, avec carte flottante */}
           <div>
-            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-md">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-3xl shadow-xl">
               <Image
                 src="/images/accueil/animation-enfants.jpg"
                 alt="Membres de l'association Jeunes Actifs lors d'une animation avec des enfants dans la région de l'Oriental"
@@ -120,17 +152,19 @@ export default async function Home() {
                 priority
               />
             </div>
-            <p className="mt-3 text-center text-xs text-muted-foreground">
-              Des actions concrètes au service des jeunes et des familles
-            </p>
+            <div className="relative z-10 mx-4 -mt-6 rounded-xl bg-background px-5 py-4 shadow-lg sm:mx-8">
+              <p className="text-sm font-medium text-foreground">
+                Des actions concrètes au service des jeunes et des familles
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* ── 2. PRÉSENTATION ── */}
-      <section className="px-6 py-10">
+      <section className="px-6 py-14">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-2xl font-bold text-foreground">Qui sommes-nous ?</h2>
+          <h2 className="text-2xl font-bold text-foreground md:text-3xl">Qui sommes-nous ?</h2>
           <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
             L&apos;Association Jeunes Actifs est une association socio-culturelle
             basée dans la région de l&apos;Oriental au Maroc. Elle réunit des étudiants
@@ -146,16 +180,31 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ── 3. NOS ACTIONS ── */}
-      <section className="bg-muted px-6 py-16">
+      {/* ── 3. IMPACT — chiffres déjà publiés sur /a-propos, repris ici tels quels ── */}
+      <section className="bg-primary px-6 py-16 text-white md:py-20">
+        <div className="mx-auto max-w-4xl text-center">
+          <h2 className="text-2xl font-bold md:text-3xl">Notre impact sur le terrain</h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm text-green-100">
+            Quelques chiffres qui illustrent notre action dans la région de l&apos;Oriental.
+          </p>
+          <div className="mt-10 grid gap-8 sm:grid-cols-3">
+            <ImpactStat chiffre="50+" label="Actions organisées" />
+            <ImpactStat chiffre="200+" label="Jeunes mobilisés" />
+            <ImpactStat chiffre="30+" label="Événements réalisés" />
+          </div>
+        </div>
+      </section>
+
+      {/* ── 4. NOS ACTIONS ── */}
+      <section className="bg-muted px-6 py-16 md:py-20">
         <div className="mx-auto max-w-5xl">
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-foreground">Nos domaines d&apos;action</h2>
+            <h2 className="text-2xl font-bold text-foreground md:text-3xl">Nos domaines d&apos;action</h2>
             <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
               L&apos;association intervient sur quatre axes principaux dans la région de l&apos;Oriental.
             </p>
           </div>
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             <ActionCard
               iconPath="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
               titre="Solidarité et accompagnement"
@@ -177,7 +226,7 @@ export default async function Home() {
               description="Formations, ateliers et forums pour développer l'engagement étudiant."
             />
           </div>
-          <div className="mt-8 text-center">
+          <div className="mt-10 text-center">
             <Link
               href="/activites"
               className="inline-block rounded-lg border border-primary px-6 py-2.5 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
@@ -188,13 +237,17 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ── 4. NOS VALEURS — illustration générale (photo externe) ── */}
-      <section className="px-6 py-16">
+      {/* ── 5. NOS VALEURS — illustration générale (photo externe) ── */}
+      <section className="px-6 py-16 md:py-20">
         <div className="mx-auto grid max-w-5xl items-center gap-10 md:grid-cols-2 md:gap-16">
 
           {/* Photo externe — ne représente pas une action de l'association */}
-          <div className="order-2 md:order-1">
-            <div className="relative aspect-[3/2] overflow-hidden rounded-2xl shadow-sm">
+          <div className="relative order-2 md:order-1">
+            <div
+              aria-hidden="true"
+              className="absolute -inset-3 -z-10 rounded-3xl border-2 border-primary/15"
+            />
+            <div className="relative aspect-[3/2] overflow-hidden rounded-2xl shadow-md">
               <Image
                 src="/images/accueil/valeurs-esprit-equipe.jpg"
                 alt="Illustration symbolisant la solidarité et l'esprit d'équipe"
@@ -206,7 +259,7 @@ export default async function Home() {
 
           {/* Valeurs */}
           <div className="order-1 md:order-2">
-            <h2 className="text-2xl font-bold text-foreground">Nos valeurs</h2>
+            <h2 className="text-2xl font-bold text-foreground md:text-3xl">Nos valeurs</h2>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
               Ces valeurs guident chacune de nos actions et rassemblent nos membres
               au quotidien dans la région de l&apos;Oriental.
@@ -229,17 +282,17 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ── 5. DERNIÈRES ACTUALITÉS (dynamique Supabase) ── */}
-      <section className="bg-muted px-6 py-12">
+      {/* ── 6. DERNIÈRES ACTUALITÉS (dynamique Supabase) ── */}
+      <section className="bg-muted px-6 py-16 md:py-20">
         <div className="mx-auto max-w-5xl">
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-foreground">Dernières actualités</h2>
+            <h2 className="text-2xl font-bold text-foreground md:text-3xl">Dernières actualités</h2>
             <p className="mt-2 text-sm text-muted-foreground">
               Suivez les nouvelles de l&apos;association et de nos actions en cours.
             </p>
           </div>
           {derniersArticles.length > 0 ? (
-            <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {derniersArticles.map((article) => (
                 <ActualiteCard key={article.id} article={article} />
               ))}
@@ -251,7 +304,7 @@ export default async function Home() {
               </p>
             </div>
           )}
-          <div className="mt-6 text-center">
+          <div className="mt-8 text-center">
             <Link
               href="/actualites"
               className="inline-block rounded-lg border border-primary px-6 py-2.5 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
@@ -262,17 +315,17 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ── 6. ÉVÉNEMENTS (dynamique Supabase) ── */}
-      <section className="px-6 py-12">
+      {/* ── 7. ÉVÉNEMENTS (dynamique Supabase) ── */}
+      <section className="px-6 py-16 md:py-20">
         <div className="mx-auto max-w-5xl">
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-foreground">Événements</h2>
+            <h2 className="text-2xl font-bold text-foreground md:text-3xl">Événements</h2>
             <p className="mt-2 text-sm text-muted-foreground">
               Retrouvez nos prochains événements et actions dans la région de l&apos;Oriental.
             </p>
           </div>
           {derniersEvenements.length > 0 ? (
-            <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {derniersEvenements.map((evt) => (
                 <EvenementCard
                   key={evt.id}
@@ -292,7 +345,7 @@ export default async function Home() {
               </p>
             </div>
           )}
-          <div className="mt-6 text-center">
+          <div className="mt-8 text-center">
             <Link
               href="/evenements"
               className="inline-block rounded-lg border border-primary px-6 py-2.5 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
@@ -303,21 +356,28 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ── 7. CTA DEVENIR MEMBRE ── */}
-      <section className="bg-primary px-6 py-10 text-white">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-2xl font-bold">Rejoignez l&apos;association</h2>
+      {/* ── 8. CTA FINAL — rôle différent du hero : rejoindre OU simplement échanger ── */}
+      <section className="px-6 py-16 md:py-20">
+        <div className="mx-auto max-w-2xl rounded-3xl bg-primary px-8 py-12 text-center text-white shadow-lg md:px-14 md:py-16">
+          <h2 className="text-2xl font-bold md:text-3xl">Envie d&apos;agir avec nous ?</h2>
           <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-green-100">
-            Vous êtes étudiant dans l&apos;enseignement supérieur et vous souhaitez
-            vous engager ? Rejoignez Jeunes Actifs et participez à des actions qui
-            ont un impact réel dans la région de l&apos;Oriental.
+            Que vous souhaitiez rejoindre l&apos;association ou simplement en savoir
+            plus avant de vous engager, nous serions ravis d&apos;échanger avec vous.
           </p>
-          <Link
-            href="/devenir-membre"
-            className="mt-8 inline-block rounded-lg bg-white px-8 py-3 text-sm font-semibold text-primary shadow-sm transition hover:bg-green-50"
-          >
-            Devenir membre
-          </Link>
+          <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <Link
+              href="/devenir-membre"
+              className="rounded-lg bg-white px-8 py-3 text-sm font-semibold text-primary shadow-sm transition hover:bg-green-50"
+            >
+              Devenir membre
+            </Link>
+            <Link
+              href="/contact"
+              className="rounded-lg border border-white/40 px-8 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+            >
+              Nous contacter
+            </Link>
+          </div>
         </div>
       </section>
       </main>
@@ -329,6 +389,15 @@ export default async function Home() {
 
 /* ── Composants ── */
 
+function ImpactStat({ chiffre, label }: { chiffre: string; label: string }) {
+  return (
+    <div>
+      <div className="text-4xl font-extrabold md:text-5xl">{chiffre}</div>
+      <div className="mt-2 text-sm text-green-100">{label}</div>
+    </div>
+  );
+}
+
 function ActionCard({
   iconPath,
   titre,
@@ -339,10 +408,10 @@ function ActionCard({
   description: string;
 }) {
   return (
-    <div className="rounded-xl border border-muted bg-background p-5 shadow-sm transition hover:shadow-md">
-      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary">
+    <div className="group rounded-2xl border border-muted bg-background p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition group-hover:bg-primary group-hover:text-white">
         <svg
-          className="h-5 w-5"
+          className="h-6 w-6"
           fill="none"
           viewBox="0 0 24 24"
           strokeWidth="1.5"
@@ -352,8 +421,8 @@ function ActionCard({
           <path strokeLinecap="round" strokeLinejoin="round" d={iconPath} />
         </svg>
       </div>
-      <h3 className="mt-3 text-sm font-semibold text-foreground">{titre}</h3>
-      <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">{description}</p>
+      <h3 className="mt-4 text-sm font-semibold text-foreground">{titre}</h3>
+      <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{description}</p>
     </div>
   );
 }
@@ -398,7 +467,7 @@ function ActualiteCard({
   };
 }) {
   return (
-    <div className="flex flex-col rounded-xl border border-muted bg-background p-5 shadow-sm transition hover:shadow-md">
+    <div className="group flex flex-col rounded-2xl border border-muted bg-background p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
       <div className="flex flex-wrap items-center gap-2">
         <span className="rounded-full bg-primary px-2.5 py-0.5 text-xs font-semibold text-white">
           {categorieLabels[article.categorie] ?? article.categorie}
@@ -411,7 +480,7 @@ function ActualiteCard({
           })}
         </span>
       </div>
-      <h3 className="mt-3 text-sm font-semibold text-foreground">{article.titre}</h3>
+      <h3 className="mt-3 text-base font-semibold text-foreground">{article.titre}</h3>
       <p className="mt-2 flex-1 text-xs leading-relaxed text-muted-foreground">
         {article.extrait}
       </p>
@@ -440,7 +509,11 @@ function EvenementCard({
   avnr: boolean;
 }) {
   return (
-    <div className="flex flex-col rounded-xl border border-muted bg-background p-5 shadow-sm transition hover:shadow-md">
+    <div
+      className={`group flex flex-col rounded-2xl border-y border-r bg-background p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg ${
+        avnr ? "border-l-4 border-l-primary border-muted" : "border-l-4 border-l-muted-foreground/30 border-muted"
+      }`}
+    >
       <div className="flex flex-wrap items-center gap-2">
         <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
           {evenement.date_evenement}
@@ -455,7 +528,7 @@ function EvenementCard({
           </span>
         )}
       </div>
-      <h3 className="mt-3 text-sm font-semibold text-foreground">{evenement.titre}</h3>
+      <h3 className="mt-3 text-base font-semibold text-foreground">{evenement.titre}</h3>
       {evenement.lieu && (
         <p className="mt-1 text-xs text-primary">{evenement.lieu}</p>
       )}
