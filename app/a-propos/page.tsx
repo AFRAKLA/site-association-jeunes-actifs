@@ -15,10 +15,20 @@ export default function APropos() {
 
       <main id="main-content">
       {/* Titre + présentation */}
-      <section className="px-6 py-20 text-center">
-        <div className="mx-auto max-w-2xl">
-          <h1 className="text-4xl font-bold">À propos de nous</h1>
-          <p className="mt-4 text-muted-foreground">
+      <section className="relative overflow-hidden bg-muted px-6 py-20 text-center md:py-24">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full bg-primary/10 blur-3xl"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-16 -bottom-24 h-72 w-72 rounded-full bg-primary/10 blur-3xl"
+        />
+        <div className="relative mx-auto max-w-2xl">
+          <h1 className="text-4xl font-extrabold tracking-tight text-foreground md:text-5xl">
+            À propos de nous
+          </h1>
+          <p className="mt-5 text-base leading-relaxed text-muted-foreground">
             L&apos;Association Jeunes Actifs est une association socio-culturelle et
             environnementale basée dans la région de l&apos;Oriental au Maroc. Fondée
             par des étudiants de l&apos;enseignement supérieur, elle rassemble des
@@ -31,7 +41,7 @@ export default function APropos() {
       {/* Notre mission */}
       <section className="bg-muted px-6 py-16">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-3xl font-bold">Notre mission</h2>
+          <h2 className="text-2xl font-bold md:text-3xl">Notre mission</h2>
           <p className="mt-6 text-muted-foreground leading-relaxed">
             Notre mission est d&apos;accompagner les jeunes de l&apos;Oriental dans leur
             engagement citoyen en leur offrant un cadre pour agir, apprendre et
@@ -46,7 +56,7 @@ export default function APropos() {
       {/* Nos valeurs */}
       <section className="px-6 py-16">
         <div className="mx-auto max-w-5xl text-center">
-          <h2 className="text-3xl font-bold">Nos valeurs</h2>
+          <h2 className="text-2xl font-bold md:text-3xl">Nos valeurs</h2>
           <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
             Ces principes guident chacune de nos actions et décisions.
           </p>
@@ -78,7 +88,7 @@ export default function APropos() {
       {/* Notre vision */}
       <section className="bg-muted px-6 py-16">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-3xl font-bold">Notre vision</h2>
+          <h2 className="text-2xl font-bold md:text-3xl">Notre vision</h2>
           <p className="mt-6 text-muted-foreground leading-relaxed">
             Nous aspirons à faire de la région de l&apos;Oriental un modèle de
             jeunesse engagée, où chaque étudiant trouve les moyens de
@@ -93,7 +103,7 @@ export default function APropos() {
       {/* Notre impact */}
       <section className="bg-primary px-6 py-16 text-white">
         <div className="mx-auto max-w-4xl text-center">
-          <h2 className="text-3xl font-bold">Notre impact</h2>
+          <h2 className="text-2xl font-bold md:text-3xl">Notre impact</h2>
           <p className="mt-3 text-green-100">
             Quelques chiffres qui illustrent notre action sur le terrain.
           </p>
@@ -119,8 +129,8 @@ function ValeurCard({
   description: string;
 }) {
   return (
-    <div className="rounded-xl border border-muted bg-background p-6 text-center shadow-sm">
-      <h3 className="font-semibold">{titre}</h3>
+    <div className="rounded-2xl border border-muted bg-background p-6 text-center shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+      <h3 className="font-semibold text-foreground">{titre}</h3>
       <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
         {description}
       </p>
@@ -131,7 +141,7 @@ function ValeurCard({
 function ImpactItem({ chiffre, label }: { chiffre: string; label: string }) {
   return (
     <div>
-      <div className="text-4xl font-extrabold">{chiffre}</div>
+      <div className="text-4xl font-extrabold md:text-5xl">{chiffre}</div>
       <div className="mt-2 text-sm text-green-100">{label}</div>
     </div>
   );

@@ -61,10 +61,20 @@ export default function Activites() {
 
       <main id="main-content">
       {/* Titre + introduction */}
-      <section className="px-6 py-20 text-center">
-        <div className="mx-auto max-w-2xl">
-          <h1 className="text-4xl font-bold">Nos activités</h1>
-          <p className="mt-4 text-muted-foreground">
+      <section className="relative overflow-hidden bg-muted px-6 py-20 text-center md:py-24">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full bg-primary/10 blur-3xl"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-16 -bottom-24 h-72 w-72 rounded-full bg-primary/10 blur-3xl"
+        />
+        <div className="relative mx-auto max-w-2xl">
+          <h1 className="text-4xl font-extrabold tracking-tight text-foreground md:text-5xl">
+            Nos activités
+          </h1>
+          <p className="mt-5 text-base leading-relaxed text-muted-foreground">
             L&apos;Association Jeunes Actifs agit sur plusieurs fronts pour
             accompagner les jeunes de l&apos;Oriental et contribuer au
             développement de la région. Découvrez nos domaines d&apos;action.
@@ -73,14 +83,14 @@ export default function Activites() {
       </section>
 
       {/* Grille d'activités */}
-      <section className="bg-muted px-6 py-16">
+      <section className="px-6 py-16 md:py-20">
         <div className="mx-auto grid max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {activites.map((a) => (
             <div
               key={a.titre}
-              className="rounded-xl bg-background p-6 shadow-sm transition hover:shadow-md"
+              className="rounded-2xl border border-muted bg-background p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
             >
-              <h3 className="text-lg font-semibold">{a.titre}</h3>
+              <h3 className="text-lg font-semibold text-foreground">{a.titre}</h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                 {a.description}
               </p>
@@ -93,16 +103,16 @@ export default function Activites() {
       </section>
 
       {/* Appel à l'action */}
-      <section className="bg-primary px-6 py-16 text-white">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-bold">Envie d&apos;agir avec nous ?</h2>
+      <section className="px-6 py-16 md:py-20">
+        <div className="mx-auto max-w-2xl rounded-3xl bg-primary px-8 py-12 text-center text-white shadow-lg md:px-14 md:py-16">
+          <h2 className="text-2xl font-bold md:text-3xl">Envie d&apos;agir avec nous ?</h2>
           <p className="mt-4 text-green-100">
             Rejoignez l&apos;Association Jeunes Actifs et participez à nos
             activités socio-culturelles et environnementales dans l&apos;Oriental.
           </p>
           <Link
             href="/devenir-membre"
-            className="mt-8 inline-block rounded-full bg-white px-8 py-3 text-sm font-semibold text-primary shadow-md transition hover:bg-green-50"
+            className="mt-8 inline-block rounded-lg bg-white px-8 py-3 text-sm font-semibold text-primary shadow-sm transition hover:bg-green-50"
           >
             Devenir membre
           </Link>
