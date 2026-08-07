@@ -34,11 +34,6 @@ function getTodayMorocco(): string {
   }).format(new Date());
 }
 
-function isAvenir(evt: Evenement, today: string): boolean {
-  if (evt.date_debut) return evt.date_debut >= today;
-  return evt.a_venir;
-}
-
 function formatDateFr(dateStr: string): string {
   const [year, month, day] = dateStr.split("-").map(Number);
   return new Date(year, month - 1, day).toLocaleDateString("fr-FR", {
@@ -65,23 +60,26 @@ export default async function Evenements() {
 
   const today = getTodayMorocco();
 
-  // Sort: upcoming nearest → past most recent → legacy (no date_debut)
+  // Classement : un événement sans date_debut (legacy) se range selon son
+  // indicateur a_venir, pour ne jamais afficher un événement à venir comme
+  // "passé" faute de date renseignée.
   const avenir = raw
-    .filter((e) => e.date_debut && e.date_debut >= today)
-    .sort((a, b) => a.date_debut!.localeCompare(b.date_debut!));
+    .filter((e) => (e.date_debut ? e.date_debut >= today : e.a_venir))
+    .sort((a, b) => {
+      if (a.date_debut && b.date_debut) return a.date_debut.localeCompare(b.date_debut);
+      if (a.date_debut) return -1;
+      if (b.date_debut) return 1;
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
 
-  const passes = raw
-    .filter((e) => e.date_debut && e.date_debut < today)
-    .sort((a, b) => b.date_debut!.localeCompare(a.date_debut!));
-
-  const legacy = raw
-    .filter((e) => !e.date_debut)
-    .sort(
-      (a, b) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-    );
-
-  const evenements = [...avenir, ...passes, ...legacy];
+  const passesEtArchives = raw
+    .filter((e) => (e.date_debut ? e.date_debut < today : !e.a_venir))
+    .sort((a, b) => {
+      if (a.date_debut && b.date_debut) return b.date_debut.localeCompare(a.date_debut);
+      if (a.date_debut) return -1;
+      if (b.date_debut) return 1;
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
 
   return (
     <>
@@ -100,116 +98,50 @@ export default async function Evenements() {
         </div>
       </section>
 
-      {/* Grille d'événements */}
+      {/* Événements à venir */}
       <section className="bg-muted px-6 py-16">
-        {evenements.length === 0 ? (
+        <div className="mx-auto max-w-5xl">
+          <h2 className="text-2xl font-bold text-foreground">Événements à venir</h2>
+          {avenir.length === 0 ? (
+            <p className="mt-4 text-sm text-muted-foreground">
+              Aucun événement à venir pour le moment. Revenez bientôt&nbsp;!
+            </p>
+          ) : (
+            <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {avenir.map((e) => (
+                <EvenementCardItem key={e.id} e={e} avnr={true} />
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Archives — événements passés */}
+      {passesEtArchives.length > 0 && (
+        <section className="px-6 py-16">
+          <div className="mx-auto max-w-5xl">
+            <h2 className="text-xl font-semibold text-muted-foreground">
+              Événements passés
+            </h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Les archives de nos actions précédentes restent consultables ici.
+            </p>
+            <div className="mt-6 grid gap-5 opacity-90 sm:grid-cols-2 lg:grid-cols-4">
+              {passesEtArchives.map((e) => (
+                <EvenementCardItem key={e.id} e={e} avnr={false} compact />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {avenir.length === 0 && passesEtArchives.length === 0 && (
+        <section className="bg-muted px-6 py-16">
           <p className="text-center text-sm text-muted-foreground">
             Aucun événement pour le moment. Revenez bientôt&nbsp;!
           </p>
-        ) : (
-          <div className="mx-auto grid max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {evenements.map((e) => {
-              const avnr = isAvenir(e, today);
-              const dateLabel = e.date_debut
-                ? formatDateFr(e.date_debut)
-                : (e.date_evenement ?? null);
-
-              const card = (
-                <div className="flex h-full flex-col rounded-xl bg-background shadow-sm transition hover:shadow-md">
-                  {/* Image */}
-                  {e.image_url ? (
-                    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-t-xl">
-                      <Image
-                        src={e.image_url}
-                        alt={e.titre}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      />
-                    </div>
-                  ) : (
-                    <div className="flex aspect-[4/3] items-center justify-center rounded-t-xl bg-primary/5">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-12 w-12 text-primary/30"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth="1.5"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"
-                        />
-                      </svg>
-                    </div>
-                  )}
-
-                  {/* Contenu */}
-                  <div className="flex flex-1 flex-col p-5">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span
-                        className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                          avnr
-                            ? "bg-green-100 text-green-700"
-                            : "bg-muted text-muted-foreground"
-                        }`}
-                      >
-                        {avnr ? "À venir" : "Passé"}
-                      </span>
-                      <span className="rounded-full bg-primary/5 px-3 py-1 text-xs text-primary">
-                        {e.categorie}
-                      </span>
-                    </div>
-
-                    {dateLabel && (
-                      <p className="mt-2 text-xs font-medium text-primary">
-                        {dateLabel}
-                        {e.heure ? ` · ${e.heure.substring(0, 5)}` : ""}
-                      </p>
-                    )}
-
-                    <h3 className="mt-1.5 text-base font-semibold leading-snug">
-                      {e.titre}
-                    </h3>
-
-                    {e.lieu && (
-                      <p className="mt-1 text-xs text-muted-foreground">
-                        {e.lieu}
-                      </p>
-                    )}
-
-                    <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground line-clamp-3">
-                      {e.description}
-                    </p>
-
-                    {e.slug && (
-                      <p className="mt-3 text-xs font-medium text-primary">
-                        Voir le détail →
-                      </p>
-                    )}
-                  </div>
-                </div>
-              );
-
-              return e.slug ? (
-                <Link
-                  key={e.id}
-                  href={`/evenements/${e.slug}`}
-                  className="flex"
-                >
-                  {card}
-                </Link>
-              ) : (
-                <div key={e.id} className="flex">
-                  {card}
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </section>
+        </section>
+      )}
 
       {/* Pourquoi participer */}
       <section className="px-6 py-16">
@@ -280,5 +212,114 @@ export default async function Evenements() {
 
       <Footer />
     </>
+  );
+}
+
+/* ── Carte événement (à venir ou archive) ── */
+
+function EvenementCardItem({
+  e,
+  avnr,
+  compact = false,
+}: {
+  e: Evenement;
+  avnr: boolean;
+  compact?: boolean;
+}) {
+  const dateLabel = e.date_debut
+    ? formatDateFr(e.date_debut)
+    : (e.date_evenement ?? null);
+
+  const card = (
+    <div className="flex h-full flex-col rounded-xl bg-background shadow-sm transition hover:shadow-md">
+      {/* Image */}
+      {e.image_url ? (
+        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-t-xl">
+          <Image
+            src={e.image_url}
+            alt={e.titre}
+            fill
+            className="object-cover"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          />
+        </div>
+      ) : (
+        <div className="flex aspect-[4/3] items-center justify-center rounded-t-xl bg-primary/5">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-12 w-12 text-primary/30"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"
+            />
+          </svg>
+        </div>
+      )}
+
+      {/* Contenu */}
+      <div className={`flex flex-1 flex-col ${compact ? "p-4" : "p-5"}`}>
+        <div className="flex flex-wrap items-center gap-2">
+          <span
+            className={`rounded-full px-3 py-1 text-xs font-semibold ${
+              avnr
+                ? "bg-green-100 text-green-700"
+                : "border border-muted-foreground/20 bg-muted text-muted-foreground"
+            }`}
+          >
+            {avnr ? "À venir" : "Événement passé"}
+          </span>
+          {!compact && (
+            <span className="rounded-full bg-primary/5 px-3 py-1 text-xs text-primary">
+              {e.categorie}
+            </span>
+          )}
+        </div>
+
+        {dateLabel && (
+          <p className="mt-2 text-xs font-medium text-primary">
+            {dateLabel}
+            {e.heure ? ` · ${e.heure.substring(0, 5)}` : ""}
+          </p>
+        )}
+
+        <h3
+          className={`mt-1.5 font-semibold leading-snug ${
+            compact ? "text-sm" : "text-base"
+          }`}
+        >
+          {e.titre}
+        </h3>
+
+        {e.lieu && (
+          <p className="mt-1 text-xs text-muted-foreground">{e.lieu}</p>
+        )}
+
+        {!compact && (
+          <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground line-clamp-3">
+            {e.description}
+          </p>
+        )}
+
+        {e.slug && (
+          <p className="mt-3 text-xs font-medium text-primary">
+            Voir le détail →
+          </p>
+        )}
+      </div>
+    </div>
+  );
+
+  return e.slug ? (
+    <Link href={`/evenements/${e.slug}`} className="flex">
+      {card}
+    </Link>
+  ) : (
+    <div className="flex">{card}</div>
   );
 }

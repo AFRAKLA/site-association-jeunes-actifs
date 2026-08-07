@@ -38,6 +38,7 @@ export default async function Home() {
     id: string;
     titre: string;
     date_evenement: string;
+    date_debut: string | null;
     lieu: string;
     description: string;
     a_venir: boolean;
@@ -46,14 +47,28 @@ export default async function Home() {
   try {
     const { data: evtData } = await supabase
       .from("evenements")
-      .select("id, titre, date_evenement, lieu, description, a_venir")
-      .eq("statut", "publie")
-      .order("created_at", { ascending: false })
-      .limit(3);
+      .select("id, titre, date_evenement, date_debut, lieu, description, a_venir")
+      .eq("statut", "publie");
     derniersEvenements = (evtData ?? []) as typeof derniersEvenements;
   } catch {
     /* fallback : tableau vide */
   }
+
+  // Priorise les événements à venir ; complète avec les plus récents passés
+  // uniquement s'il n'y en a pas assez pour remplir la section (3 max).
+  const todayAccueil = new Intl.DateTimeFormat("fr-CA", {
+    timeZone: "Africa/Casablanca",
+  }).format(new Date());
+
+  const evenementsAvenir = derniersEvenements
+    .filter((e) => (e.date_debut ? e.date_debut >= todayAccueil : e.a_venir))
+    .sort((a, b) => (a.date_debut ?? "").localeCompare(b.date_debut ?? ""));
+
+  const evenementsPasses = derniersEvenements
+    .filter((e) => (e.date_debut ? e.date_debut < todayAccueil : !e.a_venir))
+    .sort((a, b) => (b.date_debut ?? "").localeCompare(a.date_debut ?? ""));
+
+  derniersEvenements = [...evenementsAvenir, ...evenementsPasses].slice(0, 3);
 
   return (
     <>
@@ -259,7 +274,15 @@ export default async function Home() {
           {derniersEvenements.length > 0 ? (
             <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {derniersEvenements.map((evt) => (
-                <EvenementCard key={evt.id} evenement={evt} />
+                <EvenementCard
+                  key={evt.id}
+                  evenement={evt}
+                  avnr={
+                    evt.date_debut
+                      ? evt.date_debut >= todayAccueil
+                      : evt.a_venir
+                  }
+                />
               ))}
             </div>
           ) : (
@@ -404,6 +427,7 @@ function ActualiteCard({
 
 function EvenementCard({
   evenement,
+  avnr,
 }: {
   evenement: {
     id: string;
@@ -413,6 +437,7 @@ function EvenementCard({
     description: string;
     a_venir: boolean;
   };
+  avnr: boolean;
 }) {
   return (
     <div className="flex flex-col rounded-xl border border-muted bg-background p-5 shadow-sm transition hover:shadow-md">
@@ -420,9 +445,13 @@ function EvenementCard({
         <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
           {evenement.date_evenement}
         </span>
-        {evenement.a_venir && (
+        {avnr ? (
           <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-semibold text-green-700">
             À venir
+          </span>
+        ) : (
+          <span className="rounded-full border border-muted-foreground/20 bg-muted px-2.5 py-0.5 text-xs font-semibold text-muted-foreground">
+            Événement passé
           </span>
         )}
       </div>
