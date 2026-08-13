@@ -52,9 +52,9 @@ export default function AdhesionForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+    <form onSubmit={handleSubmit} className="mt-8 space-y-6">
       <div>
-        <label htmlFor="nom" className="mb-1 block text-sm font-medium">
+        <label htmlFor="nom" className="mb-2 block text-sm font-semibold text-foreground">
           Nom complet
         </label>
         <input
@@ -64,11 +64,11 @@ export default function AdhesionForm() {
           placeholder="Votre nom complet"
           value={formData.nom}
           onChange={(e) => handleChange("nom", e.target.value)}
-          className="w-full rounded-lg border border-muted bg-background px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-1 focus:ring-primary"
+          className="w-full rounded-xl border border-muted bg-background px-4 py-3.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
         />
       </div>
       <div>
-        <label htmlFor="email" className="mb-1 block text-sm font-medium">
+        <label htmlFor="email" className="mb-2 block text-sm font-semibold text-foreground">
           Email
         </label>
         <input
@@ -78,11 +78,11 @@ export default function AdhesionForm() {
           placeholder="votre@email.com"
           value={formData.email}
           onChange={(e) => handleChange("email", e.target.value)}
-          className="w-full rounded-lg border border-muted bg-background px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-1 focus:ring-primary"
+          className="w-full rounded-xl border border-muted bg-background px-4 py-3.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
         />
       </div>
       <div>
-        <label htmlFor="telephone" className="mb-1 block text-sm font-medium">
+        <label htmlFor="telephone" className="mb-2 block text-sm font-semibold text-foreground">
           Téléphone
         </label>
         <input
@@ -91,11 +91,11 @@ export default function AdhesionForm() {
           placeholder="+212 6XX XXX XXX"
           value={formData.telephone}
           onChange={(e) => handleChange("telephone", e.target.value)}
-          className="w-full rounded-lg border border-muted bg-background px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-1 focus:ring-primary"
+          className="w-full rounded-xl border border-muted bg-background px-4 py-3.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
         />
       </div>
       <div>
-        <label htmlFor="statut" className="mb-1 block text-sm font-medium">
+        <label htmlFor="statut" className="mb-2 block text-sm font-semibold text-foreground">
           Statut ou établissement
         </label>
         <input
@@ -105,11 +105,11 @@ export default function AdhesionForm() {
           placeholder="Ex : Étudiant à l&apos;Université Mohammed Ier"
           value={formData.statut}
           onChange={(e) => handleChange("statut", e.target.value)}
-          className="w-full rounded-lg border border-muted bg-background px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-1 focus:ring-primary"
+          className="w-full rounded-xl border border-muted bg-background px-4 py-3.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
         />
       </div>
       <div>
-        <label htmlFor="interet" className="mb-1 block text-sm font-medium">
+        <label htmlFor="interet" className="mb-2 block text-sm font-semibold text-foreground">
           Domaine d&apos;intérêt
         </label>
         <select
@@ -117,7 +117,7 @@ export default function AdhesionForm() {
           required
           value={formData.interet}
           onChange={(e) => handleChange("interet", e.target.value)}
-          className="w-full rounded-lg border border-muted bg-background px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-1 focus:ring-primary"
+          className="w-full rounded-xl border border-muted bg-background px-4 py-3.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
         >
           <option value="">-- Choisir un domaine --</option>
           <option value="actions-sociales">Actions sociales</option>
@@ -128,7 +128,7 @@ export default function AdhesionForm() {
         </select>
       </div>
       <div>
-        <label htmlFor="motivation" className="mb-1 block text-sm font-medium">
+        <label htmlFor="motivation" className="mb-2 block text-sm font-semibold text-foreground">
           Motivation
         </label>
         <textarea
@@ -138,7 +138,7 @@ export default function AdhesionForm() {
           placeholder="Expliquez pourquoi vous souhaitez rejoindre l'association..."
           value={formData.motivation}
           onChange={(e) => handleChange("motivation", e.target.value)}
-          className="w-full resize-y rounded-lg border border-muted bg-background px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-1 focus:ring-primary"
+          className="w-full resize-y rounded-xl border border-muted bg-background px-4 py-3.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
         />
       </div>
       {/* Honeypot anti-spam — champ caché, ne doit jamais être rempli par un humain */}
@@ -157,17 +157,17 @@ export default function AdhesionForm() {
       <button
         type="submit"
         disabled={status === "loading"}
-        className="w-full rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-primary-dark disabled:opacity-50"
+        className="w-full rounded-xl bg-primary px-6 py-3.5 text-sm font-semibold text-white shadow-md transition hover:bg-primary-dark hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
       >
         {status === "loading" ? "Envoi en cours..." : "Envoyer ma demande"}
       </button>
       {status === "success" && (
-        <p className="text-center text-sm font-medium text-green-600">
+        <p className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-center text-sm font-medium text-green-700">
           Votre demande a bien été envoyée. Merci pour votre engagement !
         </p>
       )}
       {status === "error" && (
-        <p className="text-center text-sm font-medium text-red-600">
+        <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-center text-sm font-medium text-red-700">
           Une erreur est survenue. Veuillez réessayer.
         </p>
       )}

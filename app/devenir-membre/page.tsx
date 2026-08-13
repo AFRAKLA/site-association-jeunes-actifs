@@ -16,10 +16,20 @@ export default function DevenirMembre() {
 
       <main id="main-content">
       {/* Titre + introduction */}
-      <section className="px-6 py-20 text-center">
-        <div className="mx-auto max-w-2xl">
-          <h1 className="text-4xl font-bold">Devenir membre</h1>
-          <p className="mt-4 text-muted-foreground">
+      <section className="relative overflow-hidden bg-muted px-6 py-20 text-center md:py-24">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full bg-primary/10 blur-3xl"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-16 -bottom-24 h-72 w-72 rounded-full bg-primary/10 blur-3xl"
+        />
+        <div className="relative mx-auto max-w-2xl">
+          <h1 className="text-4xl font-extrabold tracking-tight text-foreground md:text-5xl">
+            Devenir membre
+          </h1>
+          <p className="mt-5 text-base leading-relaxed text-muted-foreground">
             Rejoignez l&apos;Association Jeunes Actifs et engagez-vous auprès des
             étudiants de l&apos;Oriental. Ensemble, nous portons des projets
             socio-culturels et environnementaux qui transforment notre région.
@@ -28,11 +38,11 @@ export default function DevenirMembre() {
       </section>
 
       {/* Avantages + Missions */}
-      <section className="bg-muted px-6 py-16">
+      <section className="px-6 py-16 md:py-20">
         <div className="mx-auto grid max-w-4xl gap-8 md:grid-cols-2">
-          {/* Avantages */}
-          <div className="rounded-xl bg-background p-8 shadow-sm">
-            <h2 className="text-xl font-bold">Pourquoi rejoindre ?</h2>
+          {/* Avantages — pourquoi rejoindre */}
+          <div className="rounded-2xl border border-muted bg-background p-8 shadow-sm">
+            <h2 className="text-xl font-bold text-foreground">Pourquoi rejoindre ?</h2>
             <ul className="mt-6 space-y-4 text-sm text-muted-foreground">
               <li className="flex gap-3">
                 <span className="mt-0.5 text-primary">✓</span>
@@ -53,9 +63,9 @@ export default function DevenirMembre() {
             </ul>
           </div>
 
-          {/* Missions */}
-          <div className="rounded-xl bg-background p-8 shadow-sm">
-            <h2 className="text-xl font-bold">Missions possibles</h2>
+          {/* Missions — comment participer */}
+          <div className="rounded-2xl border border-muted bg-background p-8 shadow-sm">
+            <h2 className="text-xl font-bold text-foreground">Missions possibles</h2>
             <ul className="mt-6 space-y-4 text-sm text-muted-foreground">
               <li className="flex gap-3">
                 <span className="text-primary">🤝</span>
@@ -83,9 +93,9 @@ export default function DevenirMembre() {
       </section>
 
       {/* Formulaire d'adhésion */}
-      <section className="px-6 py-16">
-        <div className="mx-auto max-w-2xl">
-          <h2 className="text-center text-2xl font-bold">Formulaire d&apos;adhésion</h2>
+      <section className="bg-muted px-6 py-16 md:py-20">
+        <div className="mx-auto max-w-2xl rounded-2xl border border-muted bg-background p-8 shadow-sm md:p-10">
+          <h2 className="text-center text-2xl font-bold text-foreground md:text-3xl">Formulaire d&apos;adhésion</h2>
           <p className="mt-3 text-center text-sm text-muted-foreground">
             Remplissez ce formulaire pour soumettre votre demande d&apos;adhésion.
           </p>

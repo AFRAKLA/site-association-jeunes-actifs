@@ -62,7 +62,7 @@ export default function MultiImageUploader({
       <p className="mb-1.5 text-sm font-medium text-gray-700">{label}</p>
 
       {total === 0 ? (
-        <p className="mb-2 text-xs text-gray-400">Aucune photo pour le moment.</p>
+        <p className="mb-2 text-xs text-gray-500">Aucune photo pour le moment.</p>
       ) : (
         <div className="mb-3 grid grid-cols-3 gap-2 sm:grid-cols-4">
           {/* Photos existantes */}
@@ -130,7 +130,7 @@ export default function MultiImageUploader({
         onChange={handleFilesAdded}
         className="hidden"
       />
-      <p className="mt-1 text-xs text-gray-400">JPG, PNG ou WebP — 5 Mo par photo</p>
+      <p className="mt-1 text-xs text-gray-500">JPG, PNG ou WebP — 5 Mo par photo</p>
     </div>
   );
 }

@@ -21,7 +21,7 @@ export function validateImageFile(file: File): string | null {
   return null;
 }
 
-function safeExt(file: File): string {
+export function safeExt(file: File): string {
   const raw = file.name.split(".").pop()?.toLowerCase() ?? "";
   return SAFE_EXTS[raw] ?? "jpg";
 }

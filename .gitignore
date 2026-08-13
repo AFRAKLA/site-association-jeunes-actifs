@@ -33,6 +33,7 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 !.env.example
+!.env.test.example
 
 # vercel
 .vercel
@@ -40,3 +41,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Claude Code local artifacts (session state, not project config)
+.claude/
+
+# Skills tiers (npx skills add) — non versionnés par décision projet.
+# Les fichiers restent en local, simplement non inclus dans le repository.
+.agents/
+skills-lock.json
+docs/skills/

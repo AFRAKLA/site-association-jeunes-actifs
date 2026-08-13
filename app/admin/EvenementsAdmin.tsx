@@ -90,7 +90,7 @@ const defaultEditForm = {
 
 /* --- Composant principal --- */
 
-export default function EvenementsAdmin({ password }: { password: string }) {
+export default function EvenementsAdmin() {
   const [evenements, setEvenements] = useState<Evenement[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
@@ -130,11 +130,7 @@ export default function EvenementsAdmin({ password }: { password: string }) {
     async function load() {
       setLoading(true);
       try {
-        const res = await fetch("/api/admin/evenements/list", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ password }),
-        });
+        const res = await fetch("/api/admin/evenements/list", { method: "POST" });
         const data = await res.json();
         if (res.ok && !cancelled) setEvenements(data.evenements);
       } catch {
@@ -147,7 +143,6 @@ export default function EvenementsAdmin({ password }: { password: string }) {
     return () => {
       cancelled = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /* Réinitialiser le formulaire de création */
@@ -173,7 +168,6 @@ export default function EvenementsAdmin({ password }: { password: string }) {
 
     try {
       const fd = new FormData();
-      fd.append("password", password);
       fd.append("titre", formTitre);
       fd.append("categorie", formCategorie);
       fd.append("description", formDescription);
@@ -242,7 +236,6 @@ export default function EvenementsAdmin({ password }: { password: string }) {
 
     try {
       const fd = new FormData();
-      fd.append("password", password);
       fd.append("id", id);
       fd.append("titre", editForm.titre);
       fd.append("categorie", editForm.categorie);
@@ -295,7 +288,7 @@ export default function EvenementsAdmin({ password }: { password: string }) {
       const res = await fetch("/api/admin/evenements/delete", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password, id }),
+        body: JSON.stringify({ id }),
       });
       if (res.ok) setEvenements((prev) => prev.filter((e) => e.id !== id));
     } catch {
@@ -518,9 +511,11 @@ export default function EvenementsAdmin({ password }: { password: string }) {
 
       {/* Liste */}
       {loading ? (
-        <p className="mt-4 text-sm text-gray-400">Chargement…</p>
+        <p className="mt-4 text-sm text-gray-500">Chargement…</p>
       ) : evenements.length === 0 ? (
-        <p className="mt-4 text-sm text-gray-400">Aucun événement.</p>
+        <div className="mt-4 rounded-lg border border-dashed border-gray-200 bg-gray-50 px-4 py-10 text-center">
+          <p className="text-sm text-gray-500">Aucun événement pour l&apos;instant.</p>
+        </div>
       ) : (
         <div className="mt-4 space-y-3">
           {evenements.map((e) => {
@@ -568,24 +563,24 @@ export default function EvenementsAdmin({ password }: { password: string }) {
                       {e.categorie}
                     </p>
                     {e.slug && (
-                      <p className="mt-0.5 text-xs text-gray-400">
+                      <p className="mt-0.5 text-xs text-gray-500">
                         /evenements/{e.slug}
                       </p>
                     )}
                   </div>
-                  <div className="flex shrink-0 items-center gap-3">
+                  <div className="flex shrink-0 items-center gap-2">
                     <button
                       onClick={() =>
                         isEditing ? setEditingId(null) : openEdit(e)
                       }
-                      className="text-sm font-medium text-emerald-600 transition hover:text-emerald-700"
+                      className="rounded-md border border-gray-300 px-2.5 py-1 text-xs font-medium text-gray-700 transition hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
                     >
                       {isEditing ? "Annuler" : "Modifier"}
                     </button>
                     <button
                       onClick={() => handleDelete(e.id)}
                       disabled={deleting === e.id}
-                      className="text-sm font-medium text-red-600 transition hover:text-red-700 disabled:opacity-50"
+                      className="rounded-md border border-red-200 bg-red-50 px-2.5 py-1 text-xs font-medium text-red-700 transition hover:bg-red-100 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/50"
                     >
                       {deleting === e.id ? "…" : "Supprimer"}
                     </button>

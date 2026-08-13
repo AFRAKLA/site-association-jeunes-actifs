@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+import { requireAdmin } from "@/lib/require-admin";
 
 export async function PATCH(request: Request) {
   try {
-    const { password, id } = await request.json();
+    const auth = requireAdmin(request);
+    if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });
 
-    if (password !== process.env.ADMIN_PASSWORD) {
-      return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
-    }
+    const { id } = await request.json();
 
     if (!id) {
       return NextResponse.json({ error: "id est requis." }, { status: 400 });

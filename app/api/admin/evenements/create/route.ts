@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+import { requireAdmin } from "@/lib/require-admin";
 import {
   validateImageFile,
   uploadImage,
@@ -30,9 +31,11 @@ function generateBaseSlug(titre: string): string {
 
 export async function POST(request: Request) {
   try {
+    const auth = requireAdmin(request);
+    if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });
+
     const formData = await request.formData();
 
-    const password = formData.get("password") as string;
     const titre = (formData.get("titre") as string)?.trim();
     const categorie = formData.get("categorie") as string;
     const description = (formData.get("description") as string)?.trim();
@@ -52,10 +55,6 @@ export async function POST(request: Request) {
       const f = formData.get(`photo_${i}`) as File;
       if (f && f.size > 0) photoFiles.push(f);
       i++;
-    }
-
-    if (password !== process.env.ADMIN_PASSWORD) {
-      return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
     }
 
     if (!titre || !categorie || !description || !statut) {

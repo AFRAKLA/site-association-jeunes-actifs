@@ -61,7 +61,7 @@ export default function Footer() {
           <p className="mt-3 text-sm text-muted-foreground">
             Retrouvez-nous sur les réseaux sociaux.
           </p>
-          <div className="mt-4 flex gap-4">
+          <div className="mt-4 flex flex-wrap gap-4">
             <a
               href="https://www.instagram.com/asso_jeunesactifs/"
               target="_blank"

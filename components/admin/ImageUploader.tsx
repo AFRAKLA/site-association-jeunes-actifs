@@ -134,7 +134,7 @@ export default function ImageUploader({
         onChange={handleFileChange}
         className="hidden"
       />
-      <p className="mt-1 text-xs text-gray-400">JPG, PNG ou WebP — 5 Mo maximum</p>
+      <p className="mt-1 text-xs text-gray-500">JPG, PNG ou WebP — 5 Mo maximum</p>
     </div>
   );
 }

@@ -87,10 +87,20 @@ export default async function Evenements() {
 
       <main id="main-content">
       {/* En-tête */}
-      <section className="px-6 py-20 text-center">
-        <div className="mx-auto max-w-2xl">
-          <h1 className="text-4xl font-bold">Événements</h1>
-          <p className="mt-4 text-muted-foreground">
+      <section className="relative overflow-hidden bg-muted px-6 py-20 text-center md:py-24">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full bg-primary/10 blur-3xl"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-16 -bottom-24 h-72 w-72 rounded-full bg-primary/10 blur-3xl"
+        />
+        <div className="relative mx-auto max-w-2xl">
+          <h1 className="text-4xl font-extrabold tracking-tight text-foreground md:text-5xl">
+            Événements
+          </h1>
+          <p className="mt-5 text-base leading-relaxed text-muted-foreground">
             Retrouvez les événements organisés par l&apos;Association Jeunes
             Actifs dans la région de l&apos;Oriental : forums, ateliers,
             formations et soirées culturelles.
@@ -99,15 +109,15 @@ export default async function Evenements() {
       </section>
 
       {/* Événements à venir */}
-      <section className="bg-muted px-6 py-16">
+      <section className="px-6 py-16 md:py-20">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-2xl font-bold text-foreground">Événements à venir</h2>
+          <h2 className="text-2xl font-bold text-foreground md:text-3xl">Événements à venir</h2>
           {avenir.length === 0 ? (
             <p className="mt-4 text-sm text-muted-foreground">
               Aucun événement à venir pour le moment. Revenez bientôt&nbsp;!
             </p>
           ) : (
-            <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {avenir.map((e) => (
                 <EvenementCardItem key={e.id} e={e} avnr={true} />
               ))}
@@ -118,9 +128,9 @@ export default async function Evenements() {
 
       {/* Archives — événements passés */}
       {passesEtArchives.length > 0 && (
-        <section className="px-6 py-16">
+        <section className="bg-muted px-6 py-16 md:py-20">
           <div className="mx-auto max-w-5xl">
-            <h2 className="text-xl font-semibold text-muted-foreground">
+            <h2 className="text-xl font-semibold text-muted-foreground md:text-2xl">
               Événements passés
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
@@ -144,19 +154,19 @@ export default async function Evenements() {
       )}
 
       {/* Pourquoi participer */}
-      <section className="px-6 py-16">
+      <section className="px-6 py-16 md:py-20">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-3xl font-bold">Pourquoi participer&nbsp;?</h2>
+          <h2 className="text-2xl font-bold md:text-3xl">Pourquoi participer&nbsp;?</h2>
           <div className="mt-10 grid gap-6 sm:grid-cols-2">
-            <div className="rounded-xl border border-muted p-6 text-left">
-              <h3 className="font-semibold">Développer vos compétences</h3>
+            <div className="rounded-2xl border border-muted bg-background p-6 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+              <h3 className="font-semibold text-foreground">Développer vos compétences</h3>
               <p className="mt-2 text-sm text-muted-foreground">
                 Chaque événement est une occasion d&apos;apprendre :
                 communication, gestion de projet, travail en équipe.
               </p>
             </div>
-            <div className="rounded-xl border border-muted p-6 text-left">
-              <h3 className="font-semibold">
+            <div className="rounded-2xl border border-muted bg-background p-6 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+              <h3 className="font-semibold text-foreground">
                 Rencontrer d&apos;autres jeunes
               </h3>
               <p className="mt-2 text-sm text-muted-foreground">
@@ -164,15 +174,15 @@ export default async function Evenements() {
                 supérieur de tout l&apos;Oriental.
               </p>
             </div>
-            <div className="rounded-xl border border-muted p-6 text-left">
-              <h3 className="font-semibold">Avoir un impact réel</h3>
+            <div className="rounded-2xl border border-muted bg-background p-6 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+              <h3 className="font-semibold text-foreground">Avoir un impact réel</h3>
               <p className="mt-2 text-sm text-muted-foreground">
                 Vos actions contribuent directement au développement de la
                 région et au bien-être des communautés locales.
               </p>
             </div>
-            <div className="rounded-xl border border-muted p-6 text-left">
-              <h3 className="font-semibold">Valoriser votre parcours</h3>
+            <div className="rounded-2xl border border-muted bg-background p-6 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+              <h3 className="font-semibold text-foreground">Valoriser votre parcours</h3>
               <p className="mt-2 text-sm text-muted-foreground">
                 Les événements donnent lieu à des certificats de participation
                 valorisables dans votre CV.
@@ -183,9 +193,9 @@ export default async function Evenements() {
       </section>
 
       {/* Appel à l'action */}
-      <section className="bg-primary px-6 py-16 text-white">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-bold">
+      <section className="px-6 py-16 md:py-20">
+        <div className="mx-auto max-w-2xl rounded-3xl bg-primary px-8 py-12 text-center text-white shadow-lg md:px-14 md:py-16">
+          <h2 className="text-2xl font-bold md:text-3xl">
             Rejoignez nos prochains événements
           </h2>
           <p className="mt-4 text-green-100">
@@ -195,13 +205,13 @@ export default async function Evenements() {
           <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
               href="/devenir-membre"
-              className="rounded-full bg-white px-8 py-3 text-sm font-semibold text-primary shadow-md transition hover:bg-green-50"
+              className="rounded-lg bg-white px-8 py-3 text-sm font-semibold text-primary shadow-sm transition hover:bg-green-50"
             >
               Devenir membre
             </Link>
             <Link
               href="/contact"
-              className="rounded-full border border-white/30 px-8 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+              className="rounded-lg border border-white/40 px-8 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
             >
               Nous contacter
             </Link>
@@ -231,10 +241,16 @@ function EvenementCardItem({
     : (e.date_evenement ?? null);
 
   const card = (
-    <div className="flex h-full flex-col rounded-xl bg-background shadow-sm transition hover:shadow-md">
+    <div
+      className={`flex h-full flex-col rounded-2xl border-y border-r bg-background shadow-sm transition hover:-translate-y-1 hover:shadow-lg ${
+        avnr
+          ? "border-l-4 border-l-primary border-muted"
+          : "border-l-4 border-l-muted-foreground/30 border-muted"
+      }`}
+    >
       {/* Image */}
       {e.image_url ? (
-        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-t-xl">
+        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-t-2xl">
           <Image
             src={e.image_url}
             alt={e.titre}
@@ -244,7 +260,7 @@ function EvenementCardItem({
           />
         </div>
       ) : (
-        <div className="flex aspect-[4/3] items-center justify-center rounded-t-xl bg-primary/5">
+        <div className="flex aspect-[4/3] items-center justify-center rounded-t-2xl bg-primary/5">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-12 w-12 text-primary/30"

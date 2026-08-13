@@ -41,7 +41,7 @@ const categorieLabel: Record<Categorie, string> = {
 
 /* --- Composant principal --- */
 
-export default function ActualitesAdmin({ password }: { password: string }) {
+export default function ActualitesAdmin() {
   const [actualites, setActualites] = useState<Actualite[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
@@ -73,11 +73,7 @@ export default function ActualitesAdmin({ password }: { password: string }) {
     async function load() {
       setLoading(true);
       try {
-        const res = await fetch("/api/admin/actualites/list", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ password }),
-        });
+        const res = await fetch("/api/admin/actualites/list", { method: "POST" });
         const data = await res.json();
         if (res.ok && !cancelled) {
           setActualites(data.actualites);
@@ -90,7 +86,6 @@ export default function ActualitesAdmin({ password }: { password: string }) {
     }
     load();
     return () => { cancelled = true; };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function handleCreate(e: FormEvent) {
@@ -104,7 +99,6 @@ export default function ActualitesAdmin({ password }: { password: string }) {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          password,
           titre: formTitre,
           categorie: formCategorie,
           extrait: formExtrait,
@@ -144,7 +138,7 @@ export default function ActualitesAdmin({ password }: { password: string }) {
       const res = await fetch("/api/admin/actualites/delete", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password, id }),
+        body: JSON.stringify({ id }),
       });
       if (res.ok) {
         setActualites((prev) => prev.filter((a) => a.id !== id));
@@ -182,7 +176,6 @@ export default function ActualitesAdmin({ password }: { password: string }) {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          password,
           id,
           titre: editTitre,
           categorie: editCategorie,
@@ -336,26 +329,28 @@ export default function ActualitesAdmin({ password }: { password: string }) {
 
       {/* Tableau */}
       {loading ? (
-        <p className="mt-4 text-sm text-gray-400">Chargement…</p>
+        <p className="mt-4 text-sm text-gray-500">Chargement…</p>
       ) : actualites.length === 0 ? (
-        <p className="mt-4 text-sm text-gray-400">Aucune actualité.</p>
+        <div className="mt-4 rounded-lg border border-dashed border-gray-200 bg-gray-50 px-4 py-10 text-center">
+          <p className="text-sm text-gray-500">Aucune actualité pour l&apos;instant.</p>
+        </div>
       ) : (
         <div className="mt-4 overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                <th className="px-4 py-3">Statut</th>
-                <th className="px-4 py-3">Titre</th>
+                <th className="px-2 py-3 sm:px-4">Statut</th>
+                <th className="px-2 py-3 sm:px-4">Titre</th>
                 <th className="hidden px-4 py-3 sm:table-cell">Catégorie</th>
                 <th className="hidden px-4 py-3 md:table-cell">Date</th>
-                <th className="px-4 py-3 text-right">Actions</th>
+                <th className="px-2 py-3 text-right sm:px-4">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {actualites.map((a) => (
                 <Fragment key={a.id}>
                   <tr className="transition hover:bg-gray-50">
-                    <td className="px-4 py-3">
+                    <td className="px-2 py-3 sm:px-4">
                       {a.statut === "publie" ? (
                         <span className="inline-flex items-center rounded border border-green-200 bg-green-50 px-2 py-0.5 text-xs font-semibold text-green-700">
                           Publié
@@ -366,27 +361,27 @@ export default function ActualitesAdmin({ password }: { password: string }) {
                         </span>
                       )}
                     </td>
-                    <td className="px-4 py-3 font-medium text-gray-800">{a.titre}</td>
+                    <td className="px-2 py-3 font-medium text-gray-800 sm:px-4">{a.titre}</td>
                     <td className="hidden px-4 py-3 text-gray-500 sm:table-cell">
                       {categorieLabel[a.categorie as Categorie] ?? a.categorie}
                     </td>
-                    <td className="hidden whitespace-nowrap px-4 py-3 text-gray-400 md:table-cell">
+                    <td className="hidden whitespace-nowrap px-4 py-3 text-gray-500 md:table-cell">
                       {formatDate(a.created_at)}
                     </td>
-                    <td className="px-4 py-3 text-right">
-                      <div className="flex items-center justify-end gap-3">
+                    <td className="px-2 py-3 text-right sm:px-4">
+                      <div className="flex items-center justify-end gap-1.5">
                         <button
                           onClick={() =>
                             editingId === a.id ? closeEdit() : openEdit(a)
                           }
-                          className="text-sm font-medium text-emerald-600 transition hover:text-emerald-700"
+                          className="rounded-md border border-gray-300 px-2 py-1 text-xs font-medium text-gray-700 transition hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
                         >
                           {editingId === a.id ? "Annuler" : "Modifier"}
                         </button>
                         <button
                           onClick={() => handleDelete(a.id)}
                           disabled={deleting === a.id}
-                          className="text-sm font-medium text-red-600 transition hover:text-red-700 disabled:opacity-50"
+                          className="rounded-md border border-red-200 bg-red-50 px-2 py-1 text-xs font-medium text-red-700 transition hover:bg-red-100 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/50"
                         >
                           {deleting === a.id ? "…" : "Supprimer"}
                         </button>

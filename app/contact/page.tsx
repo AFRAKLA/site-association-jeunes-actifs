@@ -16,10 +16,20 @@ export default function Contact() {
 
       <main id="main-content">
       {/* Titre + introduction */}
-      <section className="px-6 py-20 text-center">
-        <div className="mx-auto max-w-2xl">
-          <h1 className="text-4xl font-bold">Contactez-nous</h1>
-          <p className="mt-4 text-muted-foreground">
+      <section className="relative overflow-hidden bg-muted px-6 py-20 text-center md:py-24">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full bg-primary/10 blur-3xl"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-16 -bottom-24 h-72 w-72 rounded-full bg-primary/10 blur-3xl"
+        />
+        <div className="relative mx-auto max-w-2xl">
+          <h1 className="text-4xl font-extrabold tracking-tight text-foreground md:text-5xl">
+            Contactez-nous
+          </h1>
+          <p className="mt-5 text-base leading-relaxed text-muted-foreground">
             Une question, une suggestion ou envie de rejoindre l&apos;Association
             Jeunes Actifs ? N&apos;hésitez pas à nous écrire.
           </p>
@@ -27,30 +37,56 @@ export default function Contact() {
       </section>
 
       {/* Coordonnées + Réseaux sociaux */}
-      <section className="bg-muted px-6 py-16">
+      <section className="px-6 py-16 md:py-20">
         <div className="mx-auto grid max-w-4xl gap-8 md:grid-cols-2">
           {/* Coordonnées */}
-          <div className="rounded-xl bg-background p-8 shadow-sm">
-            <h2 className="text-xl font-bold">Nos coordonnées</h2>
-            <div className="mt-6 space-y-4 text-sm text-muted-foreground">
-              <div>
-                <span className="font-semibold text-foreground">Adresse</span>
-                <p>Région de l&apos;Oriental, Maroc</p>
+          <div className="rounded-2xl border border-muted bg-background p-8 shadow-sm">
+            <h2 className="text-xl font-bold text-foreground">Nos coordonnées</h2>
+            <div className="mt-6 divide-y divide-muted text-sm">
+              <div className="flex gap-3 pb-4">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="mt-0.5 h-5 w-5 shrink-0 text-primary"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
+                  />
+                </svg>
+                <div>
+                  <p className="font-semibold text-foreground">Adresse</p>
+                  <p className="mt-0.5 text-muted-foreground">Région de l&apos;Oriental, Maroc</p>
+                </div>
               </div>
-              <div>
-                <span className="font-semibold text-foreground">Email</span>
-                <p><a href="mailto:contact@jeunes-actifs.ma" className="text-primary hover:underline">contact@jeunes-actifs.ma</a></p>
+              <div className="py-4">
+                <p className="font-semibold text-foreground">Email</p>
+                <p className="mt-0.5">
+                  <a href="mailto:contact@jeunes-actifs.ma" className="text-primary hover:underline">
+                    contact@jeunes-actifs.ma
+                  </a>
+                </p>
               </div>
-              <div>
-                <span className="font-semibold text-foreground">Téléphone</span>
-                <p>Disponible prochainement</p>
+              <div className="pt-4">
+                <p className="font-semibold text-foreground">Téléphone</p>
+                <p className="mt-0.5 italic text-muted-foreground">Disponible prochainement</p>
               </div>
             </div>
           </div>
 
           {/* Réseaux sociaux */}
-          <div className="rounded-xl bg-background p-8 shadow-sm">
-            <h2 className="text-xl font-bold">Suivez-nous</h2>
+          <div className="rounded-2xl border border-muted bg-background p-8 shadow-sm">
+            <h2 className="text-xl font-bold text-foreground">Suivez-nous</h2>
             <p className="mt-3 text-sm text-muted-foreground">
               Retrouvez-nous sur les réseaux sociaux pour suivre nos actualités
               et nos événements.
@@ -86,9 +122,9 @@ export default function Contact() {
       </section>
 
       {/* Formulaire de contact */}
-      <section className="px-6 py-16">
-        <div className="mx-auto max-w-2xl">
-          <h2 className="text-center text-2xl font-bold">Envoyez-nous un message</h2>
+      <section className="bg-muted px-6 py-16 md:py-20">
+        <div className="mx-auto max-w-2xl rounded-2xl border border-muted bg-background p-8 shadow-sm md:p-10">
+          <h2 className="text-center text-2xl font-bold text-foreground md:text-3xl">Envoyez-nous un message</h2>
           <ContactForm />
         </div>
       </section>

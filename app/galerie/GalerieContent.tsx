@@ -53,10 +53,20 @@ export default function GalerieContent({ photos }: { photos: Photo[] }) {
 
       <main id="main-content">
       {/* Titre + introduction */}
-      <section className="px-6 py-20 text-center">
-        <div className="mx-auto max-w-2xl">
-          <h1 className="text-4xl font-bold">Galerie</h1>
-          <p className="mt-4 text-muted-foreground">
+      <section className="relative overflow-hidden bg-muted px-6 py-20 text-center md:py-24">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full bg-primary/10 blur-3xl"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-16 -bottom-24 h-72 w-72 rounded-full bg-primary/10 blur-3xl"
+        />
+        <div className="relative mx-auto max-w-2xl">
+          <h1 className="text-4xl font-extrabold tracking-tight text-foreground md:text-5xl">
+            Galerie
+          </h1>
+          <p className="mt-5 text-base leading-relaxed text-muted-foreground">
             Découvrez les moments forts de nos actions et événements dans la
             région de l&apos;Oriental.
           </p>
@@ -64,16 +74,16 @@ export default function GalerieContent({ photos }: { photos: Photo[] }) {
       </section>
 
       {/* Filtres par catégorie */}
-      <section className="px-6 pb-4">
+      <section className="bg-muted px-6 pb-8">
         <div className="mx-auto flex max-w-5xl flex-wrap justify-center gap-3">
           {categories.map((cat) => (
             <button
               key={cat.valeur}
               onClick={() => setFiltre(cat.valeur)}
-              className={`rounded-full px-5 py-2 text-sm font-medium transition ${
+              className={`rounded-full px-5 py-2.5 text-sm font-medium transition ${
                 filtre === cat.valeur
                   ? "bg-primary text-white shadow-md"
-                  : "border border-muted bg-background text-muted-foreground hover:border-primary hover:text-primary"
+                  : "border border-muted bg-background text-muted-foreground shadow-sm hover:border-primary hover:text-primary"
               }`}
             >
               {cat.label}
@@ -83,9 +93,10 @@ export default function GalerieContent({ photos }: { photos: Photo[] }) {
       </section>
 
       {/* Grille de cartes */}
-      <section className="px-6 py-10">
+      <section className="px-6 py-14 md:py-16">
+        <h2 className="sr-only">Photos de la galerie</h2>
         {photos.length === 0 ? (
-          <div className="mx-auto max-w-2xl rounded-xl border border-primary/20 bg-primary/5 px-6 py-4 text-center">
+          <div className="mx-auto max-w-2xl rounded-2xl border border-primary/20 bg-primary/5 px-6 py-4 text-center">
             <p className="text-sm text-primary">
               📸 Les photos officielles de nos actions seront ajoutées prochainement.
               En attendant, découvrez nos activités sur notre page Instagram.
@@ -96,7 +107,7 @@ export default function GalerieContent({ photos }: { photos: Photo[] }) {
             {photosFiltrees.map((photo) => (
               <div
                 key={photo.id}
-                className="overflow-hidden rounded-xl border border-muted bg-background shadow-sm transition hover:shadow-md"
+                className="overflow-hidden rounded-2xl border border-muted bg-background shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
               >
                 {/* Zone image */}
                 <div className="relative aspect-video overflow-hidden">
@@ -137,7 +148,7 @@ export default function GalerieContent({ photos }: { photos: Photo[] }) {
       {/* Suivez-nous sur Instagram */}
       <section className="bg-muted px-6 py-16">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-2xl font-bold">Suivez-nous sur Instagram</h2>
+          <h2 className="text-2xl font-bold md:text-3xl">Suivez-nous sur Instagram</h2>
           <p className="mt-4 text-muted-foreground">
             Retrouvez nos photos, vidéos et stories en temps réel sur notre page Instagram.
             Suivez l&apos;actualité de l&apos;association au quotidien.
@@ -159,9 +170,9 @@ export default function GalerieContent({ photos }: { photos: Photo[] }) {
       </section>
 
       {/* Appel à l&apos;action */}
-      <section className="bg-primary px-6 py-16 text-white">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-bold">
+      <section className="px-6 py-16 md:py-20">
+        <div className="mx-auto max-w-2xl rounded-3xl bg-primary px-8 py-12 text-center text-white shadow-lg md:px-14 md:py-16">
+          <h2 className="text-2xl font-bold md:text-3xl">
             Envie de faire partie de l&apos;aventure ?
           </h2>
           <p className="mt-4 text-green-100">
@@ -171,13 +182,13 @@ export default function GalerieContent({ photos }: { photos: Photo[] }) {
           <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
               href="/devenir-membre"
-              className="rounded-full bg-white px-8 py-3 text-sm font-semibold text-primary shadow-md transition hover:bg-green-50"
+              className="rounded-lg bg-white px-8 py-3 text-sm font-semibold text-primary shadow-sm transition hover:bg-green-50"
             >
               Devenir membre
             </Link>
             <Link
               href="/contact"
-              className="rounded-full border border-white/30 px-8 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+              className="rounded-lg border border-white/40 px-8 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
             >
               Nous contacter
             </Link>

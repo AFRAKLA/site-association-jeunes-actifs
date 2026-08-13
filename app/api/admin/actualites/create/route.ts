@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+import { requireAdmin } from "@/lib/require-admin";
 
 const CATEGORIES = [
   "environnement",
@@ -11,12 +12,10 @@ const CATEGORIES = [
 
 export async function PATCH(request: Request) {
   try {
-    const { password, titre, categorie, extrait, contenu, statut } =
-      await request.json();
+    const auth = requireAdmin(request);
+    if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });
 
-    if (password !== process.env.ADMIN_PASSWORD) {
-      return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
-    }
+    const { titre, categorie, extrait, contenu, statut } = await request.json();
 
     if (!titre || !categorie || !extrait || !statut) {
       return NextResponse.json(

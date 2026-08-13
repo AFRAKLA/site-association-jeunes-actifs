@@ -1,21 +1,19 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { envoyerEmail } from "@/lib/email";
+import { buildAdhesionReplyHtml } from "@/lib/email-templates";
+import { requireAdmin } from "@/lib/require-admin";
 
 const ACTIONS_VALIDES = ["acceptee", "refusee", "info_demandee"] as const;
 type ActionAdhesion = (typeof ACTIONS_VALIDES)[number];
 
 export async function POST(request: Request) {
   try {
-    const { password, id, action, sujet, corps } = await request.json();
-
     // --- Authentification admin ---
-    if (password !== process.env.ADMIN_PASSWORD) {
-      return NextResponse.json(
-        { error: "Non autorisé." },
-        { status: 401 }
-      );
-    }
+    const auth = requireAdmin(request);
+    if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });
+
+    const { id, action, sujet, corps } = await request.json();
 
     // --- Validation des champs ---
     if (!id || !action || !sujet || !corps) {
@@ -91,16 +89,11 @@ export async function POST(request: Request) {
       : undefined;
 
     // --- Envoi de l'email via Resend ---
-    const htmlBody = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <p>Bonjour ${demande.nom},</p>
-        <div style="white-space: pre-wrap;">${corpsClean}</div>
-        <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 16px 0;" />
-        <p style="color: #6b7280; font-size: 0.875rem;">
-          Ceci est un message de l'Association Jeunes Actifs concernant votre demande d'adhésion.
-        </p>
-      </div>
-    `;
+    // nom provient du formulaire public : échappé dans buildAdhesionReplyHtml.
+    const htmlBody = buildAdhesionReplyHtml({
+      nom: demande.nom,
+      corps: corpsClean,
+    });
 
     let emailEnvoye = false;
     let emailId: string | null = null;

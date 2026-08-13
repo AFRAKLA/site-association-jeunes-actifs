@@ -1,17 +1,11 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+import { requireAdmin } from "@/lib/require-admin";
 
 export async function POST(request: Request) {
   try {
-    const { password } = await request.json();
-
-    // Vérification du mot de passe admin
-    if (password !== process.env.ADMIN_PASSWORD) {
-      return NextResponse.json(
-        { error: "Mot de passe incorrect." },
-        { status: 401 }
-      );
-    }
+    const auth = requireAdmin(request);
+    if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });
 
     // Lecture des deux tables en parallèle
     const admin = getSupabaseAdmin();

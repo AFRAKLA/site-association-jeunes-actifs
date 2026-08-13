@@ -95,7 +95,7 @@ export default async function EvenementDetail({ params }: Props) {
       <Header />
 
       <main id="main-content">
-      <article className="mx-auto max-w-3xl px-6 py-12">
+      <article className="mx-auto max-w-3xl px-6 py-14 md:py-16">
         {/* Retour */}
         <Link
           href="/evenements"
@@ -149,7 +149,7 @@ export default async function EvenementDetail({ params }: Props) {
         </div>
 
         {/* Titre */}
-        <h1 className="mt-4 text-3xl font-bold leading-tight">{evt.titre}</h1>
+        <h1 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight text-foreground md:text-4xl">{evt.titre}</h1>
 
         {/* Infos pratiques */}
         <div className="mt-4 flex flex-wrap gap-4 text-sm text-muted-foreground">
@@ -235,7 +235,7 @@ export default async function EvenementDetail({ params }: Props) {
               {evt.photos_supplementaires.map((src, i) => (
                 <div
                   key={i}
-                  className="relative aspect-[4/3] overflow-hidden rounded-xl"
+                  className="relative aspect-[4/3] overflow-hidden rounded-2xl"
                 >
                   <Image
                     src={src}

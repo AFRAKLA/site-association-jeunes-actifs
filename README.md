@@ -85,6 +85,7 @@ Voir `.env.example` pour la liste complète et commentée. Résumé :
 | `SUPABASE_ANON_KEY` | Clé publique Supabase (formulaires publics) |
 | `SUPABASE_SERVICE_ROLE_KEY` | Clé secrète Supabase (routes admin uniquement — ne jamais exposer côté client) |
 | `ADMIN_PASSWORD` | Mot de passe protégeant `/admin` et les routes `/api/admin/*` |
+| `ADMIN_SESSION_SECRET` | Secret de signature des sessions admin (cookie) et du rate limiting — à générer avec une valeur longue et aléatoire (ex. `openssl rand -hex 32`) |
 | `RESEND_API_KEY` | Clé API Resend |
 | `EMAIL_FROM` | Adresse d'expédition des emails (domaine vérifié) |
 | `EMAIL_FROM_NAME` | Nom affiché comme expéditeur (optionnel) |

@@ -1,10 +1,25 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import { checkRateLimitFailOpen } from "@/lib/rate-limit";
+import { getClientIp } from "@/lib/get-client-ip";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MAX_SUBMISSIONS = 5;
+const WINDOW_SECONDS = 10 * 60; // 10 minutes
 
 export async function POST(request: Request) {
   try {
+    // Fail-open journalisé : une panne du rate limiter ne doit pas rendre le
+    // formulaire de contact indisponible pour un visiteur légitime.
+    const ip = getClientIp(request);
+    const rateLimit = await checkRateLimitFailOpen("contact", ip, MAX_SUBMISSIONS, WINDOW_SECONDS);
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { error: "Trop de messages envoyés récemment. Réessayez plus tard." },
+        { status: 429, headers: { "Retry-After": String(rateLimit.retryAfterSeconds) } }
+      );
+    }
+
     const body = await request.json();
     const { nom, email, sujet, message, website } = body;
 

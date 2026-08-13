@@ -29,7 +29,7 @@ const CATEGORIES: { valeur: Categorie; label: string }[] = [
 
 /* --- Composant principal --- */
 
-export default function GalerieAdmin({ password }: { password: string }) {
+export default function GalerieAdmin() {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
@@ -63,11 +63,7 @@ export default function GalerieAdmin({ password }: { password: string }) {
     async function load() {
       setLoading(true);
       try {
-        const res = await fetch("/api/admin/galerie/list", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ password }),
-        });
+        const res = await fetch("/api/admin/galerie/list", { method: "POST" });
         const data = await res.json();
         if (res.ok && !cancelled) {
           setPhotos(data.photos);
@@ -80,7 +76,6 @@ export default function GalerieAdmin({ password }: { password: string }) {
     }
     load();
     return () => { cancelled = true; };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
@@ -106,7 +101,6 @@ export default function GalerieAdmin({ password }: { password: string }) {
 
     try {
       const fd = new FormData();
-      fd.append("password", password);
       fd.append("titre", formTitre);
       fd.append("categorie", formCategorie);
       fd.append("description", formDescription);
@@ -151,7 +145,7 @@ export default function GalerieAdmin({ password }: { password: string }) {
       const res = await fetch("/api/admin/galerie/delete", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password, id }),
+        body: JSON.stringify({ id }),
       });
       if (res.ok) {
         setPhotos((prev) => prev.filter((p) => p.id !== id));
@@ -187,7 +181,6 @@ export default function GalerieAdmin({ password }: { password: string }) {
 
     try {
       const fd = new FormData();
-      fd.append("password", password);
       fd.append("id", id);
       fd.append("titre", editTitre);
       fd.append("categorie", editCategorie);
@@ -349,9 +342,11 @@ export default function GalerieAdmin({ password }: { password: string }) {
 
       {/* Grille des photos */}
       {loading ? (
-        <p className="mt-4 text-sm text-gray-400">Chargement…</p>
+        <p className="mt-4 text-sm text-gray-500">Chargement…</p>
       ) : photos.length === 0 ? (
-        <p className="mt-4 text-sm text-gray-400">Aucune photo.</p>
+        <div className="mt-4 rounded-lg border border-dashed border-gray-200 bg-gray-50 px-4 py-10 text-center">
+          <p className="text-sm text-gray-500">Aucune photo pour l&apos;instant.</p>
+        </div>
       ) : (
         <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {photos.map((p) => (
@@ -379,21 +374,21 @@ export default function GalerieAdmin({ password }: { password: string }) {
                         Brouillon
                       </span>
                     )}
-                    <span className="text-xs text-gray-400">{formatDate(p.created_at)}</span>
+                    <span className="text-xs text-gray-500">{formatDate(p.created_at)}</span>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
                     <button
                       onClick={() =>
                         editingId === p.id ? closeEdit() : openEdit(p)
                       }
-                      className="text-xs font-medium text-emerald-600 transition hover:text-emerald-700"
+                      className="rounded-md border border-gray-300 px-2 py-0.5 text-xs font-medium text-gray-700 transition hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
                     >
                       {editingId === p.id ? "Annuler" : "Modifier"}
                     </button>
                     <button
                       onClick={() => handleDelete(p.id)}
                       disabled={deleting === p.id}
-                      className="text-xs font-medium text-red-600 transition hover:text-red-700 disabled:opacity-50"
+                      className="rounded-md border border-red-200 bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700 transition hover:bg-red-100 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/50"
                     >
                       {deleting === p.id ? "…" : "Supprimer"}
                     </button>

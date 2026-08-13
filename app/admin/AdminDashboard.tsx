@@ -126,7 +126,10 @@ function truncate(str: string, max: number) {
 
 export default function AdminDashboard() {
   /* Auth + données */
-  const [password, setPassword] = useState("");
+  // `loginPassword` n'existe que le temps de la saisie sur l'écran de
+  // connexion : envoyé une seule fois à /api/admin/login, jamais conservé
+  // ni renvoyé ensuite (voir Lot 5.1 — architecture par cookie de session).
+  const [loginPassword, setLoginPassword] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [adhesions, setAdhesions] = useState<Adhesion[]>([]);
@@ -149,6 +152,16 @@ export default function AdminDashboard() {
   /* Sidebar mobile */
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  /* Fermer le menu mobile avec la touche Échap */
+  useEffect(() => {
+    if (!sidebarOpen) return;
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") setSidebarOpen(false);
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [sidebarOpen]);
+
   /* Stats CMS */
   const [statsActualites, setStatsActualites] = useState({ publie: 0, brouillon: 0, total: 0 });
   const [statsEvenements, setStatsEvenements] = useState({ publie: 0, brouillon: 0, aVenir: 0, total: 0 });
@@ -165,21 +178,9 @@ export default function AdminDashboard() {
     async function loadStats() {
       try {
         const [resAct, resEvt, resGal] = await Promise.all([
-          fetch("/api/admin/actualites/list", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ password }),
-          }),
-          fetch("/api/admin/evenements/list", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ password }),
-          }),
-          fetch("/api/admin/galerie/list", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ password }),
-          }),
+          fetch("/api/admin/actualites/list", { method: "POST" }),
+          fetch("/api/admin/evenements/list", { method: "POST" }),
+          fetch("/api/admin/galerie/list", { method: "POST" }),
         ]);
 
         const [dataAct, dataEvt, dataGal] = await Promise.all([
@@ -219,7 +220,6 @@ export default function AdminDashboard() {
     }
 
     loadStats();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authenticated]);
 
   /* --- Handlers --- */
@@ -230,16 +230,27 @@ export default function AdminDashboard() {
     setError("");
 
     try {
-      const res = await fetch("/api/admin/data", {
+      const loginRes = await fetch("/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ password: loginPassword }),
       });
 
-      const data = await res.json();
+      const loginData = await loginRes.json();
+      // Le mot de passe n'est plus jamais conservé après cet appel, qu'il
+      // réussisse ou échoue.
+      setLoginPassword("");
 
-      if (!res.ok) {
-        setError(data.error || "Erreur d'authentification.");
+      if (!loginRes.ok) {
+        setError(loginData.error || "Erreur d'authentification.");
+        return;
+      }
+
+      const dataRes = await fetch("/api/admin/data", { method: "POST" });
+      const data = await dataRes.json();
+
+      if (!dataRes.ok) {
+        setError(data.error || "Erreur lors du chargement des données.");
         return;
       }
 
@@ -253,11 +264,16 @@ export default function AdminDashboard() {
     }
   }
 
-  function handleLogout() {
+  async function handleLogout() {
+    try {
+      await fetch("/api/admin/logout", { method: "POST" });
+    } catch {
+      /* silencieux — on réinitialise l'état local dans tous les cas */
+    }
     setAuthenticated(false);
     setMessages([]);
     setAdhesions([]);
-    setPassword("");
+    setLoginPassword("");
     setError("");
     setActiveTab("dashboard");
     setSidebarOpen(false);
@@ -269,7 +285,7 @@ export default function AdminDashboard() {
       const res = await fetch("/api/admin/update-message", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password, id, statut: nouveauStatut }),
+        body: JSON.stringify({ id, statut: nouveauStatut }),
       });
       if (!res.ok) return;
       setMessages((prev) =>
@@ -288,7 +304,7 @@ export default function AdminDashboard() {
       const res = await fetch("/api/admin/update-adhesion", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password, id, statut_adhesion: nouveauStatut }),
+        body: JSON.stringify({ id, statut_adhesion: nouveauStatut }),
       });
       if (!res.ok) return;
       setAdhesions((prev) =>
@@ -310,7 +326,7 @@ export default function AdminDashboard() {
       const res = await fetch("/api/admin/reply-message", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password, id, sujet, corps }),
+        body: JSON.stringify({ id, sujet, corps }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -335,7 +351,7 @@ export default function AdminDashboard() {
       const res = await fetch("/api/admin/reply-adhesion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password, id, action, sujet, corps }),
+        body: JSON.stringify({ id, action, sujet, corps }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -366,7 +382,7 @@ export default function AdminDashboard() {
             <h1 className="text-center text-lg font-semibold text-gray-800">
               Jeunes Actifs
             </h1>
-            <p className="mt-1 text-center text-sm text-emerald-600 font-medium">
+            <p className="mt-1 text-center text-sm text-emerald-700 font-medium">
               Administration
             </p>
 
@@ -382,8 +398,10 @@ export default function AdminDashboard() {
                   type="password"
                   id="admin-password"
                   required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  autoFocus
+                  autoComplete="current-password"
+                  value={loginPassword}
+                  onChange={(e) => setLoginPassword(e.target.value)}
                   placeholder="Entrez le mot de passe"
                   className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
                 />
@@ -396,7 +414,7 @@ export default function AdminDashboard() {
                 {loading ? "Connexion…" : "Se connecter"}
               </button>
               {error && (
-                <p className="text-center text-sm text-red-600">{error}</p>
+                <p role="alert" className="text-center text-sm text-red-600">{error}</p>
               )}
             </form>
           </div>
@@ -418,7 +436,9 @@ export default function AdminDashboard() {
     <div className="flex min-h-screen bg-gray-50">
       {/* ---- Overlay mobile ---- */}
       {sidebarOpen && (
-        <div
+        <button
+          type="button"
+          aria-label="Fermer le menu"
           className="fixed inset-0 z-20 bg-black/20 md:hidden"
           onClick={() => setSidebarOpen(false)}
         />
@@ -433,7 +453,7 @@ export default function AdminDashboard() {
         {/* Logo */}
         <div className="border-b border-gray-100 px-5 py-4">
           <h2 className="text-sm font-semibold text-gray-800">Jeunes Actifs</h2>
-          <p className="text-xs text-emerald-600 font-medium">Administration</p>
+          <p className="text-xs text-emerald-700 font-medium">Administration</p>
         </div>
 
         {/* Navigation */}
@@ -454,7 +474,7 @@ export default function AdminDashboard() {
                   setActiveTab(tab.key);
                   setSidebarOpen(false);
                 }}
-                className={`flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-sm transition ${
+                className={`flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 ${
                   isActive
                     ? "border-l-[3px] border-emerald-600 bg-emerald-50 font-medium text-emerald-700"
                     : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
@@ -486,7 +506,7 @@ export default function AdminDashboard() {
             href="/"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-emerald-600 transition hover:bg-emerald-50"
+            className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-emerald-700 transition hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
           >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
@@ -503,7 +523,7 @@ export default function AdminDashboard() {
             </div>
             <div className="min-w-0">
               <p className="truncate text-sm font-medium text-gray-800">Admin</p>
-              <p className="text-xs text-gray-400">Administrateur</p>
+              <p className="text-xs text-gray-500">Administrateur</p>
             </div>
           </div>
         </div>
@@ -516,7 +536,7 @@ export default function AdminDashboard() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="rounded-md p-1.5 text-gray-500 transition hover:bg-gray-100 md:hidden"
+              className="rounded-md p-1.5 text-gray-500 transition hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 md:hidden"
               aria-label="Ouvrir le menu"
             >
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
@@ -527,7 +547,7 @@ export default function AdminDashboard() {
           </div>
           <button
             onClick={handleLogout}
-            className="rounded-md border border-emerald-600 px-3 py-1.5 text-sm font-medium text-emerald-600 transition hover:bg-emerald-50"
+            className="rounded-md border border-emerald-600 px-3 py-1.5 text-sm font-medium text-emerald-700 transition hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
           >
             Déconnexion
           </button>
@@ -535,7 +555,7 @@ export default function AdminDashboard() {
 
         {/* Contenu */}
         <div className="flex-1 overflow-y-auto p-6">
-          <div className="mx-auto max-w-4xl">
+          <div className="mx-auto max-w-6xl">
             {activeTab === "dashboard" && (
               <DashboardView
                 messagesNonTraites={messagesNonTraites}
@@ -582,9 +602,9 @@ export default function AdminDashboard() {
               />
             )}
 
-            {activeTab === "actualites" && <ActualitesAdmin password={password} />}
-            {activeTab === "evenements" && <EvenementsAdmin password={password} />}
-            {activeTab === "galerie" && <GalerieAdmin password={password} />}
+            {activeTab === "actualites" && <ActualitesAdmin />}
+            {activeTab === "evenements" && <EvenementsAdmin />}
+            {activeTab === "galerie" && <GalerieAdmin />}
           </div>
         </div>
       </div>
@@ -617,8 +637,32 @@ function DashboardView({
   aTraiter: number;
   onNavigate: (tab: Tab) => void;
 }) {
+  const kpis: { label: string; value: number; tab: Tab }[] = [
+    { label: "Messages non traités", value: messagesNonTraites, tab: "messages" },
+    { label: "Adhésions en attente", value: adhesionsEnAttente, tab: "adhesions" },
+    { label: "Actualités publiées", value: statsActualites.publie, tab: "actualites" },
+    { label: "Événements à venir", value: statsEvenements.aVenir, tab: "evenements" },
+    { label: "Photos en galerie", value: statsGalerie.publie, tab: "galerie" },
+  ];
+
   return (
     <div className="space-y-8">
+      {/* ---- KPI ---- */}
+      <section>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+          {kpis.map((kpi) => (
+            <button
+              key={kpi.label}
+              onClick={() => onNavigate(kpi.tab)}
+              className="rounded-lg border border-gray-200 bg-white p-4 text-left shadow-sm transition hover:border-emerald-300 hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
+            >
+              <p className="text-2xl font-semibold text-gray-800">{kpi.value}</p>
+              <p className="mt-1 text-xs text-gray-500">{kpi.label}</p>
+            </button>
+          ))}
+        </div>
+      </section>
+
       {/* ---- À traiter ---- */}
       <section>
         <h3 className="text-base font-semibold text-gray-800">À traiter</h3>
@@ -635,7 +679,7 @@ function DashboardView({
             </div>
             <button
               onClick={() => onNavigate("messages")}
-              className="text-sm font-medium text-emerald-600 transition hover:text-emerald-700"
+              className="text-sm font-medium text-emerald-700 transition hover:text-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 rounded"
             >
               Traiter →
             </button>
@@ -653,7 +697,7 @@ function DashboardView({
             </div>
             <button
               onClick={() => onNavigate("adhesions")}
-              className="text-sm font-medium text-emerald-600 transition hover:text-emerald-700"
+              className="text-sm font-medium text-emerald-700 transition hover:text-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 rounded"
             >
               Examiner →
             </button>
@@ -670,7 +714,7 @@ function DashboardView({
                   {messagesNonTraitesList.map((m) => (
                     <div key={m.id} className="text-sm text-gray-700">
                       <span className="font-medium">{m.sujet}</span>
-                      <span className="text-gray-400"> — {m.nom}, {formatDate(m.created_at)}</span>
+                      <span className="text-gray-500"> — {m.nom}, {formatDate(m.created_at)}</span>
                     </div>
                   ))}
                 </div>
@@ -683,7 +727,7 @@ function DashboardView({
                   {adhesionsEnAttenteList.map((a) => (
                     <div key={a.id} className="text-sm text-gray-700">
                       <span className="font-medium">{a.nom}</span>
-                      <span className="text-gray-400"> — {a.email}, {formatDate(a.created_at)}</span>
+                      <span className="text-gray-500"> — {a.email}, {formatDate(a.created_at)}</span>
                     </div>
                   ))}
                 </div>
@@ -704,12 +748,12 @@ function DashboardView({
               </svg>
               <div>
                 <p className="text-sm font-medium text-gray-700">Actualités</p>
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-gray-500">
                   {statsActualites.publie} publié{statsActualites.publie !== 1 ? "es" : "e"} · {statsActualites.brouillon} brouillon{statsActualites.brouillon !== 1 ? "s" : ""}
                 </p>
               </div>
             </div>
-            <button onClick={() => onNavigate("actualites")} className="text-sm font-medium text-emerald-600 transition hover:text-emerald-700">
+            <button onClick={() => onNavigate("actualites")} className="text-sm font-medium text-emerald-700 transition hover:text-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 rounded">
               Gérer →
             </button>
           </div>
@@ -721,12 +765,12 @@ function DashboardView({
               </svg>
               <div>
                 <p className="text-sm font-medium text-gray-700">Événements</p>
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-gray-500">
                   {statsEvenements.publie} publié{statsEvenements.publie !== 1 ? "s" : ""} · {statsEvenements.brouillon} brouillon{statsEvenements.brouillon !== 1 ? "s" : ""} · {statsEvenements.aVenir} à venir
                 </p>
               </div>
             </div>
-            <button onClick={() => onNavigate("evenements")} className="text-sm font-medium text-emerald-600 transition hover:text-emerald-700">
+            <button onClick={() => onNavigate("evenements")} className="text-sm font-medium text-emerald-700 transition hover:text-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 rounded">
               Gérer →
             </button>
           </div>
@@ -738,12 +782,12 @@ function DashboardView({
               </svg>
               <div>
                 <p className="text-sm font-medium text-gray-700">Galerie</p>
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-gray-500">
                   {statsGalerie.publie} photo{statsGalerie.publie !== 1 ? "s" : ""} publié{statsGalerie.publie !== 1 ? "es" : "e"}
                 </p>
               </div>
             </div>
-            <button onClick={() => onNavigate("galerie")} className="text-sm font-medium text-emerald-600 transition hover:text-emerald-700">
+            <button onClick={() => onNavigate("galerie")} className="text-sm font-medium text-emerald-700 transition hover:text-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 rounded">
               Gérer →
             </button>
           </div>
@@ -795,7 +839,9 @@ function MessagesSection({
       </div>
 
       {messages.length === 0 ? (
-        <p className="mt-4 text-sm text-gray-400">Aucun message pour l&apos;instant.</p>
+        <div className="mt-4 rounded-lg border border-dashed border-gray-200 bg-gray-50 px-4 py-10 text-center">
+          <p className="text-sm text-gray-500">Aucun message pour l&apos;instant.</p>
+        </div>
       ) : (
         <div className="mt-4 space-y-3">
           {messages.map((m) => (
@@ -859,24 +905,24 @@ function MessageCard({
 
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {message.statut === "non_traite" && (
               <span className="inline-block h-2 w-2 rounded-full bg-emerald-500" />
             )}
             {statutMessageBadge(message.statut)}
-            <span className="text-xs text-gray-400">{formatDate(message.created_at)}</span>
+            <span className="text-xs text-gray-500">{formatDate(message.created_at)}</span>
           </div>
           <p className="mt-1.5 text-sm font-semibold text-gray-800">{message.sujet}</p>
           <p className="text-sm text-gray-500">
             {message.nom} · {message.email}
           </p>
         </div>
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 flex-wrap items-center gap-2">
           <button
             onClick={() => onReply(isReplying ? null : message.id)}
-            className="rounded-md border border-blue-600 px-3 py-1.5 text-xs font-semibold text-blue-600 transition hover:bg-blue-50"
+            className="rounded-md border border-blue-600 px-3 py-1.5 text-xs font-semibold text-blue-600 transition hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50"
           >
             {isReplying ? "Annuler" : "Répondre"}
           </button>
@@ -885,9 +931,9 @@ function MessageCard({
               onToggleStatut(message.id, message.statut === "traite" ? "non_traite" : "traite")
             }
             disabled={updating === message.id}
-            className={`shrink-0 rounded-md px-3 py-1.5 text-xs font-semibold transition disabled:opacity-50 ${
+            className={`shrink-0 rounded-md px-3 py-1.5 text-xs font-semibold transition disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 ${
               message.statut === "traite"
-                ? "border border-emerald-600 text-emerald-600 hover:bg-emerald-50"
+                ? "border border-emerald-700 text-emerald-700 hover:bg-emerald-50"
                 : "bg-emerald-600 text-white hover:bg-emerald-700"
             }`}
           >
@@ -909,7 +955,7 @@ function MessageCard({
             </p>
             <button
               onClick={() => onExpand(null)}
-              className="mt-1 text-xs font-medium text-emerald-600 hover:underline"
+              className="mt-1 text-xs font-medium text-emerald-700 hover:underline"
             >
               Voir moins
             </button>
@@ -922,7 +968,7 @@ function MessageCard({
             {message.message.length > 150 && (
               <button
                 onClick={() => onExpand(message.id)}
-                className="mt-1 text-xs font-medium text-emerald-600 hover:underline"
+                className="mt-1 text-xs font-medium text-emerald-700 hover:underline"
               >
                 Voir tout le message
               </button>
@@ -1035,7 +1081,9 @@ function AdhesionsSection({
       </div>
 
       {adhesions.length === 0 ? (
-        <p className="mt-4 text-sm text-gray-400">Aucune demande pour l&apos;instant.</p>
+        <div className="mt-4 rounded-lg border border-dashed border-gray-200 bg-gray-50 px-4 py-10 text-center">
+          <p className="text-sm text-gray-500">Aucune demande pour l&apos;instant.</p>
+        </div>
       ) : (
         <div className="mt-4 space-y-3">
           {adhesions.map((a) => (
@@ -1074,7 +1122,7 @@ const REPLY_ACTION_LABELS: Record<ReplyAction, string> = {
 };
 
 const REPLY_ACTION_STYLES: Record<ReplyAction, string> = {
-  acceptee: "border border-emerald-600 text-emerald-600 hover:bg-emerald-50",
+  acceptee: "border border-emerald-700 text-emerald-700 hover:bg-emerald-50",
   refusee: "border border-red-500 text-red-600 hover:bg-red-50",
   info_demandee: "border border-amber-500 text-amber-600 hover:bg-amber-50",
 };
@@ -1145,11 +1193,11 @@ function AdhesionCard({
 
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {statutAdhesionBadge(adhesion.statut_adhesion)}
-            <span className="text-xs text-gray-400">{formatDate(adhesion.created_at)}</span>
+            <span className="text-xs text-gray-500">{formatDate(adhesion.created_at)}</span>
           </div>
           <p className="mt-1.5 text-sm font-semibold text-gray-800">{adhesion.nom}</p>
           <div className="mt-0.5 flex flex-wrap gap-x-4 text-sm text-gray-500">
@@ -1162,7 +1210,7 @@ function AdhesionCard({
           <button
             onClick={() => onToggleStatut(adhesion.id, "en_attente")}
             disabled={updating === adhesion.id || adhesion.statut_adhesion === "en_attente"}
-            className={`rounded-md px-2.5 py-1 text-xs font-semibold transition disabled:opacity-40 ${
+            className={`rounded-md px-2.5 py-1 text-xs font-semibold transition disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 ${
               adhesion.statut_adhesion === "en_attente"
                 ? "bg-emerald-600 text-white"
                 : "border border-gray-300 text-gray-600 hover:bg-gray-50"
@@ -1174,7 +1222,7 @@ function AdhesionCard({
       </div>
 
       <div className="mt-2 text-sm text-gray-600">
-        <span className="text-gray-400">Intérêt : </span>{adhesion.interet}
+        <span className="text-gray-500">Intérêt : </span>{adhesion.interet}
       </div>
 
       {/* Motivation */}
@@ -1186,7 +1234,7 @@ function AdhesionCard({
             </p>
             <button
               onClick={() => onExpand(null)}
-              className="mt-1 text-xs font-medium text-emerald-600 hover:underline"
+              className="mt-1 text-xs font-medium text-emerald-700 hover:underline"
             >
               Voir moins
             </button>
@@ -1199,7 +1247,7 @@ function AdhesionCard({
             {adhesion.motivation.length > 150 && (
               <button
                 onClick={() => onExpand(adhesion.id)}
-                className="mt-1 text-xs font-medium text-emerald-600 hover:underline"
+                className="mt-1 text-xs font-medium text-emerald-700 hover:underline"
               >
                 Voir toute la motivation
               </button>
@@ -1215,7 +1263,7 @@ function AdhesionCard({
             <button
               key={action}
               onClick={() => handleActionClick(action)}
-              className={`rounded-md px-3 py-1.5 text-xs font-semibold transition ${REPLY_ACTION_STYLES[action]}`}
+              className={`rounded-md px-3 py-1.5 text-xs font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 ${REPLY_ACTION_STYLES[action]}`}
             >
               {REPLY_ACTION_LABELS[action]}
             </button>

@@ -1,18 +1,16 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { envoyerEmail } from "@/lib/email";
+import { buildContactReplyHtml } from "@/lib/email-templates";
+import { requireAdmin } from "@/lib/require-admin";
 
 export async function POST(request: Request) {
   try {
-    const { password, id, sujet, corps } = await request.json();
-
     // --- Authentification admin ---
-    if (password !== process.env.ADMIN_PASSWORD) {
-      return NextResponse.json(
-        { error: "Non autorisé." },
-        { status: 401 }
-      );
-    }
+    const auth = requireAdmin(request);
+    if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });
+
+    const { id, sujet, corps } = await request.json();
 
     // --- Validation des champs ---
     if (!id || !sujet || !corps) {
@@ -76,18 +74,12 @@ export async function POST(request: Request) {
       : undefined;
 
     // --- Envoi de l'email via Resend ---
-    const htmlBody = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <p>Bonjour ${message.nom},</p>
-        <p>Vous avez reçu une réponse à votre message <strong>"${message.sujet}"</strong>.</p>
-        <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 16px 0;" />
-        <div style="white-space: pre-wrap;">${corpsClean}</div>
-        <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 16px 0;" />
-        <p style="color: #6b7280; font-size: 0.875rem;">
-          Ceci est une réponse de l'Association Jeunes Actifs suite à votre message de contact.
-        </p>
-      </div>
-    `;
+    // nom/sujet proviennent du formulaire public : échappés dans buildContactReplyHtml.
+    const htmlBody = buildContactReplyHtml({
+      nom: message.nom,
+      sujet: message.sujet,
+      corps: corpsClean,
+    });
 
     let emailEnvoye = false;
     let emailId: string | null = null;

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+import { requireAdmin } from "@/lib/require-admin";
 import { validateImageFile, uploadImage, deleteStorageFile } from "@/lib/storage-upload";
 
 const BUCKET = "galerie";
@@ -8,19 +9,17 @@ const CATEGORIES = ["environnement", "culture", "solidarite", "formations"];
 
 export async function PATCH(request: Request) {
   try {
+    const auth = requireAdmin(request);
+    if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });
+
     const formData = await request.formData();
 
-    const password = formData.get("password") as string;
     const id = formData.get("id") as string;
     const titre = (formData.get("titre") as string)?.trim();
     const categorie = formData.get("categorie") as string;
     const description = (formData.get("description") as string)?.trim();
     const statut = formData.get("statut") as string;
     const file = formData.get("file") as File | null;
-
-    if (password !== process.env.ADMIN_PASSWORD) {
-      return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
-    }
 
     if (!id) {
       return NextResponse.json({ error: "id est requis." }, { status: 400 });

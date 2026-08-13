@@ -68,10 +68,20 @@ export default function ActualitesContent({
 
       <main id="main-content">
       {/* Titre + introduction */}
-      <section className="px-6 py-20 text-center">
-        <div className="mx-auto max-w-2xl">
-          <h1 className="text-4xl font-bold">Actualités</h1>
-          <p className="mt-4 text-muted-foreground">
+      <section className="relative overflow-hidden bg-muted px-6 py-20 text-center md:py-24">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full bg-primary/10 blur-3xl"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-16 -bottom-24 h-72 w-72 rounded-full bg-primary/10 blur-3xl"
+        />
+        <div className="relative mx-auto max-w-2xl">
+          <h1 className="text-4xl font-extrabold tracking-tight text-foreground md:text-5xl">
+            Actualités
+          </h1>
+          <p className="mt-5 text-base leading-relaxed text-muted-foreground">
             Suivez les dernières nouvelles de l&apos;Association Jeunes Actifs :
             projets réalisés, événements à venir, partenariats et actions sur le
             terrain dans la région de l&apos;Oriental.
@@ -80,16 +90,16 @@ export default function ActualitesContent({
       </section>
 
       {/* Filtres par catégorie */}
-      <section className="px-6 pb-4">
+      <section className="bg-muted px-6 pb-8">
         <div className="mx-auto flex max-w-5xl flex-wrap justify-center gap-3">
           {categories.map((cat) => (
             <button
               key={cat.valeur}
               onClick={() => setFiltre(cat.valeur)}
-              className={`rounded-full px-5 py-2 text-sm font-medium transition ${
+              className={`rounded-full px-5 py-2.5 text-sm font-medium transition ${
                 filtre === cat.valeur
                   ? "bg-primary text-white shadow-md"
-                  : "border border-muted bg-background text-muted-foreground hover:border-primary hover:text-primary"
+                  : "border border-muted bg-background text-muted-foreground shadow-sm hover:border-primary hover:text-primary"
               }`}
             >
               {cat.label}
@@ -99,7 +109,8 @@ export default function ActualitesContent({
       </section>
 
       {/* Grille d'actualités */}
-      <section className="px-6 py-10">
+      <section className="px-6 py-14 md:py-16">
+        <h2 className="sr-only">Dernières actualités</h2>
         {actualites.length === 0 ? (
           <p className="text-center text-sm text-muted-foreground">
             Aucune actualité pour le moment. Revenez bientôt !
@@ -109,7 +120,7 @@ export default function ActualitesContent({
             {actualitesFiltrees.map((article) => (
               <div
                 key={article.id}
-                className="rounded-xl border border-muted bg-background p-6 text-left shadow-sm transition hover:shadow-md"
+                className="rounded-2xl border border-muted bg-background p-6 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
               >
                 <div className="flex flex-wrap items-center gap-3">
                   <span className="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-white">
@@ -136,9 +147,9 @@ export default function ActualitesContent({
       </section>
 
       {/* Appel à l&apos;action */}
-      <section className="bg-primary px-6 py-16 text-white">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-bold">
+      <section className="px-6 py-16 md:py-20">
+        <div className="mx-auto max-w-2xl rounded-3xl bg-primary px-8 py-12 text-center text-white shadow-lg md:px-14 md:py-16">
+          <h2 className="text-2xl font-bold md:text-3xl">
             Vous souhaitez suivre nos actions ?
           </h2>
           <p className="mt-4 text-green-100">
@@ -148,13 +159,13 @@ export default function ActualitesContent({
           <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
               href="/devenir-membre"
-              className="rounded-full bg-white px-8 py-3 text-sm font-semibold text-primary shadow-md transition hover:bg-green-50"
+              className="rounded-lg bg-white px-8 py-3 text-sm font-semibold text-primary shadow-sm transition hover:bg-green-50"
             >
               Devenir membre
             </Link>
             <Link
               href="/contact"
-              className="rounded-full border border-white/30 px-8 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+              className="rounded-lg border border-white/40 px-8 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
             >
               Nous contacter
             </Link>

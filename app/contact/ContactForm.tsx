@@ -44,9 +44,9 @@ export default function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+    <form onSubmit={handleSubmit} className="mt-8 space-y-6">
       <div>
-        <label htmlFor="nom" className="mb-1 block text-sm font-medium">
+        <label htmlFor="nom" className="mb-2 block text-sm font-semibold text-foreground">
           Nom
         </label>
         <input
@@ -56,11 +56,11 @@ export default function ContactForm() {
           placeholder="Votre nom complet"
           value={formData.nom}
           onChange={(e) => handleChange("nom", e.target.value)}
-          className="w-full rounded-lg border border-muted bg-background px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-1 focus:ring-primary"
+          className="w-full rounded-xl border border-muted bg-background px-4 py-3.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
         />
       </div>
       <div>
-        <label htmlFor="email" className="mb-1 block text-sm font-medium">
+        <label htmlFor="email" className="mb-2 block text-sm font-semibold text-foreground">
           Email
         </label>
         <input
@@ -70,11 +70,11 @@ export default function ContactForm() {
           placeholder="votre@email.com"
           value={formData.email}
           onChange={(e) => handleChange("email", e.target.value)}
-          className="w-full rounded-lg border border-muted bg-background px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-1 focus:ring-primary"
+          className="w-full rounded-xl border border-muted bg-background px-4 py-3.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
         />
       </div>
       <div>
-        <label htmlFor="sujet" className="mb-1 block text-sm font-medium">
+        <label htmlFor="sujet" className="mb-2 block text-sm font-semibold text-foreground">
           Sujet
         </label>
         <input
@@ -84,11 +84,11 @@ export default function ContactForm() {
           placeholder="Sujet de votre message"
           value={formData.sujet}
           onChange={(e) => handleChange("sujet", e.target.value)}
-          className="w-full rounded-lg border border-muted bg-background px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-1 focus:ring-primary"
+          className="w-full rounded-xl border border-muted bg-background px-4 py-3.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
         />
       </div>
       <div>
-        <label htmlFor="message" className="mb-1 block text-sm font-medium">
+        <label htmlFor="message" className="mb-2 block text-sm font-semibold text-foreground">
           Message
         </label>
         <textarea
@@ -98,7 +98,7 @@ export default function ContactForm() {
           placeholder="Écrivez votre message ici..."
           value={formData.message}
           onChange={(e) => handleChange("message", e.target.value)}
-          className="w-full resize-y rounded-lg border border-muted bg-background px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-1 focus:ring-primary"
+          className="w-full resize-y rounded-xl border border-muted bg-background px-4 py-3.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
         />
       </div>
       {/* Honeypot anti-spam — champ caché, ne doit jamais être rempli par un humain */}
@@ -117,17 +117,17 @@ export default function ContactForm() {
       <button
         type="submit"
         disabled={status === "loading"}
-        className="w-full rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-primary-dark disabled:opacity-50"
+        className="w-full rounded-xl bg-primary px-6 py-3.5 text-sm font-semibold text-white shadow-md transition hover:bg-primary-dark hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
       >
         {status === "loading" ? "Envoi en cours..." : "Envoyer"}
       </button>
       {status === "success" && (
-        <p className="text-center text-sm font-medium text-green-600">
+        <p className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-center text-sm font-medium text-green-700">
           Votre message a bien été envoyé. Merci !
         </p>
       )}
       {status === "error" && (
-        <p className="text-center text-sm font-medium text-red-600">
+        <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-center text-sm font-medium text-red-700">
           Une erreur est survenue. Veuillez réessayer.
         </p>
       )}

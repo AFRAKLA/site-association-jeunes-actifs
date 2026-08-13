@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+import { requireAdmin } from "@/lib/require-admin";
 import {
   validateImageFile,
   uploadImage,
@@ -30,14 +31,12 @@ function generateBaseSlug(titre: string): string {
 
 export async function PATCH(request: Request) {
   try {
+    const auth = requireAdmin(request);
+    if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });
+
     const formData = await request.formData();
 
-    const password = formData.get("password") as string;
     const id = formData.get("id") as string;
-
-    if (password !== process.env.ADMIN_PASSWORD) {
-      return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
-    }
 
     if (!id) {
       return NextResponse.json(
