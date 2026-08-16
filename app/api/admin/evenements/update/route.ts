@@ -108,6 +108,23 @@ export async function PATCH(request: Request) {
     const videoUrl = (formData.get("video_url") as string)?.trim();
     if (formData.has("video_url")) updates.video_url = videoUrl || null;
 
+    // Traductions optionnelles EN/AR — une valeur vide efface la traduction
+    // existante (NULL), jamais requises, jamais bloquantes.
+    const orNull = (v: FormDataEntryValue | null) =>
+      typeof v === "string" && v.trim() !== "" ? v.trim() : null;
+    for (const field of [
+      "titre_en",
+      "titre_ar",
+      "lieu_en",
+      "lieu_ar",
+      "description_en",
+      "description_ar",
+      "description_complete_en",
+      "description_complete_ar",
+    ] as const) {
+      if (formData.has(field)) updates[field] = orNull(formData.get(field));
+    }
+
     // --- Slug regeneration ---
     if (formData.get("regenerate_slug") === "true" && titre) {
       const baseSlug = generateBaseSlug(titre);

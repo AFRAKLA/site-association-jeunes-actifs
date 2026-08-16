@@ -57,7 +57,7 @@ export default function ImageUploader({
 
   return (
     <div>
-      <p className="mb-1.5 text-sm font-medium text-gray-700">{label}</p>
+      <p className="mb-1.5 text-sm font-medium text-foreground/80">{label}</p>
 
       {showCurrent && (
         <div className="flex items-start gap-3">
@@ -65,20 +65,20 @@ export default function ImageUploader({
           <img
             src={currentUrl!}
             alt="Image actuelle"
-            className="h-24 w-auto rounded-md border border-gray-200 object-contain"
+            className="h-24 w-auto rounded-lg border border-admin-champagne-soft object-contain"
           />
           <div className="flex flex-col gap-2">
             <button
               type="button"
               onClick={() => inputRef.current?.click()}
-              className="rounded border border-gray-300 bg-white px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50"
+              className="rounded-lg border border-admin-forest/20 bg-white px-3 py-1 text-xs font-medium text-admin-forest transition-colors duration-150 ease-out-strong motion-safe:active:scale-[0.97] hover:bg-admin-forest/5"
             >
               Remplacer
             </button>
             <button
               type="button"
               onClick={removeCurrent}
-              className="rounded border border-red-200 bg-red-50 px-3 py-1 text-xs font-medium text-red-700 hover:bg-red-100"
+              className="rounded-lg border border-red-200 bg-red-50 px-3 py-1 text-xs font-medium text-red-700 transition-colors duration-150 ease-out-strong motion-safe:active:scale-[0.97] hover:bg-red-100"
             >
               Supprimer
             </button>
@@ -92,12 +92,12 @@ export default function ImageUploader({
           <img
             src={preview!}
             alt="Aperçu"
-            className="h-24 w-auto rounded-md border border-gray-200 object-contain"
+            className="h-24 w-auto rounded-lg border border-admin-champagne-soft object-contain"
           />
           <button
             type="button"
             onClick={cancelNew}
-            className="rounded border border-gray-300 bg-white px-3 py-1 text-xs font-medium text-gray-500 hover:bg-gray-50"
+            className="rounded-lg border border-admin-champagne-soft bg-white px-3 py-1 text-xs font-medium text-muted-foreground transition-colors duration-150 ease-out-strong motion-safe:active:scale-[0.97] hover:bg-admin-ivory-warm"
           >
             Annuler la sélection
           </button>
@@ -108,7 +108,7 @@ export default function ImageUploader({
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
-          className="flex items-center gap-2 rounded-md border border-dashed border-gray-300 bg-gray-50 px-4 py-3 text-sm text-gray-500 hover:border-gray-400 hover:bg-gray-100"
+          className="flex items-center gap-2 rounded-lg border border-dashed border-admin-champagne-soft bg-admin-ivory-warm/60 px-4 py-3 text-sm text-muted-foreground transition-colors duration-150 hover:border-primary/40 hover:bg-admin-ivory-warm"
         >
           <svg
             className="h-4 w-4"
@@ -134,7 +134,7 @@ export default function ImageUploader({
         onChange={handleFileChange}
         className="hidden"
       />
-      <p className="mt-1 text-xs text-gray-500">JPG, PNG ou WebP — 5 Mo maximum</p>
+      <p className="mt-1 text-xs text-muted-foreground">JPG, PNG ou WebP — 5 Mo maximum</p>
     </div>
   );
 }

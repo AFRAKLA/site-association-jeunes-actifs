@@ -8,6 +8,23 @@
   --primary-dark: #1B5E20;
   --muted: #F5F5F5;
   --muted-foreground: #626d7a;
+
+  /* Admin — concept "Canopée" (ivoire chaud / vert forêt / champagne) */
+  --admin-forest: #14301F;
+  --admin-forest-light: #1F4A30;
+  --admin-ink: #16211B;
+  --admin-ivory: #FAF9F4;
+  --admin-ivory-warm: #F4F1E8;
+  --admin-champagne: #C9A86A;
+  --admin-champagne-soft: #E8DEC7;
+
+  /* Surfaces de page — distinctes de "ivory"/"ivory-warm" (voir plus bas) :
+     ivory reste une couleur FIXE (texte/bouton clairs posés sur une bande
+     forêt, dans les deux thèmes) ; surface/surface-muted sont les fonds de
+     PAGE qui doivent réellement s'inverser en mode sombre. Mêmes valeurs
+     que ivory/ivory-warm en clair pour zéro changement visuel ici. */
+  --surface: #FAF9F4;
+  --surface-muted: #F4F1E8;
 }
 
 @theme inline {
@@ -18,19 +35,80 @@
   --color-primary-dark: var(--primary-dark);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
+  --color-admin-forest: var(--admin-forest);
+  --color-admin-forest-light: var(--admin-forest-light);
+  --color-admin-ink: var(--admin-ink);
+  --color-admin-ivory: var(--admin-ivory);
+  --color-admin-ivory-warm: var(--admin-ivory-warm);
+  --color-admin-champagne: var(--admin-champagne);
+  --color-admin-champagne-soft: var(--admin-champagne-soft);
+  /* Mêmes tokens, noms génériques — utilisés côté site public (Header,
+     Footer, Accueil) où "admin-*" n'aurait pas de sens sémantique. Une
+     seule source de vérité : les valeurs restent définies une fois
+     au-dessus, ces entrées ne font qu'exposer des utilitaires Tailwind
+     supplémentaires (bg-forest, text-ink, bg-ivory-warm, text-champagne…). */
+  --color-forest: var(--admin-forest);
+  --color-forest-light: var(--admin-forest-light);
+  --color-ink: var(--admin-ink);
+  --color-ivory: var(--admin-ivory);
+  --color-ivory-warm: var(--admin-ivory-warm);
+  --color-champagne: var(--admin-champagne);
+  --color-champagne-soft: var(--admin-champagne-soft);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  /* Vocabulaire de mouvement — courbes fortes, pas les easings CSS natifs.
+     Déclarées ici (namespace --ease-*) pour exister comme utilitaires
+     Tailwind réels : ease-out-strong, ease-in-out-strong. Remplace les
+     cubic-bezier arbitraires auparavant répétés dans chaque composant. */
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
+/* ------------------------------------------------------------------
+   Canopée nocturne — mode sombre. Pas une inversion mécanique noir/gris :
+   encre végétale très profonde plutôt que #000, mêmes forêt/ivoire/
+   champagne que le jour (déjà conçus pour se lire l'un sur l'autre, voir
+   toutes les bandes bg-forest existantes), seules les surfaces de PAGE et
+   les teintes de texte s'inversent. Toutes les paires ont été vérifiées
+   par calcul de contraste WCAG (formule de luminance relative) :
+   bg/foreground 15.9:1, bg/muted-foreground 8.4:1, surface-muted/ink
+   14.5:1, forest/champagne (inchangé) 6.3:1, bg/champagne 8.1:1,
+   bordures champagne-soft ≥ 3:1 sur toutes les surfaces sombres. */
+:root[data-theme="dark"] {
+  --background: #0E1710;
+  --foreground: #F2EFE6;
+  --muted-foreground: #A6B3A8;
+  --admin-ink: #F2EFE6;
+  --surface: #17281D;
+  --surface-muted: #12211A;
+  --admin-champagne-soft: #647A5F;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+/* Filet de sécurité sans JavaScript : tant que le script d'initialisation
+   (voir ThemeScript) n'a pas posé data-theme, ou si JS est désactivé, le
+   thème système est déjà respecté nativement via cette media query — avec
+   exactement les mêmes valeurs que [data-theme="dark"] ci-dessus. */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --primary: #66BB6A;
-    --primary-light: #81C784;
-    --primary-dark: #4CAF50;
-    --muted: #1a1a1a;
-    --muted-foreground: #9ca3af;
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    --background: #0E1710;
+    --foreground: #F2EFE6;
+    --muted-foreground: #A6B3A8;
+    --admin-ink: #F2EFE6;
+    --surface: #17281D;
+    --surface-muted: #12211A;
+    --admin-champagne-soft: #647A5F;
+    color-scheme: dark;
   }
 }
 
@@ -42,4 +120,83 @@ body {
 
 html {
   scroll-behavior: smooth;
+}
+
+/* Admin — changement de section : fade + translate subtil, jamais sur les
+   actions clavier ni les interactions répétées. */
+@keyframes admin-section-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.admin-section-enter {
+  animation: admin-section-in 220ms var(--ease-out-strong);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-section-enter {
+    animation: none;
+  }
+}
+
+/* Admin — révélation des surfaces qui apparaissent/disparaissent au clic
+   (formulaires de réponse/édition inline, messages de succès/erreur) :
+   sans ça elles apparaissaient/disparaissaient sans transition ("téléportées").
+   @starting-style anime l'entrée sans JavaScript ; s'applique uniquement à
+   l'entrée (le retrait au démontage React n'est pas animé, ce qui est
+   acceptable ici : ces surfaces se ferment par une action explicite, pas par
+   accident). */
+.admin-reveal {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 200ms var(--ease-out-strong),
+    transform 200ms var(--ease-out-strong);
+
+  @starting-style {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-reveal {
+    transition-property: opacity;
+    transform: none;
+
+    @starting-style {
+      transform: none;
+    }
+  }
+}
+
+/* Site public — apparition douce des grandes sections/images au scroll
+   (voir components/ScrollReveal.tsx). Volontairement réservée aux blocs
+   éditoriaux importants, jamais au texte courant : une cascade sur chaque
+   paragraphe serait du bruit, pas de la finition. */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 700ms var(--ease-out-strong),
+    transform 700ms var(--ease-out-strong);
+}
+
+.scroll-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reveal {
+    opacity: 1;
+    transform: none;
+    transition: opacity 300ms ease;
+  }
 }

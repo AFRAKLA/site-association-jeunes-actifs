@@ -48,6 +48,18 @@ export async function POST(request: Request) {
     const video_url = (formData.get("video_url") as string)?.trim() || null;
     const imageFile = formData.get("image") as File | null;
 
+    // Traductions optionnelles EN/AR — jamais requises, jamais bloquantes.
+    const orNull = (v: FormDataEntryValue | null) =>
+      typeof v === "string" && v.trim() !== "" ? v.trim() : null;
+    const titre_en = orNull(formData.get("titre_en"));
+    const titre_ar = orNull(formData.get("titre_ar"));
+    const lieu_en = orNull(formData.get("lieu_en"));
+    const lieu_ar = orNull(formData.get("lieu_ar"));
+    const description_en = orNull(formData.get("description_en"));
+    const description_ar = orNull(formData.get("description_ar"));
+    const description_complete_en = orNull(formData.get("description_complete_en"));
+    const description_complete_ar = orNull(formData.get("description_complete_ar"));
+
     // Collect supplementary photo files
     const photoFiles: File[] = [];
     let i = 0;
@@ -179,6 +191,14 @@ export async function POST(request: Request) {
           image_storage_path: imageStoragePath,
           photos_supplementaires: photoUrls,
           photos_storage_paths: photoStoragePaths,
+          titre_en,
+          titre_ar,
+          lieu_en,
+          lieu_ar,
+          description_en,
+          description_ar,
+          description_complete_en,
+          description_complete_ar,
         },
       ])
       .select()

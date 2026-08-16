@@ -1,0 +1,321 @@
+{
+  "common": {
+    "nav": {
+      "accueil": "Accueil",
+      "aPropos": "À propos",
+      "activites": "Activités",
+      "actualites": "Actualités",
+      "evenements": "Événements",
+      "galerie": "Galerie",
+      "contact": "Contact",
+      "devenirMembre": "Devenir membre"
+    },
+    "skipToContent": "Aller au contenu principal",
+    "readMore": "Lire la suite",
+    "seeAll": "Voir tout",
+    "learnMore": "En savoir plus",
+    "backHome": "Retour à l'accueil"
+  },
+  "theme": {
+    "label": "Thème",
+    "light": "Clair",
+    "dark": "Sombre",
+    "system": "Système"
+  },
+  "language": {
+    "label": "Langue",
+    "fr": "Français",
+    "en": "English",
+    "ar": "العربية"
+  },
+  "header": {
+    "cta": "Devenir membre",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu"
+  },
+  "footer": {
+    "tagline": "Ensemble pour une jeunesse engagée, solidaire et responsable — dans la région de l'Oriental, au Maroc.",
+    "navTitle": "Navigation",
+    "followTitle": "Nous suivre",
+    "rights": "Tous droits réservés.",
+    "legal": "Mentions légales"
+  },
+  "home": {
+    "meta": {
+      "title": "Accueil | Association Jeunes Actifs",
+      "description": "Association socio-culturelle et solidaire dans la région de l'Oriental au Maroc. Actions sociales, culturelles et citoyennes portées par des étudiants engagés."
+    },
+    "hero": {
+      "kicker": "Association jeunesse & solidarité — Oujda, Oriental",
+      "title": "Jeunes Actifs, engagés dans l'Oriental",
+      "text": "Nous réunissons des étudiants de l'Oriental autour d'actions sociales, culturelles et citoyennes concrètes, pour un avenir plus solidaire et plus humain.",
+      "ctaPrimary": "Devenir membre",
+      "ctaSecondary": "Découvrir nos actions",
+      "caption": "Des actions concrètes au service des jeunes et des familles"
+    },
+    "mission": {
+      "kicker": "Notre mission",
+      "title": "Qui sommes-nous ?",
+      "text": "L'Association Jeunes Actifs est une association socio-culturelle basée dans la région de l'Oriental au Maroc. Elle réunit des étudiants de l'enseignement supérieur engagés dans des actions sociales, culturelles, solidaires et citoyennes au service de leur communauté.",
+      "link": "En savoir plus sur l'association →"
+    },
+    "actions": {
+      "kicker": "Ce que nous faisons",
+      "title": "Nos domaines d'action",
+      "link": "Toutes nos activités →",
+      "items": {
+        "solidarite": { "title": "Solidarité et accompagnement", "text": "Collectes, maraudes et projets solidaires en faveur des populations locales." },
+        "culture": { "title": "Culture et événements", "text": "Soirées culturelles, expositions et rencontres autour du patrimoine de l'Oriental." },
+        "sante": { "title": "Santé et sensibilisation", "text": "Actions médicales et campagnes de sensibilisation pour les jeunes et les familles." },
+        "citoyennete": { "title": "Jeunesse et citoyenneté", "text": "Formations, ateliers et forums pour développer l'engagement étudiant." }
+      }
+    },
+    "impact": {
+      "kicker": "Notre impact",
+      "title": "Sur le terrain, dans l'Oriental",
+      "stats": {
+        "actions": { "value": "50+", "label": "Actions organisées" },
+        "jeunes": { "value": "200+", "label": "Jeunes mobilisés" },
+        "evenements": { "value": "30+", "label": "Événements réalisés" }
+      },
+      "values": {
+        "solidarite": { "title": "Solidarité", "text": "Nous agissons ensemble pour ceux qui en ont besoin, sans distinction." },
+        "engagement": { "title": "Engagement", "text": "Chaque membre s'investit concrètement sur le terrain, au service de la communauté." },
+        "equipe": { "title": "Esprit d'équipe", "text": "Nos projets sont collectifs : chaque contribution compte et nous avançons ensemble." }
+      }
+    },
+    "actualites": {
+      "kicker": "Vie de l'association",
+      "title": "Dernières actualités",
+      "link": "Toutes les actualités →",
+      "empty": "Aucune actualité pour le moment — revenez bientôt."
+    },
+    "evenements": {
+      "kicker": "Rendez-vous",
+      "title": "Événements",
+      "link": "Tous les événements →",
+      "empty": "Aucun événement pour le moment — revenez bientôt.",
+      "aVenir": "À venir",
+      "passe": "Événement passé"
+    },
+    "moments": {
+      "kicker": "En images",
+      "title": "Nos derniers moments",
+      "link": "Voir la galerie →"
+    },
+    "cta": {
+      "title": "Envie d'agir avec nous ?",
+      "text": "Que vous souhaitiez rejoindre l'association ou simplement en savoir plus avant de vous engager, nous serions ravis d'échanger avec vous.",
+      "primary": "Devenir membre",
+      "secondary": "Nous contacter"
+    }
+  },
+  "aPropos": {
+    "meta": {
+      "title": "À propos | Association Jeunes Actifs",
+      "description": "Découvrez la mission, les valeurs et la vision de l'Association Jeunes Actifs. Une association étudiante engagée dans le développement social et environnemental de l'Oriental."
+    },
+    "hero": { "kicker": "Notre histoire", "title": "À propos de nous", "text": "L'Association Jeunes Actifs est une association socio-culturelle et environnementale basée dans la région de l'Oriental au Maroc. Fondée par des étudiants de l'enseignement supérieur, elle rassemble des jeunes engagés désireux de contribuer au développement de leur communauté à travers des actions concrètes et durables." },
+    "mission": { "kicker": "Notre mission", "title": "Accompagner l'engagement de toute une jeunesse", "text": "Notre mission est d'accompagner les jeunes de l'Oriental dans leur engagement citoyen en leur offrant un cadre pour agir, apprendre et s'épanouir. Nous concevons et mettons en œuvre des projets socio-culturels, environnementaux et éducatifs qui répondent aux besoins réels de notre territoire, tout en formant la prochaine génération de leaders associatifs." },
+    "valeurs": {
+      "kicker": "Ce qui nous guide",
+      "title": "Nos valeurs",
+      "text": "Ces principes guident chacune de nos actions et décisions.",
+      "items": {
+        "engagement": { "title": "Engagement citoyen", "text": "Nous encourageons chaque jeune à prendre part activement à la vie de sa communauté." },
+        "solidarite": { "title": "Solidarité", "text": "Nous agissons ensemble, dans l'entraide et le respect mutuel, pour un impact collectif." },
+        "culture": { "title": "Culture", "text": "Nous valorisons le patrimoine culturel de l'Oriental et favorisons la créativité chez les jeunes." },
+        "environnement": { "title": "Environnement", "text": "Nous intégrons la protection de l'environnement dans toutes nos initiatives." },
+        "developpement": { "title": "Développement des jeunes", "text": "Nous formons et accompagnons les étudiants pour qu'ils deviennent des acteurs de changement." }
+      }
+    },
+    "vision": { "kicker": "Où nous allons", "title": "Notre vision", "text": "Nous aspirons à faire de la région de l'Oriental un modèle de jeunesse engagée, où chaque étudiant trouve les moyens de s'investir dans des projets qui comptent. À long terme, nous voulons créer un réseau solide d'anciens membres qui continuent à porter les valeurs de solidarité, de culture et d'environnement dans leur parcours professionnel et personnel." },
+    "impact": { "kicker": "Notre impact", "title": "Quelques chiffres qui illustrent notre action" }
+  },
+  "contact": {
+    "meta": {
+      "title": "Contact | Association Jeunes Actifs",
+      "description": "Contactez l'Association Jeunes Actifs pour toute question, suggestion ou proposition de collaboration dans la région de l'Oriental."
+    },
+    "hero": { "kicker": "Restons en contact", "title": "Contactez-nous", "text": "Une question, une suggestion ou envie de rejoindre l'Association Jeunes Actifs ? Notre équipe vous répond avec plaisir." },
+    "coordonnees": {
+      "kicker": "Nos coordonnées",
+      "adresseLabel": "Adresse",
+      "adresseValue": "Région de l'Oriental, Maroc",
+      "emailLabel": "Email",
+      "telephoneLabel": "Téléphone",
+      "telephoneValue": "Disponible prochainement"
+    },
+    "reseaux": { "kicker": "Suivez-nous", "text": "Retrouvez-nous sur les réseaux sociaux pour suivre nos actualités et nos événements au quotidien." },
+    "form": { "kicker": "Écrivez-nous", "title": "Envoyez-nous un message" }
+  },
+  "contactForm": {
+    "nomLabel": "Nom",
+    "nomPlaceholder": "Votre nom complet",
+    "emailLabel": "Email",
+    "emailPlaceholder": "votre@email.com",
+    "sujetLabel": "Sujet",
+    "sujetPlaceholder": "Sujet de votre message",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Écrivez votre message ici...",
+    "submit": "Envoyer",
+    "submitting": "Envoi en cours...",
+    "success": "Votre message a bien été envoyé. Merci !",
+    "error": "Une erreur est survenue. Veuillez réessayer."
+  },
+  "devenirMembre": {
+    "meta": {
+      "title": "Devenir membre | Association Jeunes Actifs",
+      "description": "Rejoignez l'Association Jeunes Actifs et engagez-vous dans des projets socio-culturels et environnementaux dans la région de l'Oriental."
+    },
+    "hero": { "kicker": "Rejoignez-nous", "title": "Devenir membre", "text": "Rejoignez l'Association Jeunes Actifs et engagez-vous auprès des étudiants de l'Oriental. Ensemble, nous portons des projets socio-culturels et environnementaux qui transforment notre région." },
+    "pourquoi": {
+      "kicker": "01 — Pourquoi rejoindre",
+      "title": "Ce que votre engagement vous apporte",
+      "items": [
+        "Développer vos compétences en gestion de projets, communication et leadership",
+        "Construire un réseau étudiant et professionnel dans l'Oriental",
+        "Avoir un impact réel sur votre communauté et votre territoire",
+        "Obtenir un certificat de bénévolat valorisable dans votre parcours"
+      ]
+    },
+    "missions": {
+      "kicker": "02 — Comment participer",
+      "title": "Les missions possibles",
+      "items": [
+        "Actions sociales — collectes, maraudes, projets solidaires",
+        "Activités culturelles — événements, expositions, rencontres",
+        "Sensibilisation environnementale — campagnes et nettoyages",
+        "Événements étudiants — forums, journées thématiques",
+        "Formations et ateliers — leadership, communication, gestion"
+      ]
+    },
+    "form": { "kicker": "03 — Rejoignez-nous", "title": "Formulaire d'adhésion", "text": "Remplissez ce formulaire pour soumettre votre demande d'adhésion." }
+  },
+  "adhesionForm": {
+    "nomLabel": "Nom complet",
+    "nomPlaceholder": "Votre nom complet",
+    "emailLabel": "Email",
+    "emailPlaceholder": "votre@email.com",
+    "telephoneLabel": "Téléphone",
+    "telephonePlaceholder": "+212 6XX XXX XXX",
+    "statutLabel": "Statut ou établissement",
+    "statutPlaceholder": "Ex : Étudiant à l'Université Mohammed Ier",
+    "interetLabel": "Domaine d'intérêt",
+    "interetPlaceholder": "-- Choisir un domaine --",
+    "options": {
+      "actionsSociales": "Actions sociales",
+      "activitesCulturelles": "Activités culturelles",
+      "environnement": "Sensibilisation environnementale",
+      "evenements": "Événements étudiants",
+      "formations": "Formations et ateliers"
+    },
+    "motivationLabel": "Motivation",
+    "motivationPlaceholder": "Expliquez pourquoi vous souhaitez rejoindre l'association...",
+    "submit": "Envoyer ma demande",
+    "submitting": "Envoi en cours...",
+    "success": "Votre demande a bien été envoyée. Merci pour votre engagement !",
+    "error": "Une erreur est survenue. Veuillez réessayer."
+  },
+  "actualitesPage": {
+    "meta": { "title": "Actualités | Association Jeunes Actifs", "description": "Suivez les dernières nouvelles de l'Association Jeunes Actifs : projets réalisés, partenariats et actions en cours dans la région de l'Oriental." },
+    "hero": { "kicker": "Vie de l'association", "title": "Actualités", "text": "Suivez les dernières nouvelles de l'Association Jeunes Actifs : projets réalisés, actions en cours et vie associative dans la région de l'Oriental." },
+    "categories": { "tous": "Tous", "environnement": "Environnement", "culture": "Culture", "solidarite": "Solidarité", "formation": "Formation", "vie-associative": "Vie associative" },
+    "emptyAll": "Aucune actualité pour le moment. Revenez bientôt !",
+    "emptyCategorie": "Aucune actualité dans cette catégorie pour le moment.",
+    "cta": { "title": "Vous souhaitez suivre nos actions ?", "text": "Contactez-nous ou devenez membre de l'association pour être informé de nos prochaines activités et événements.", "primary": "Devenir membre", "secondary": "Nous contacter" }
+  },
+  "evenementsPage": {
+    "meta": { "title": "Événements | Association Jeunes Actifs", "description": "Retrouvez les événements organisés par l'Association Jeunes Actifs : forums, ateliers, formations et actions de terrain dans l'Oriental." },
+    "hero": { "kicker": "Rendez-vous", "title": "Événements", "text": "Retrouvez les événements organisés par l'Association Jeunes Actifs dans la région de l'Oriental : forums, ateliers, formations et soirées culturelles." },
+    "avenir": { "title": "Événements à venir", "empty": "Aucun événement à venir pour le moment. Revenez bientôt !" },
+    "passes": { "title": "Événements passés", "text": "Les archives de nos actions précédentes restent consultables ici." },
+    "emptyAll": "Aucun événement pour le moment. Revenez bientôt !",
+    "card": { "aVenir": "À venir", "passe": "Passé", "voirDetail": "Voir le détail" },
+    "pourquoi": {
+      "kicker": "Rejoignez le mouvement",
+      "title": "Pourquoi participer ?",
+      "items": {
+        "competences": { "title": "Développer vos compétences", "text": "Chaque événement est une occasion d'apprendre : communication, gestion de projet, travail en équipe." },
+        "rencontre": { "title": "Rencontrer d'autres jeunes", "text": "Nos événements rassemblent des étudiants de l'enseignement supérieur de tout l'Oriental." },
+        "impact": { "title": "Avoir un impact réel", "text": "Vos actions contribuent directement au développement de la région et au bien-être des communautés locales." },
+        "parcours": { "title": "Valoriser votre parcours", "text": "Les événements donnent lieu à des certificats de participation valorisables dans votre CV." }
+      }
+    },
+    "cta": { "title": "Rejoignez nos prochains événements", "text": "Vous souhaitez participer ou proposer un événement ? Contactez-nous ou devenez membre de l'association.", "primary": "Devenir membre", "secondary": "Nous contacter" }
+  },
+  "evenementDetail": {
+    "notFoundTitle": "Événement introuvable",
+    "aVenir": "À venir",
+    "passe": "Événement passé",
+    "tousLesEvenements": "Tous les événements",
+    "retourEvenements": "Retour aux événements",
+    "video": "Vidéo",
+    "videoTitle": "Vidéo de l'événement",
+    "photos": "Photos"
+  },
+  "galeriePage": {
+    "meta": { "title": "Galerie | Association Jeunes Actifs", "description": "Découvrez en images les actions et événements de l'Association Jeunes Actifs dans la région de l'Oriental au Maroc." },
+    "hero": { "kicker": "En images", "title": "Galerie", "text": "Les moments forts de nos actions et événements dans la région de l'Oriental, vécus par nos membres et les communautés que nous accompagnons." },
+    "categories": { "tous": "Tous", "environnement": "Environnement", "culture": "Culture", "solidarite": "Solidarité", "formations": "Formations" },
+    "srOnlyTitle": "Photos de la galerie",
+    "emptyAll": "Les photos officielles de nos actions seront ajoutées prochainement. En attendant, découvrez nos activités sur notre page Instagram.",
+    "emptyCategorie": "Aucune photo dans cette catégorie pour le moment.",
+    "instagram": { "title": "Suivez-nous sur Instagram", "text": "Retrouvez nos photos, vidéos et stories en temps réel sur notre page Instagram. Suivez l'actualité de l'association au quotidien.", "cta": "Voir notre page Instagram" },
+    "cta": { "title": "Envie de faire partie de l'aventure ?", "text": "Rejoignez l'Association Jeunes Actifs et participez à nos prochaines actions sur le terrain.", "primary": "Devenir membre", "secondary": "Nous contacter" }
+  },
+  "activitesPage": {
+    "meta": { "title": "Activités | Association Jeunes Actifs", "description": "Actions sociales, culturelles, environnementales, formations et projets communautaires menés par l'association dans la région de l'Oriental au Maroc." },
+    "hero": { "kicker": "Sur le terrain", "title": "Nos activités", "text": "L'Association Jeunes Actifs agit sur plusieurs fronts pour accompagner les jeunes de l'Oriental et contribuer au développement de la région. Voici ce que nous faisons concrètement." },
+    "items": {
+      "solidarite": { "titre": "Actions sociales et solidaires", "description": "Nous menons des actions en faveur des populations vulnérables de l'Oriental à travers des collectes, des maraudes et des projets solidaires.", "exemple": "Collecte de vêtements et de denrées pour les familles nécessiteuses pendant le mois de Ramadan." },
+      "culture": { "titre": "Activités culturelles", "description": "Nous organisons des événements qui célèbrent le patrimoine culturel de l'Oriental et rapprochent les communautés.", "exemple": "Soirée musicale dédiée aux traditions artistiques de la région avec la participation d'artistes locaux." },
+      "environnement": { "titre": "Sensibilisation environnementale", "description": "Nous menons des campagnes de sensibilisation et des actions concrètes pour protéger l'environnement dans notre région.", "exemple": "Journée de nettoyage du Parc Lalla Aïcha à Oujda avec la participation de 80 bénévoles étudiants." },
+      "formations": { "titre": "Formations et ateliers", "description": "Nous proposons des ateliers pratiques pour développer les compétences des étudiants en leadership, communication et gestion de projets.", "exemple": "Cycle de formation de 3 jours sur la planification et le budget de projets associatifs." },
+      "evenements": { "titre": "Événements étudiants", "description": "Nous créons des espaces d'échange et de rencontre entre étudiants de l'enseignement supérieur de l'Oriental.", "exemple": "Forum annuel de l'engagement associatif à l'Université Mohammed Ier d'Oujda." },
+      "benevolat": { "titre": "Bénévolat", "description": "Nous encourageons et encadrons l'engagement bénévole des étudiants dans des projets qui ont un impact réel sur le terrain.", "exemple": "Programme de bénévolat régulier avec des missions hebdomadaires dans les quartiers prioritaires." },
+      "projets": { "titre": "Projets communautaires", "description": "Nous concevons et mettons en œuvre des projets de développement local en collaboration avec les acteurs de la région.", "exemple": "Projet de création d'un jardin partagé dans un quartier de la ville d'Oujda." }
+    },
+    "cta": { "title": "Envie d'agir avec nous ?", "text": "Rejoignez l'Association Jeunes Actifs et participez à nos activités socio-culturelles et environnementales dans l'Oriental.", "primary": "Devenir membre" }
+  },
+  "mentionsLegales": {
+    "meta": {
+      "title": "Mentions légales | Association Jeunes Actifs",
+      "description": "Mentions légales du site de l'Association Jeunes Actifs."
+    },
+    "kicker": "Informations légales",
+    "title": "Mentions légales",
+    "editeur": {
+      "title": "Éditeur du site",
+      "line1": "Association Jeunes Actifs",
+      "line2": "Association socio-culturelle et environnementale",
+      "line3": "Région de l'Oriental, Maroc",
+      "email": "Email :"
+    },
+    "directeur": {
+      "title": "Directeur de la publication",
+      "text": "Le directeur de la publication est le président de l'Association Jeunes Actifs. Les informations de contact complètes peuvent être obtenues sur demande via l'adresse email ci-dessus."
+    },
+    "hebergement": {
+      "title": "Hébergement",
+      "line1": "Ce site est hébergé par Vercel Inc.",
+      "line2": "440 N Barranca Ave #4133, Covina, CA 91723, États-Unis"
+    },
+    "propriete": {
+      "title": "Propriété intellectuelle",
+      "text": "L'ensemble du contenu de ce site (textes, images, logos, éléments graphiques) est la propriété de l'Association Jeunes Actifs ou de ses contributeurs, sauf mention contraire. Toute reproduction, même partielle, est soumise à autorisation préalable."
+    },
+    "donnees": {
+      "title": "Données personnelles",
+      "text1": "Les données personnelles collectées via les formulaires de contact et d'adhésion sont utilisées uniquement dans le cadre du fonctionnement de l'association. Elles ne sont ni transmises à des tiers ni utilisées à des fins commerciales.",
+      "text2": "Conformément à la loi 09-08 relative à la protection des personnes physiques à l'égard du traitement des données à caractère personnel, toute personne peut exercer son droit d'accès, de rectification ou de suppression en contactant l'association à l'adresse email indiquée ci-dessus."
+    },
+    "responsabilite": {
+      "title": "Responsabilité",
+      "text": "L'Association Jeunes Actifs s'efforce de fournir des informations exactes et à jour sur ce site. Néanmoins, elle ne peut garantir l'exhaustivité ni l'exactitude de toutes les informations diffusées. L'association décline toute responsabilité en cas d'erreur ou d'omission."
+    },
+    "note": {
+      "text1": "Certaines informations légales (numéro d'autorisation, adresse complète du siège, etc.) pourront être complétées par l'association. Pour toute question, contactez-nous à"
+    }
+  }
+}

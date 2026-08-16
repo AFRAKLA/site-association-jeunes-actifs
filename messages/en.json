@@ -1,0 +1,321 @@
+{
+  "common": {
+    "nav": {
+      "accueil": "Home",
+      "aPropos": "About",
+      "activites": "Activities",
+      "actualites": "News",
+      "evenements": "Events",
+      "galerie": "Gallery",
+      "contact": "Contact",
+      "devenirMembre": "Join us"
+    },
+    "skipToContent": "Skip to main content",
+    "readMore": "Read more",
+    "seeAll": "See all",
+    "learnMore": "Learn more",
+    "backHome": "Back to home"
+  },
+  "theme": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "language": {
+    "label": "Language",
+    "fr": "Français",
+    "en": "English",
+    "ar": "العربية"
+  },
+  "header": {
+    "cta": "Join us",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "footer": {
+    "tagline": "Together for an engaged, caring and responsible youth — in the Oriental region of Morocco.",
+    "navTitle": "Navigation",
+    "followTitle": "Follow us",
+    "rights": "All rights reserved.",
+    "legal": "Legal notice"
+  },
+  "home": {
+    "meta": {
+      "title": "Home | Association Jeunes Actifs",
+      "description": "A youth-led social and cultural association in Morocco's Oriental region. Social, cultural and civic action carried out by engaged students."
+    },
+    "hero": {
+      "kicker": "Youth & solidarity association — Oujda, Oriental",
+      "title": "Jeunes Actifs, at work across the Oriental",
+      "text": "We bring together students from the Oriental region around concrete social, cultural and civic action, working toward a more caring, more human future.",
+      "ctaPrimary": "Join us",
+      "ctaSecondary": "Discover our work",
+      "caption": "Real action in service of young people and families"
+    },
+    "mission": {
+      "kicker": "Our mission",
+      "title": "Who we are",
+      "text": "Association Jeunes Actifs is a social and cultural organization based in Morocco's Oriental region. It brings together higher-education students committed to social, cultural, solidarity-driven and civic action in service of their community.",
+      "link": "Learn more about the association →"
+    },
+    "actions": {
+      "kicker": "What we do",
+      "title": "Our areas of action",
+      "link": "All our activities →",
+      "items": {
+        "solidarite": { "title": "Solidarity & outreach", "text": "Collections, outreach visits and solidarity projects for local communities." },
+        "culture": { "title": "Culture & events", "text": "Cultural evenings, exhibitions and gatherings around the Oriental's heritage." },
+        "sante": { "title": "Health & awareness", "text": "Medical outreach and awareness campaigns for young people and families." },
+        "citoyennete": { "title": "Youth & citizenship", "text": "Training sessions, workshops and forums that grow student engagement." }
+      }
+    },
+    "impact": {
+      "kicker": "Our impact",
+      "title": "On the ground, across the Oriental",
+      "stats": {
+        "actions": { "value": "50+", "label": "Actions organized" },
+        "jeunes": { "value": "200+", "label": "Young people mobilized" },
+        "evenements": { "value": "30+", "label": "Events held" }
+      },
+      "values": {
+        "solidarite": { "title": "Solidarity", "text": "We act together for those who need it, without distinction." },
+        "engagement": { "title": "Commitment", "text": "Every member gets involved directly on the ground, in service of the community." },
+        "equipe": { "title": "Team spirit", "text": "Our projects are collective: every contribution counts, and we move forward together." }
+      }
+    },
+    "actualites": {
+      "kicker": "Association life",
+      "title": "Latest news",
+      "link": "All news →",
+      "empty": "No news for now — check back soon."
+    },
+    "evenements": {
+      "kicker": "Upcoming",
+      "title": "Events",
+      "link": "All events →",
+      "empty": "No events for now — check back soon.",
+      "aVenir": "Upcoming",
+      "passe": "Past event"
+    },
+    "moments": {
+      "kicker": "In pictures",
+      "title": "Our latest moments",
+      "link": "View the gallery →"
+    },
+    "cta": {
+      "title": "Want to get involved with us?",
+      "text": "Whether you'd like to join the association or simply learn more before committing, we'd be glad to talk with you.",
+      "primary": "Join us",
+      "secondary": "Contact us"
+    }
+  },
+  "aPropos": {
+    "meta": {
+      "title": "About | Association Jeunes Actifs",
+      "description": "Discover the mission, values and vision of Association Jeunes Actifs — a student-led association working on the Oriental region's social and environmental development."
+    },
+    "hero": { "kicker": "Our story", "title": "About us", "text": "Association Jeunes Actifs is a social, cultural and environmental association based in Morocco's Oriental region. Founded by higher-education students, it brings together engaged young people who want to contribute to their community through concrete, lasting action." },
+    "mission": { "kicker": "Our mission", "title": "Supporting the commitment of an entire generation", "text": "Our mission is to support young people across the Oriental in their civic engagement by giving them a framework to act, learn and grow. We design and carry out social, environmental and educational projects that respond to our territory's real needs, while training the next generation of association leaders." },
+    "valeurs": {
+      "kicker": "What guides us",
+      "title": "Our values",
+      "text": "These principles guide every one of our actions and decisions.",
+      "items": {
+        "engagement": { "title": "Civic engagement", "text": "We encourage every young person to take an active part in their community's life." },
+        "solidarite": { "title": "Solidarity", "text": "We act together, through mutual support and respect, for collective impact." },
+        "culture": { "title": "Culture", "text": "We celebrate the Oriental's cultural heritage and nurture creativity among young people." },
+        "environnement": { "title": "Environment", "text": "We build environmental protection into every one of our initiatives." },
+        "developpement": { "title": "Youth development", "text": "We train and support students so they become agents of change." }
+      }
+    },
+    "vision": { "kicker": "Where we're headed", "title": "Our vision", "text": "We aspire to make the Oriental region a model of engaged youth, where every student finds ways to invest in projects that matter. In the long run, we want to build a strong network of alumni who keep carrying the values of solidarity, culture and environmental care into their professional and personal lives." },
+    "impact": { "kicker": "Our impact", "title": "A few numbers that illustrate our work" }
+  },
+  "contact": {
+    "meta": {
+      "title": "Contact | Association Jeunes Actifs",
+      "description": "Get in touch with Association Jeunes Actifs for any question, suggestion or partnership proposal in the Oriental region."
+    },
+    "hero": { "kicker": "Let's stay in touch", "title": "Contact us", "text": "A question, a suggestion, or thinking about joining Association Jeunes Actifs? Our team is happy to hear from you." },
+    "coordonnees": {
+      "kicker": "Our contact details",
+      "adresseLabel": "Address",
+      "adresseValue": "Oriental region, Morocco",
+      "emailLabel": "Email",
+      "telephoneLabel": "Phone",
+      "telephoneValue": "Coming soon"
+    },
+    "reseaux": { "kicker": "Follow us", "text": "Find us on social media to follow our news and events day to day." },
+    "form": { "kicker": "Write to us", "title": "Send us a message" }
+  },
+  "contactForm": {
+    "nomLabel": "Name",
+    "nomPlaceholder": "Your full name",
+    "emailLabel": "Email",
+    "emailPlaceholder": "your@email.com",
+    "sujetLabel": "Subject",
+    "sujetPlaceholder": "Subject of your message",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Write your message here...",
+    "submit": "Send",
+    "submitting": "Sending...",
+    "success": "Your message has been sent. Thank you!",
+    "error": "Something went wrong. Please try again."
+  },
+  "devenirMembre": {
+    "meta": {
+      "title": "Join us | Association Jeunes Actifs",
+      "description": "Join Association Jeunes Actifs and get involved in social and environmental projects in Morocco's Oriental region."
+    },
+    "hero": { "kicker": "Join us", "title": "Become a member", "text": "Join Association Jeunes Actifs and get involved alongside students across the Oriental. Together, we carry social and environmental projects that transform our region." },
+    "pourquoi": {
+      "kicker": "01 — Why join",
+      "title": "What your involvement brings you",
+      "items": [
+        "Develop your project management, communication and leadership skills",
+        "Build a student and professional network across the Oriental",
+        "Make a real impact on your community and your region",
+        "Earn a volunteering certificate to add to your track record"
+      ]
+    },
+    "missions": {
+      "kicker": "02 — How to get involved",
+      "title": "Possible missions",
+      "items": [
+        "Social action — collections, outreach visits, solidarity projects",
+        "Cultural activities — events, exhibitions, gatherings",
+        "Environmental awareness — campaigns and clean-ups",
+        "Student events — forums, themed days",
+        "Training and workshops — leadership, communication, management"
+      ]
+    },
+    "form": { "kicker": "03 — Join us", "title": "Membership form", "text": "Fill out this form to submit your membership request." }
+  },
+  "adhesionForm": {
+    "nomLabel": "Full name",
+    "nomPlaceholder": "Your full name",
+    "emailLabel": "Email",
+    "emailPlaceholder": "your@email.com",
+    "telephoneLabel": "Phone",
+    "telephonePlaceholder": "+212 6XX XXX XXX",
+    "statutLabel": "Status or institution",
+    "statutPlaceholder": "E.g. Student at Mohammed I University",
+    "interetLabel": "Area of interest",
+    "interetPlaceholder": "-- Choose an area --",
+    "options": {
+      "actionsSociales": "Social action",
+      "activitesCulturelles": "Cultural activities",
+      "environnement": "Environmental awareness",
+      "evenements": "Student events",
+      "formations": "Training and workshops"
+    },
+    "motivationLabel": "Motivation",
+    "motivationPlaceholder": "Tell us why you'd like to join the association...",
+    "submit": "Submit my request",
+    "submitting": "Sending...",
+    "success": "Your request has been sent. Thank you for your commitment!",
+    "error": "Something went wrong. Please try again."
+  },
+  "actualitesPage": {
+    "meta": { "title": "News | Association Jeunes Actifs", "description": "Follow Association Jeunes Actifs' latest news: completed projects, partnerships and ongoing action in the Oriental region." },
+    "hero": { "kicker": "Association life", "title": "News", "text": "Follow Association Jeunes Actifs' latest news: completed projects, ongoing action and association life across the Oriental region." },
+    "categories": { "tous": "All", "environnement": "Environment", "culture": "Culture", "solidarite": "Solidarity", "formation": "Training", "vie-associative": "Association life" },
+    "emptyAll": "No news for now. Check back soon!",
+    "emptyCategorie": "No news in this category for now.",
+    "cta": { "title": "Want to follow our work?", "text": "Contact us or become a member of the association to hear about our upcoming activities and events.", "primary": "Join us", "secondary": "Contact us" }
+  },
+  "evenementsPage": {
+    "meta": { "title": "Events | Association Jeunes Actifs", "description": "Discover the events organized by Association Jeunes Actifs: forums, workshops, training and on-the-ground action across the Oriental." },
+    "hero": { "kicker": "Upcoming", "title": "Events", "text": "Discover the events organized by Association Jeunes Actifs across the Oriental region: forums, workshops, training and cultural evenings." },
+    "avenir": { "title": "Upcoming events", "empty": "No upcoming events for now. Check back soon!" },
+    "passes": { "title": "Past events", "text": "Archives of our past action remain available here." },
+    "emptyAll": "No events for now. Check back soon!",
+    "card": { "aVenir": "Upcoming", "passe": "Past", "voirDetail": "See details" },
+    "pourquoi": {
+      "kicker": "Join the movement",
+      "title": "Why take part?",
+      "items": {
+        "competences": { "title": "Develop your skills", "text": "Every event is a chance to learn: communication, project management, teamwork." },
+        "rencontre": { "title": "Meet other young people", "text": "Our events bring together higher-education students from across the whole Oriental." },
+        "impact": { "title": "Make a real impact", "text": "Your actions directly contribute to the region's development and to local communities' wellbeing." },
+        "parcours": { "title": "Enrich your track record", "text": "Events come with participation certificates you can add to your CV." }
+      }
+    },
+    "cta": { "title": "Join our next events", "text": "Want to take part or suggest an event? Contact us or become a member of the association.", "primary": "Join us", "secondary": "Contact us" }
+  },
+  "evenementDetail": {
+    "notFoundTitle": "Event not found",
+    "aVenir": "Upcoming",
+    "passe": "Past event",
+    "tousLesEvenements": "All events",
+    "retourEvenements": "Back to events",
+    "video": "Video",
+    "videoTitle": "Event video",
+    "photos": "Photos"
+  },
+  "galeriePage": {
+    "meta": { "title": "Gallery | Association Jeunes Actifs", "description": "See Association Jeunes Actifs' action and events in pictures, across Morocco's Oriental region." },
+    "hero": { "kicker": "In pictures", "title": "Gallery", "text": "The highlights of our action and events across the Oriental region, lived by our members and the communities we support." },
+    "categories": { "tous": "All", "environnement": "Environment", "culture": "Culture", "solidarite": "Solidarity", "formations": "Training" },
+    "srOnlyTitle": "Gallery photos",
+    "emptyAll": "Official photos of our action will be added soon. In the meantime, discover our activities on our Instagram page.",
+    "emptyCategorie": "No photos in this category for now.",
+    "instagram": { "title": "Follow us on Instagram", "text": "Find our photos, videos and stories in real time on our Instagram page. Follow the association's daily life.", "cta": "See our Instagram page" },
+    "cta": { "title": "Want to be part of the adventure?", "text": "Join Association Jeunes Actifs and take part in our upcoming action on the ground.", "primary": "Join us", "secondary": "Contact us" }
+  },
+  "activitesPage": {
+    "meta": { "title": "Activities | Association Jeunes Actifs", "description": "Social, cultural, environmental action, training and community projects carried out by the association in Morocco's Oriental region." },
+    "hero": { "kicker": "On the ground", "title": "Our activities", "text": "Association Jeunes Actifs acts on several fronts to support young people across the Oriental and contribute to the region's development. Here's what we do, concretely." },
+    "items": {
+      "solidarite": { "titre": "Social and solidarity action", "description": "We carry out action for the Oriental's vulnerable populations through collections, outreach visits and solidarity projects.", "exemple": "Clothing and food collection for families in need during Ramadan." },
+      "culture": { "titre": "Cultural activities", "description": "We organize events that celebrate the Oriental's cultural heritage and bring communities closer together.", "exemple": "A musical evening dedicated to the region's artistic traditions, with local artists." },
+      "environnement": { "titre": "Environmental awareness", "description": "We run awareness campaigns and concrete action to protect the environment in our region.", "exemple": "A clean-up day at Parc Lalla Aïcha in Oujda with 80 student volunteers." },
+      "formations": { "titre": "Training and workshops", "description": "We offer hands-on workshops to develop students' leadership, communication and project management skills.", "exemple": "A 3-day training course on planning and budgeting for association projects." },
+      "evenements": { "titre": "Student events", "description": "We create spaces for exchange and connection between higher-education students across the Oriental.", "exemple": "The annual forum on association engagement at Mohammed I University in Oujda." },
+      "benevolat": { "titre": "Volunteering", "description": "We encourage and support students' volunteer engagement in projects that make a real impact on the ground.", "exemple": "A regular volunteering program with weekly missions in priority neighborhoods." },
+      "projets": { "titre": "Community projects", "description": "We design and carry out local development projects in partnership with the region's stakeholders.", "exemple": "A shared community garden project in a neighborhood of Oujda." }
+    },
+    "cta": { "title": "Want to take action with us?", "text": "Join Association Jeunes Actifs and take part in our social, cultural and environmental activities across the Oriental.", "primary": "Join us" }
+  },
+  "mentionsLegales": {
+    "meta": {
+      "title": "Legal Notice | Association Jeunes Actifs",
+      "description": "Legal notice for the Association Jeunes Actifs website."
+    },
+    "kicker": "Legal information",
+    "title": "Legal notice",
+    "editeur": {
+      "title": "Site publisher",
+      "line1": "Association Jeunes Actifs",
+      "line2": "Social, cultural and environmental association",
+      "line3": "Oriental region, Morocco",
+      "email": "Email:"
+    },
+    "directeur": {
+      "title": "Publication director",
+      "text": "The publication director is the president of Association Jeunes Actifs. Full contact details can be obtained on request via the email address above."
+    },
+    "hebergement": {
+      "title": "Hosting",
+      "line1": "This site is hosted by Vercel Inc.",
+      "line2": "440 N Barranca Ave #4133, Covina, CA 91723, United States"
+    },
+    "propriete": {
+      "title": "Intellectual property",
+      "text": "All content on this site (text, images, logos, graphic elements) is the property of Association Jeunes Actifs or its contributors, unless stated otherwise. Any reproduction, even partial, requires prior authorization."
+    },
+    "donnees": {
+      "title": "Personal data",
+      "text1": "Personal data collected through the contact and membership forms is used solely for the association's operations. It is never shared with third parties or used for commercial purposes.",
+      "text2": "In accordance with Law 09-08 on the protection of individuals with regard to the processing of personal data, anyone may exercise their right of access, rectification or deletion by contacting the association at the email address above."
+    },
+    "responsabilite": {
+      "title": "Liability",
+      "text": "Association Jeunes Actifs strives to provide accurate, up-to-date information on this site. It cannot, however, guarantee the completeness or accuracy of all information published, and declines liability for any error or omission."
+    },
+    "note": {
+      "text1": "Certain legal details (registration number, full head-office address, etc.) may be added by the association at a later date. For any question, contact us at"
+    }
+  }
+}

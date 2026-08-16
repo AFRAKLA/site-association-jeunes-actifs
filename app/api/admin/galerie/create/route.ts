@@ -18,6 +18,14 @@ export async function POST(request: Request) {
     const statut = formData.get("statut") as string;
     const file = formData.get("file") as File | null;
 
+    // Traductions optionnelles EN/AR — jamais requises.
+    const orNull = (v: FormDataEntryValue | null) =>
+      typeof v === "string" && v.trim() !== "" ? v.trim() : null;
+    const titre_en = orNull(formData.get("titre_en"));
+    const titre_ar = orNull(formData.get("titre_ar"));
+    const description_en = orNull(formData.get("description_en"));
+    const description_ar = orNull(formData.get("description_ar"));
+
     if (!titre || !categorie || !description || !statut || !file) {
       return NextResponse.json(
         { error: "Tous les champs sont requis, y compris l'image." },
@@ -66,7 +74,20 @@ export async function POST(request: Request) {
     // Insérer en base
     const { data, error: insertError } = await admin
       .from("galerie")
-      .insert([{ titre, categorie, description, image_url: imageUrl, storage_path: storagePath, statut }])
+      .insert([
+        {
+          titre,
+          categorie,
+          description,
+          image_url: imageUrl,
+          storage_path: storagePath,
+          statut,
+          titre_en,
+          titre_ar,
+          description_en,
+          description_ar,
+        },
+      ])
       .select()
       .single();
 

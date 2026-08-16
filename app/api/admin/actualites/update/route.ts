@@ -15,7 +15,20 @@ export async function PATCH(request: Request) {
     const auth = requireAdmin(request);
     if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });
 
-    const { id, titre, categorie, extrait, contenu, statut } = await request.json();
+    const {
+      id,
+      titre,
+      categorie,
+      extrait,
+      contenu,
+      statut,
+      titre_en,
+      titre_ar,
+      extrait_en,
+      extrait_ar,
+      contenu_en,
+      contenu_ar,
+    } = await request.json();
 
     if (!id) {
       return NextResponse.json({ error: "id est requis." }, { status: 400 });
@@ -42,10 +55,27 @@ export async function PATCH(request: Request) {
       );
     }
 
+    // Chaîne vide -> NULL, cohérent avec la route de création (voir son
+    // commentaire) — une traduction vidée par l'admin efface le champ
+    // plutôt que de laisser une chaîne vide en base.
+    const orNull = (v: unknown) => (typeof v === "string" && v.trim() !== "" ? v : null);
+
     const admin = getSupabaseAdmin();
     const { data, error } = await admin
       .from("actualites")
-      .update({ titre, categorie, extrait, contenu: contenu || "", statut })
+      .update({
+        titre,
+        categorie,
+        extrait,
+        contenu: contenu || "",
+        statut,
+        titre_en: orNull(titre_en),
+        titre_ar: orNull(titre_ar),
+        extrait_en: orNull(extrait_en),
+        extrait_ar: orNull(extrait_ar),
+        contenu_en: orNull(contenu_en),
+        contenu_ar: orNull(contenu_ar),
+      })
       .eq("id", id)
       .select()
       .single();

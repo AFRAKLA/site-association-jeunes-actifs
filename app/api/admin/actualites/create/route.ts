@@ -15,7 +15,19 @@ export async function PATCH(request: Request) {
     const auth = requireAdmin(request);
     if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });
 
-    const { titre, categorie, extrait, contenu, statut } = await request.json();
+    const {
+      titre,
+      categorie,
+      extrait,
+      contenu,
+      statut,
+      titre_en,
+      titre_ar,
+      extrait_en,
+      extrait_ar,
+      contenu_en,
+      contenu_ar,
+    } = await request.json();
 
     if (!titre || !categorie || !extrait || !statut) {
       return NextResponse.json(
@@ -38,10 +50,30 @@ export async function PATCH(request: Request) {
       );
     }
 
+    // Chaîne vide -> NULL : une traduction "vidée" par l'admin ne doit pas
+    // rester une chaîne vide en base (le résolveur de fallback traite les
+    // deux de la même façon, mais NULL est la représentation la plus propre
+    // de "non traduit").
+    const orNull = (v: unknown) => (typeof v === "string" && v.trim() !== "" ? v : null);
+
     const admin = getSupabaseAdmin();
     const { data, error } = await admin
       .from("actualites")
-      .insert([{ titre, categorie, extrait, contenu: contenu || "", statut }])
+      .insert([
+        {
+          titre,
+          categorie,
+          extrait,
+          contenu: contenu || "",
+          statut,
+          titre_en: orNull(titre_en),
+          titre_ar: orNull(titre_ar),
+          extrait_en: orNull(extrait_en),
+          extrait_ar: orNull(extrait_ar),
+          contenu_en: orNull(contenu_en),
+          contenu_ar: orNull(contenu_ar),
+        },
+      ])
       .select()
       .single();
 

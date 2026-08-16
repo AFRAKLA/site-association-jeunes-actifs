@@ -64,7 +64,21 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: "Photo introuvable." }, { status: 404 });
     }
 
-    const updates: Record<string, unknown> = { titre, categorie, description, statut };
+    // Traductions optionnelles EN/AR — une valeur vide efface la traduction
+    // existante (NULL), jamais requises.
+    const orNull = (v: FormDataEntryValue | null) =>
+      typeof v === "string" && v.trim() !== "" ? v.trim() : null;
+
+    const updates: Record<string, unknown> = {
+      titre,
+      categorie,
+      description,
+      statut,
+      titre_en: orNull(formData.get("titre_en")),
+      titre_ar: orNull(formData.get("titre_ar")),
+      description_en: orNull(formData.get("description_en")),
+      description_ar: orNull(formData.get("description_ar")),
+    };
 
     let newStoragePath: string | null = null;
 
