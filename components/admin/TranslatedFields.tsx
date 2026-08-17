@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 type Lang = "fr" | "en" | "ar";
 
@@ -43,13 +44,14 @@ export default function TranslatedFields<T extends Record<string, string>>({
   fieldClassName: string;
   labelClassName: string;
 }) {
+  const tc = useTranslations("common");
   const [lang, setLang] = useState<Lang>("fr");
   const current = value[lang];
   const dir = lang === "ar" ? "rtl" : "ltr";
 
   return (
     <div>
-      <div role="tablist" aria-label="Langue du contenu" className="flex gap-1 rounded-lg bg-admin-ivory-warm p-1">
+      <div role="tablist" aria-label={tc("contentLanguage")} className="flex gap-1 rounded-lg bg-surface-muted p-1">
         {LANG_TABS.map((tab) => (
           <button
             key={tab.value}
@@ -59,13 +61,13 @@ export default function TranslatedFields<T extends Record<string, string>>({
             onClick={() => setLang(tab.value)}
             className={`flex-1 rounded-md px-3 py-1.5 text-xs font-medium transition-colors duration-150 ${
               lang === tab.value
-                ? "bg-white text-admin-forest shadow-sm"
-                : "text-muted-foreground hover:text-admin-forest"
+                ? "bg-surface text-admin-ink shadow-sm"
+                : "text-muted-foreground hover:text-admin-ink"
             }`}
           >
             {tab.label}
             {tab.value !== "fr" && (
-              <span className="ms-1 text-[10px] text-muted-foreground/70">(optionnel)</span>
+              <span className="ms-1 text-[10px] text-muted-foreground/70">({tc("optional")})</span>
             )}
           </button>
         ))}
@@ -79,7 +81,7 @@ export default function TranslatedFields<T extends Record<string, string>>({
             <div key={field.key}>
               <label htmlFor={id} className={labelClassName}>
                 {field.label}
-                {lang !== "fr" && <span className="ms-1 font-normal text-muted-foreground">(facultatif)</span>}
+                {lang !== "fr" && <span className="ms-1 font-normal text-muted-foreground">({tc("optional")})</span>}
               </label>
               {field.type === "textarea" ? (
                 <textarea

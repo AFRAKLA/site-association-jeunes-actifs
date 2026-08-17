@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, type ChangeEvent } from "react";
+import { useTranslations } from "next-intl";
 
 interface ImageUploaderProps {
   label?: string;
@@ -9,10 +10,12 @@ interface ImageUploaderProps {
 }
 
 export default function ImageUploader({
-  label = "Image principale",
+  label,
   currentUrl,
   onChange,
 }: ImageUploaderProps) {
+  const tc = useTranslations("common");
+  const resolvedLabel = label ?? tc("mainImage");
   const [preview, setPreview] = useState<string | null>(null);
   const [hasNew, setHasNew] = useState(false);
   const [removed, setRemoved] = useState(false);
@@ -57,30 +60,30 @@ export default function ImageUploader({
 
   return (
     <div>
-      <p className="mb-1.5 text-sm font-medium text-foreground/80">{label}</p>
+      <p className="mb-1.5 text-sm font-medium text-admin-ink/80">{resolvedLabel}</p>
 
       {showCurrent && (
         <div className="flex items-start gap-3">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={currentUrl!}
-            alt="Image actuelle"
+            alt={tc("currentImage")}
             className="h-24 w-auto rounded-lg border border-admin-champagne-soft object-contain"
           />
           <div className="flex flex-col gap-2">
             <button
               type="button"
               onClick={() => inputRef.current?.click()}
-              className="rounded-lg border border-admin-forest/20 bg-white px-3 py-1 text-xs font-medium text-admin-forest transition-colors duration-150 ease-out-strong motion-safe:active:scale-[0.97] hover:bg-admin-forest/5"
+              className="rounded-lg border border-admin-champagne-soft bg-surface px-3 py-1 text-xs font-medium text-admin-ink transition-colors duration-150 ease-out-strong motion-safe:active:scale-[0.97] hover:bg-admin-forest/5"
             >
-              Remplacer
+              {tc("replace")}
             </button>
             <button
               type="button"
               onClick={removeCurrent}
-              className="rounded-lg border border-red-200 bg-red-50 px-3 py-1 text-xs font-medium text-red-700 transition-colors duration-150 ease-out-strong motion-safe:active:scale-[0.97] hover:bg-red-100"
+              className="rounded-lg border border-admin-danger-border bg-admin-danger-bg px-3 py-1 text-xs font-medium text-admin-danger transition-colors duration-150 ease-out-strong motion-safe:active:scale-[0.97] hover:bg-admin-danger-bg"
             >
-              Supprimer
+              {tc("delete")}
             </button>
           </div>
         </div>
@@ -91,15 +94,15 @@ export default function ImageUploader({
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={preview!}
-            alt="Aperçu"
+            alt={tc("preview")}
             className="h-24 w-auto rounded-lg border border-admin-champagne-soft object-contain"
           />
           <button
             type="button"
             onClick={cancelNew}
-            className="rounded-lg border border-admin-champagne-soft bg-white px-3 py-1 text-xs font-medium text-muted-foreground transition-colors duration-150 ease-out-strong motion-safe:active:scale-[0.97] hover:bg-admin-ivory-warm"
+            className="rounded-lg border border-admin-champagne-soft bg-surface px-3 py-1 text-xs font-medium text-muted-foreground transition-colors duration-150 ease-out-strong motion-safe:active:scale-[0.97] hover:bg-surface-muted"
           >
-            Annuler la sélection
+            {tc("cancelSelection")}
           </button>
         </div>
       )}
@@ -108,7 +111,7 @@ export default function ImageUploader({
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
-          className="flex items-center gap-2 rounded-lg border border-dashed border-admin-champagne-soft bg-admin-ivory-warm/60 px-4 py-3 text-sm text-muted-foreground transition-colors duration-150 hover:border-primary/40 hover:bg-admin-ivory-warm"
+          className="flex items-center gap-2 rounded-lg border border-dashed border-admin-champagne-soft bg-surface-muted/60 px-4 py-3 text-sm text-muted-foreground transition-colors duration-150 hover:border-admin-champagne hover:bg-surface-muted"
         >
           <svg
             className="h-4 w-4"
@@ -123,7 +126,7 @@ export default function ImageUploader({
               d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
             />
           </svg>
-          Choisir une image
+          {tc("chooseImage")}
         </button>
       )}
 
@@ -134,7 +137,7 @@ export default function ImageUploader({
         onChange={handleFileChange}
         className="hidden"
       />
-      <p className="mt-1 text-xs text-muted-foreground">JPG, PNG ou WebP — 5 Mo maximum</p>
+      <p className="mt-1 text-xs text-muted-foreground">{tc("allowedFormats")}</p>
     </div>
   );
 }

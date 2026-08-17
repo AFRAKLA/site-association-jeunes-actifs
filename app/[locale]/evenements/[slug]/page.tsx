@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { PhotoFrame } from "@/components/PhotoFrame";
 import { supabase } from "@/lib/supabase";
 import { formatLocalizedDate } from "@/lib/date-format";
 import { localizeField, type SupportedLocale } from "@/lib/i18n-content";
@@ -145,7 +146,7 @@ export default async function EvenementDetail({ params }: Props) {
           {/* Retour */}
           <Link
             href="/evenements"
-            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors duration-150 hover:text-forest"
+            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors duration-150 hover:text-ink"
           >
             <svg className="h-4 w-4 rtl:rotate-180" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
@@ -175,7 +176,7 @@ export default async function EvenementDetail({ params }: Props) {
           <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 border-y border-champagne-soft/60 py-4 text-sm text-muted-foreground">
             {dateLabel && (
               <span className="flex items-center gap-1.5">
-                <svg className="h-4 w-4 shrink-0 text-forest" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+                <svg className="h-4 w-4 shrink-0 text-ink" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
                 </svg>
                 {dateLabel}
@@ -184,7 +185,7 @@ export default async function EvenementDetail({ params }: Props) {
             )}
             {lieu && (
               <span className="flex items-center gap-1.5">
-                <svg className="h-4 w-4 shrink-0 text-forest" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+                <svg className="h-4 w-4 shrink-0 text-ink" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
                 </svg>
@@ -224,7 +225,7 @@ export default async function EvenementDetail({ params }: Props) {
               <h2 className="mb-4 text-xl font-semibold tracking-tight text-ink">{t("photos")}</h2>
               <div className="grid gap-3 sm:grid-cols-2">
                 {evt.photos_supplementaires.map((src, i) => (
-                  <div key={i} className="group relative aspect-[4/3] overflow-hidden rounded-2xl">
+                  <PhotoFrame key={i} variant="gallery" className="aspect-[4/3]">
                     <Image
                       src={src}
                       alt={`Photo ${i + 1} — ${titre}`}
@@ -232,7 +233,7 @@ export default async function EvenementDetail({ params }: Props) {
                       className="object-cover transition-transform duration-500 ease-out-strong motion-safe:group-hover:scale-[1.05]"
                       sizes="(max-width: 640px) 100vw, 50vw"
                     />
-                  </div>
+                  </PhotoFrame>
                 ))}
               </div>
             </div>
@@ -242,7 +243,7 @@ export default async function EvenementDetail({ params }: Props) {
           <div className="mt-12">
             <Link
               href="/evenements"
-              className="inline-flex items-center gap-2 rounded-full border border-champagne-soft px-6 py-2.5 text-sm font-medium text-ink transition-colors duration-150 hover:border-forest/30 hover:text-forest"
+              className="inline-flex items-center gap-2 rounded-full border border-champagne-soft px-6 py-2.5 text-sm font-medium text-ink transition-[opacity,border-color] duration-150 hover:border-forest/30 hover:opacity-70"
             >
               <svg className="h-4 w-4 rtl:rotate-180" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />

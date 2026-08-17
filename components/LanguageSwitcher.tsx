@@ -52,7 +52,7 @@ export default function LanguageSwitcher({ variant }: { variant: "popover" | "in
                 role="radio"
                 aria-checked={active}
                 className={`flex min-h-11 items-center justify-center rounded-lg text-sm font-medium transition-colors duration-150 ${
-                  active ? "bg-forest text-ivory" : "text-muted-foreground hover:text-forest"
+                  active ? "bg-forest text-ivory" : "text-muted-foreground hover:text-ink"
                 }`}
               >
                 {SHORT_LABEL[loc]}
@@ -72,7 +72,7 @@ export default function LanguageSwitcher({ variant }: { variant: "popover" | "in
         aria-expanded={open}
         aria-label={`${t("label")}: ${t(locale as "fr" | "en" | "ar")}`}
         onClick={() => setOpen((v) => !v)}
-        className="flex h-9 items-center gap-1 rounded-full px-2.5 text-sm font-medium text-muted-foreground transition-colors duration-150 hover:bg-forest/8 hover:text-forest"
+        className="flex h-9 items-center gap-1 rounded-full px-2.5 text-sm font-medium text-muted-foreground transition-colors duration-150 hover:bg-forest/8 hover:text-ink"
       >
         {SHORT_LABEL[locale]}
       </button>
@@ -95,7 +95,7 @@ export default function LanguageSwitcher({ variant }: { variant: "popover" | "in
               aria-checked={active}
               onClick={() => setOpen(false)}
               className={`flex w-full items-center rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-150 ${
-                active ? "bg-forest/8 text-forest" : "text-muted-foreground hover:bg-forest/6 hover:text-forest"
+                active ? "bg-forest/8 text-ink" : "text-muted-foreground hover:bg-forest/6 hover:text-ink"
               }`}
             >
               {t(loc as "fr" | "en" | "ar")}

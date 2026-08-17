@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import GrowthMark from "@/components/GrowthMark";
 import ScrollReveal from "@/components/ScrollReveal";
+import { PhotoFrame } from "@/components/PhotoFrame";
 import { supabase } from "@/lib/supabase";
 import { formatLocalizedDate } from "@/lib/date-format";
 import { localizeField, type SupportedLocale } from "@/lib/i18n-content";
@@ -97,21 +98,34 @@ export default async function Evenements({ params }: { params: Promise<{ locale:
             className="pointer-events-none absolute -end-10 -top-10 h-40 w-40 text-champagne/[0.14]"
           />
           <div className="relative mx-auto max-w-2xl text-center">
-            <p className="text-xs font-medium uppercase tracking-[0.16em] text-champagne">{t("hero.kicker")}</p>
+            <p className="text-xs font-medium uppercase tracking-[0.16em] text-ink">{t("hero.kicker")}</p>
             <h1 className="mt-3 text-4xl font-semibold tracking-tight text-ink md:text-5xl">{t("hero.title")}</h1>
             <p className="mt-5 text-base leading-relaxed text-muted-foreground">{t("hero.text")}</p>
           </div>
         </section>
 
-        {/* ── À venir ── */}
+        {/* ── À venir ── la composition s'adapte au nombre réel d'événements :
+            1 → mise en avant horizontale (jamais une petite carte isolée
+            perdue dans tout l'espace restant) ; 2 → grille 2 colonnes
+            équilibrée (jamais une 3e colonne vide) ; 3+ → grille responsive
+            existante. */}
         <ScrollReveal>
           <section className="px-6 py-16 md:py-20">
             <div className="mx-auto max-w-5xl">
               <h2 className="text-2xl font-semibold tracking-tight text-ink md:text-3xl">{t("avenir.title")}</h2>
               {avenir.length === 0 ? (
                 <p className="mt-5 text-sm text-muted-foreground">{t("avenir.empty")}</p>
+              ) : avenir.length === 1 ? (
+                <div className="mt-8">
+                  <EvenementFeatured
+                    e={avenir[0]}
+                    locale={locale}
+                    aVenirLabel={t("card.aVenir")}
+                    voirDetailLabel={t("card.voirDetail")}
+                  />
+                </div>
               ) : (
-                <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <div className={`mt-8 grid gap-6 sm:grid-cols-2 ${avenir.length >= 3 ? "lg:grid-cols-3" : ""}`}>
                   {avenir.map((e) => (
                     <EvenementCard key={e.id} e={e} avnr locale={locale} aVenirLabel={t("card.aVenir")} passeLabel={t("card.passe")} voirDetailLabel={t("card.voirDetail")} />
                   ))}
@@ -149,7 +163,7 @@ export default async function Evenements({ params }: { params: Promise<{ locale:
           <section className="px-6 py-16 md:py-20">
             <div className="mx-auto max-w-5xl">
               <div className="text-center">
-                <p className="text-xs font-medium uppercase tracking-[0.16em] text-champagne">{t("pourquoi.kicker")}</p>
+                <p className="text-xs font-medium uppercase tracking-[0.16em] text-ink">{t("pourquoi.kicker")}</p>
                 <h2 className="mt-3 text-2xl font-semibold tracking-tight text-ink md:text-3xl">{t("pourquoi.title")}</h2>
               </div>
               <div className="mt-10 grid gap-x-10 gap-y-8 sm:grid-cols-2">
@@ -196,6 +210,84 @@ export default async function Evenements({ params }: { params: Promise<{ locale:
   );
 }
 
+/* ── Mise en avant d'un événement unique ── grande surface éditoriale
+   horizontale (photo ≈53% / contenu ≈47% en desktop) : lignes, espace et
+   typographie plutôt qu'une carte flottante — voir EvenementCard pour le
+   traitement "carte" utilisé dès 2 événements. */
+
+function EvenementFeatured({
+  e,
+  locale,
+  aVenirLabel,
+  voirDetailLabel,
+}: {
+  e: Evenement;
+  locale: string;
+  aVenirLabel: string;
+  voirDetailLabel: string;
+}) {
+  const dateLabel = e.date_debut ? formatLocalizedDate(e.date_debut, locale) : (e.date_evenement ?? null);
+  const loc = locale as SupportedLocale;
+  const titre = localizeField(e, "titre", loc);
+  const lieu = localizeField(e, "lieu", loc);
+  const description = localizeField(e, "description", loc);
+
+  const content = (
+    <div className="grid items-center gap-8 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
+      {e.image_url ? (
+        <PhotoFrame variant="editorial" className="aspect-[4/3]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={e.image_url} alt={titre} className="h-full w-full object-cover" />
+        </PhotoFrame>
+      ) : (
+        <PhotoFrame variant="editorial" className="flex aspect-[4/3] items-center justify-center">
+          <svg className="h-12 w-12 text-forest/25" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+          </svg>
+        </PhotoFrame>
+      )}
+
+      <div>
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-champagne-soft/35 px-3 py-1 text-xs font-medium uppercase tracking-[0.16em] text-ink ring-1 ring-champagne-soft/70">
+          <span className="h-1.5 w-1.5 rounded-full bg-champagne" aria-hidden="true" />
+          {aVenirLabel}
+        </span>
+        <h3 className="mt-3 text-2xl font-semibold leading-snug tracking-tight text-ink md:text-3xl">{titre}</h3>
+
+        {(dateLabel || lieu) && (
+          <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-champagne-soft/60 pt-4 text-sm text-muted-foreground">
+            {dateLabel && (
+              <span className="font-medium text-ink">
+                {dateLabel}
+                {e.heure ? ` · ${e.heure.substring(0, 5)}` : ""}
+              </span>
+            )}
+            {dateLabel && lieu && <span aria-hidden="true">·</span>}
+            {lieu && <span>{lieu}</span>}
+          </div>
+        )}
+
+        {description && <p className="mt-4 leading-relaxed text-muted-foreground">{description}</p>}
+
+        {e.slug && (
+          <p className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-ink">
+            {voirDetailLabel}
+            <span aria-hidden="true" className="rtl:rotate-180 transition-transform duration-150 ease-out-strong group-hover:translate-x-1">→</span>
+          </p>
+        )}
+      </div>
+    </div>
+  );
+
+  return e.slug ? (
+    <Link href={`/evenements/${e.slug}`} className="group block">
+      {content}
+    </Link>
+  ) : (
+    content
+  );
+}
+
 function PourquoiItem({ titre, description }: { titre: string; description: string }) {
   return (
     <div className="flex gap-3.5">
@@ -237,7 +329,7 @@ function EvenementCard({
     <div className="group flex h-full flex-col overflow-hidden rounded-[1.5rem] bg-background shadow-[0_2px_20px_-8px_rgba(20,48,31,0.12)] transition-shadow duration-200 hover:shadow-[0_12px_32px_-12px_rgba(20,48,31,0.24)]">
       {/* Image */}
       {e.image_url ? (
-        <div className="relative aspect-[4/3] w-full overflow-hidden">
+        <PhotoFrame variant="thumbnail" className="aspect-[4/3] w-full">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={e.image_url}
@@ -252,19 +344,19 @@ function EvenementCard({
             <span className="h-1.5 w-1.5 rounded-full bg-champagne" aria-hidden="true" />
             {avnr ? aVenirLabel : passeLabel}
           </span>
-        </div>
+        </PhotoFrame>
       ) : (
-        <div className="flex aspect-[4/3] items-center justify-center bg-surface-muted">
+        <PhotoFrame variant="thumbnail" className="flex aspect-[4/3] items-center justify-center">
           <svg className="h-10 w-10 text-forest/25" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
           </svg>
-        </div>
+        </PhotoFrame>
       )}
 
       {/* Contenu */}
       <div className={`flex flex-1 flex-col ${compact ? "p-4" : "p-5"}`}>
         {dateLabel && (
-          <p className="text-xs font-medium text-forest">
+          <p className="text-xs font-medium text-ink">
             {dateLabel}
             {e.heure ? ` · ${e.heure.substring(0, 5)}` : ""}
           </p>
@@ -279,7 +371,7 @@ function EvenementCard({
           </p>
         )}
         {e.slug && (
-          <p className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-forest">
+          <p className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-ink">
             {voirDetailLabel}
             <span aria-hidden="true" className="rtl:rotate-180 transition-transform duration-150 ease-out-strong group-hover:translate-x-0.5">→</span>
           </p>

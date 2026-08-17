@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import GrowthMark from "@/components/GrowthMark";
 import ScrollReveal from "@/components/ScrollReveal";
+import { PhotoFrame } from "@/components/PhotoFrame";
 import { supabase } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
@@ -76,7 +77,7 @@ export default async function Activites({ params }: { params: Promise<{ locale: 
             className="pointer-events-none absolute -end-10 -top-10 h-40 w-40 text-champagne/[0.14]"
           />
           <div className="relative mx-auto max-w-2xl text-center">
-            <p className="text-xs font-medium uppercase tracking-[0.16em] text-champagne">{t("hero.kicker")}</p>
+            <p className="text-xs font-medium uppercase tracking-[0.16em] text-ink">{t("hero.kicker")}</p>
             <h1 className="mt-3 text-4xl font-semibold tracking-tight text-ink md:text-5xl">{t("hero.title")}</h1>
             <p className="mt-5 text-base leading-relaxed text-muted-foreground">{t("hero.text")}</p>
           </div>
@@ -93,17 +94,17 @@ export default async function Activites({ params }: { params: Promise<{ locale: 
                   }`}
                 >
                   {a.photo && (
-                    <div
-                      className={`relative aspect-[4/3] overflow-hidden rounded-[1.75rem] shadow-[0_20px_50px_-24px_rgba(20,48,31,0.28)] ${
-                        i % 2 === 1 ? "lg:order-2" : ""
-                      }`}
+                    <PhotoFrame
+                      variant="editorial"
+                      backplateOffset={i % 2 === 1 ? "end" : "start"}
+                      className={`aspect-[4/3] ${i % 2 === 1 ? "lg:order-2" : ""}`}
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={a.photo.url} alt={a.photo.titre} className="h-full w-full object-cover" />
-                    </div>
+                    </PhotoFrame>
                   )}
                   <div className={a.photo && i % 2 === 1 ? "lg:order-1" : ""}>
-                    <span className="text-xs font-medium uppercase tracking-[0.14em] text-champagne">
+                    <span className="text-xs font-medium uppercase tracking-[0.14em] text-ink">
                       0{i + 1}
                     </span>
                     <h2 className="mt-2 text-xl font-semibold tracking-tight text-ink md:text-2xl">

@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import GrowthMark from "@/components/GrowthMark";
 import ScrollReveal from "@/components/ScrollReveal";
+import { PhotoFrame } from "@/components/PhotoFrame";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -30,13 +31,13 @@ export default async function APropos({ params }: { params: Promise<{ locale: st
                 aria-hidden="true"
                 className="pointer-events-none absolute -start-10 -top-14 h-36 w-36 text-champagne/[0.18]"
               />
-              <p className="relative text-xs font-medium uppercase tracking-[0.16em] text-champagne">{t("hero.kicker")}</p>
+              <p className="relative text-xs font-medium uppercase tracking-[0.16em] text-ink">{t("hero.kicker")}</p>
               <h1 className="relative mt-3 text-4xl font-semibold leading-[1.08] tracking-tight text-ink md:text-5xl">
                 {t("hero.title")}
               </h1>
               <p className="relative mt-5 max-w-md text-base leading-relaxed text-muted-foreground">{t("hero.text")}</p>
             </div>
-            <div className="relative aspect-[4/3] overflow-hidden rounded-[1.75rem] shadow-[0_30px_60px_-24px_rgba(20,48,31,0.35)]">
+            <PhotoFrame variant="editorial" className="aspect-[4/3]">
               <Image
                 src="/images/accueil/valeurs-esprit-equipe.jpg"
                 alt="Membres de l'Association Jeunes Actifs réunis, incarnant l'esprit d'équipe et la solidarité"
@@ -45,7 +46,7 @@ export default async function APropos({ params }: { params: Promise<{ locale: st
                 className="object-cover"
                 priority
               />
-            </div>
+            </PhotoFrame>
           </div>
         </section>
 
@@ -53,7 +54,7 @@ export default async function APropos({ params }: { params: Promise<{ locale: st
         <ScrollReveal>
           <section className="px-6 py-16 md:py-20">
             <div className="mx-auto grid max-w-5xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
-              <div className="relative aspect-[4/3] overflow-hidden rounded-[1.75rem] shadow-[0_20px_50px_-24px_rgba(20,48,31,0.3)] lg:order-2">
+              <PhotoFrame variant="editorial" className="aspect-[4/3] lg:order-2">
                 <Image
                   src="/images/accueil/animation-enfants.jpg"
                   alt="Membres de l'association animant une activité avec des enfants"
@@ -61,9 +62,9 @@ export default async function APropos({ params }: { params: Promise<{ locale: st
                   sizes="(min-width: 1024px) 45vw, 100vw"
                   className="object-cover"
                 />
-              </div>
+              </PhotoFrame>
               <div className="lg:order-1">
-                <p className="text-xs font-medium uppercase tracking-[0.16em] text-champagne">{t("mission.kicker")}</p>
+                <p className="text-xs font-medium uppercase tracking-[0.16em] text-ink">{t("mission.kicker")}</p>
                 <h2 className="mt-3 text-2xl font-semibold tracking-tight text-ink md:text-3xl">{t("mission.title")}</h2>
                 <p className="mt-5 leading-relaxed text-muted-foreground">{t("mission.text")}</p>
               </div>
@@ -75,7 +76,7 @@ export default async function APropos({ params }: { params: Promise<{ locale: st
         <ScrollReveal>
           <section className="border-y border-champagne-soft/60 bg-surface-muted px-6 py-16 md:py-20">
             <div className="mx-auto max-w-5xl">
-              <p className="text-xs font-medium uppercase tracking-[0.16em] text-champagne">{t("valeurs.kicker")}</p>
+              <p className="text-xs font-medium uppercase tracking-[0.16em] text-ink">{t("valeurs.kicker")}</p>
               <h2 className="mt-3 text-2xl font-semibold tracking-tight text-ink md:text-3xl">{t("valeurs.title")}</h2>
               <p className="mt-3 max-w-xl text-sm text-muted-foreground">{t("valeurs.text")}</p>
 
@@ -94,7 +95,7 @@ export default async function APropos({ params }: { params: Promise<{ locale: st
         <ScrollReveal>
           <section className="px-6 py-16 md:py-20">
             <div className="mx-auto max-w-2xl">
-              <p className="text-xs font-medium uppercase tracking-[0.16em] text-champagne">{t("vision.kicker")}</p>
+              <p className="text-xs font-medium uppercase tracking-[0.16em] text-ink">{t("vision.kicker")}</p>
               <h2 className="mt-3 text-2xl font-semibold tracking-tight text-ink md:text-3xl">{t("vision.title")}</h2>
               <p className="mt-5 leading-relaxed text-muted-foreground">{t("vision.text")}</p>
             </div>

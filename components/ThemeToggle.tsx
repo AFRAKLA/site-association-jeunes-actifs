@@ -77,7 +77,7 @@ export default function ThemeToggle({ variant }: { variant: "popover" | "inline"
                 aria-checked={active}
                 onClick={() => setPreference(opt.value)}
                 className={`flex min-h-11 flex-col items-center justify-center gap-1 rounded-lg text-[11px] font-medium transition-colors duration-150 ${
-                  active ? "bg-forest text-ivory" : "text-muted-foreground hover:text-forest"
+                  active ? "bg-forest text-ivory" : "text-muted-foreground hover:text-ink"
                 }`}
               >
                 <ThemeIcon kind={opt.icon} className="h-4 w-4" />
@@ -100,7 +100,7 @@ export default function ThemeToggle({ variant }: { variant: "popover" | "inline"
         aria-expanded={open}
         aria-label={`${t("label")}: ${t(activeOption.value)}`}
         onClick={() => setOpen((v) => !v)}
-        className="flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-colors duration-150 hover:bg-forest/8 hover:text-forest"
+        className="flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-colors duration-150 hover:bg-forest/8 hover:text-ink"
       >
         <ThemeIcon kind={activeOption.icon} className="h-[18px] w-[18px]" />
       </button>
@@ -125,7 +125,7 @@ export default function ThemeToggle({ variant }: { variant: "popover" | "inline"
                 setOpen(false);
               }}
               className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-start text-sm font-medium transition-colors duration-150 ${
-                active ? "bg-forest/8 text-forest" : "text-muted-foreground hover:bg-forest/6 hover:text-forest"
+                active ? "bg-forest/8 text-ink" : "text-muted-foreground hover:bg-forest/6 hover:text-ink"
               }`}
             >
               <ThemeIcon kind={opt.icon} className="h-4 w-4 shrink-0" />

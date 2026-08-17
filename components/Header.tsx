@@ -50,7 +50,7 @@ export default function Header() {
           : "border-transparent bg-background/70 backdrop-blur-sm"
       }`}
     >
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-6 py-3.5">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-3.5">
         <Link href="/" className="flex shrink-0 items-center gap-2.5">
           <Image
             src="/images/logo-symbole-jeunes-actifs.png"
@@ -73,8 +73,8 @@ export default function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`group relative px-3 py-2 text-sm font-medium transition-colors duration-150 ${
-                  isActive ? "text-forest" : "text-muted-foreground hover:text-forest"
+                className={`group relative px-2.5 py-2 text-sm font-medium transition-colors duration-150 ${
+                  isActive ? "text-ink" : "text-muted-foreground hover:text-ink"
                 }`}
               >
                 {t(link.key)}
@@ -95,9 +95,27 @@ export default function Header() {
             <LanguageSwitcher variant="popover" />
           </div>
 
+          {/* Don — uniquement à partir de xl : à lg (1024px), nav + bascules
+              thème/langue + "Devenir membre" saturent déjà la largeur
+              disponible (vérifié : ajouter ce bouton dès lg provoque un
+              débordement horizontal réel à 1024px). */}
+          <Link
+            href="/contact"
+            className="ms-1 hidden items-center gap-1.5 whitespace-nowrap rounded-full bg-forest px-4 py-2 text-sm font-medium text-ivory transition duration-150 ease-out-strong motion-safe:active:scale-[0.98] hover:bg-forest-light xl:inline-flex"
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="1.6" stroke="currentColor" aria-hidden="true">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
+              />
+            </svg>
+            {tHeader("donate")}
+          </Link>
+
           <Link
             href="/devenir-membre"
-            className="ms-1 hidden rounded-full border border-forest/25 px-5 py-2 text-sm font-medium text-forest transition duration-150 ease-out-strong motion-safe:active:scale-[0.98] hover:bg-forest hover:text-ivory sm:inline-block"
+            className="ms-1 hidden whitespace-nowrap rounded-full border border-forest/25 px-4 py-2 text-sm font-medium text-ink transition duration-150 ease-out-strong motion-safe:active:scale-[0.98] hover:bg-forest hover:text-ivory sm:inline-block"
           >
             {tHeader("cta")}
           </Link>
@@ -141,7 +159,7 @@ export default function Header() {
                   href={link.href}
                   tabIndex={menuOpen ? undefined : -1}
                   className={`flex min-h-11 items-center rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-150 ${
-                    isActive ? "bg-forest/5 text-forest" : "text-muted-foreground hover:bg-forest/5 hover:text-forest"
+                    isActive ? "bg-forest/5 text-ink" : "text-muted-foreground hover:bg-forest/5 hover:text-ink"
                   }`}
                 >
                   {t(link.key)}
@@ -149,9 +167,24 @@ export default function Header() {
               );
             })}
             <Link
+              href="/contact"
+              tabIndex={menuOpen ? undefined : -1}
+              className="mt-2 flex min-h-11 items-center justify-center gap-1.5 rounded-lg bg-forest px-3 py-2.5 text-center text-sm font-medium text-ivory transition-colors duration-150 hover:bg-forest-light"
+            >
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="1.6" stroke="currentColor" aria-hidden="true">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
+                />
+              </svg>
+              {tHeader("donate")}
+            </Link>
+
+            <Link
               href="/devenir-membre"
               tabIndex={menuOpen ? undefined : -1}
-              className="mt-2 flex min-h-11 items-center justify-center rounded-lg bg-forest px-3 py-2.5 text-center text-sm font-medium text-ivory transition-colors duration-150 hover:bg-forest-light"
+              className="mt-2 flex min-h-11 items-center justify-center rounded-lg border border-forest/25 px-3 py-2.5 text-center text-sm font-medium text-ink transition-colors duration-150 hover:bg-forest/5"
             >
               {tHeader("cta")}
             </Link>

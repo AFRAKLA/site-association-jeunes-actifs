@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useEffect, type FormEvent } from "react";
+import { useTranslations } from "next-intl";
 import ImageUploader from "@/components/admin/ImageUploader";
 import MultiImageUploader, {
   type ExistingPhoto,
 } from "@/components/admin/MultiImageUploader";
 import TranslatedFields, { type TranslatedFieldDef } from "@/components/admin/TranslatedFields";
+import { PhotoFrame } from "@/components/PhotoFrame";
 
 /* --- Types --- */
 
@@ -53,18 +55,11 @@ interface EvenementI18n {
 
 const EMPTY_EVT_I18N: EvenementI18n = { titre: "", lieu: "", description: "", description_complete: "" };
 
-const EVT_I18N_FIELDS: TranslatedFieldDef<EvenementI18n>[] = [
-  { key: "titre", label: "Titre", type: "input", requiredOnFr: true },
-  { key: "lieu", label: "Lieu", type: "input", placeholder: "Ex : Université Mohammed Ier, Oujda" },
-  { key: "description", label: "Description courte", type: "textarea", rows: 2, requiredOnFr: true, placeholder: "Résumé affiché dans les listes..." },
-  { key: "description_complete", label: "Description complète", type: "textarea", rows: 4, placeholder: "Détails affichés sur la page de l'événement..." },
-];
-
 type Statut = "brouillon" | "publie";
 
 /* --- Constantes --- */
 
-const CATEGORIES: Categorie[] = [
+const CATEGORIE_VALUES: Categorie[] = [
   "Événement étudiant",
   "Environnement",
   "Culture",
@@ -97,8 +92,8 @@ function formatDateFr(dateStr: string): string {
 /* --- Composants de champs communs --- */
 
 const inputCls =
-  "w-full rounded-lg border border-admin-champagne-soft bg-white px-3 py-2 text-sm text-foreground outline-none transition-colors duration-150 focus:border-primary focus:ring-2 focus:ring-primary/20";
-const labelCls = "mb-1 block text-sm font-medium text-foreground/80";
+  "w-full rounded-lg border border-admin-champagne-soft bg-surface px-3 py-2 text-sm text-admin-ink outline-none transition-colors duration-150 focus:border-admin-forest focus:ring-2 focus:ring-admin-champagne/20";
+const labelCls = "mb-1 block text-sm font-medium text-admin-ink/80";
 
 /* --- État initial du formulaire d'édition --- */
 
@@ -113,6 +108,16 @@ const defaultEditForm = {
 /* --- Composant principal --- */
 
 export default function EvenementsAdmin() {
+  const t = useTranslations("evenementsAdmin");
+  const tc = useTranslations("common");
+
+  const EVT_I18N_FIELDS: TranslatedFieldDef<EvenementI18n>[] = [
+    { key: "titre", label: tc("title"), type: "input", requiredOnFr: true },
+    { key: "lieu", label: t("location"), type: "input", placeholder: t("locationPlaceholder") },
+    { key: "description", label: t("shortDescription"), type: "textarea", rows: 2, requiredOnFr: true, placeholder: t("shortDescriptionPlaceholder") },
+    { key: "description_complete", label: t("fullDescription"), type: "textarea", rows: 4, placeholder: t("fullDescriptionPlaceholder") },
+  ];
+
   const [evenements, setEvenements] = useState<Evenement[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
@@ -223,15 +228,15 @@ export default function EvenementsAdmin() {
       const data = await res.json();
 
       if (!res.ok) {
-        setFormError(data.error || "Erreur lors de la création.");
+        setFormError(data.error || t("createError"));
         return;
       }
 
-      setFormSuccess("Événement créé avec succès.");
+      setFormSuccess(t("createSuccess"));
       resetCreateForm();
       if (data.evenement) setEvenements((prev) => [data.evenement, ...prev]);
     } catch {
-      setFormError("Erreur serveur.");
+      setFormError(tc("serverError"));
     } finally {
       setFormLoading(false);
     }
@@ -324,11 +329,11 @@ export default function EvenementsAdmin() {
       const data = await res.json();
 
       if (!res.ok) {
-        setEditError(data.error || "Erreur lors de la mise à jour.");
+        setEditError(data.error || t("updateError"));
         return;
       }
 
-      setEditSuccess("Événement mis à jour.");
+      setEditSuccess(t("updateSuccess"));
       if (data.evenement) {
         setEvenements((prev) =>
           prev.map((e) => (e.id === id ? data.evenement : e))
@@ -336,14 +341,14 @@ export default function EvenementsAdmin() {
       }
       setEditingId(null);
     } catch {
-      setEditError("Erreur serveur.");
+      setEditError(tc("serverError"));
     } finally {
       setEditLoading(false);
     }
   }
 
   async function handleDelete(id: string) {
-    if (!confirm("Supprimer cet événement ?")) return;
+    if (!confirm(t("confirmDelete"))) return;
     setDeleting(id);
     try {
       const res = await fetch("/api/admin/evenements/delete", {
@@ -370,13 +375,11 @@ export default function EvenementsAdmin() {
       {/* Barre d'actions */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-muted-foreground">
-          {evenements.length} événement{evenements.length !== 1 ? "s" : ""} ·{" "}
-          {publies} publié{publies !== 1 ? "s" : ""} · {brouillons} brouillon
-          {brouillons !== 1 ? "s" : ""} · {aVenirCount} à venir
+          {t("countTotal", { count: evenements.length })} · {t("countPublished", { count: publies })} · {t("countDraft", { count: brouillons })} · {t("countUpcoming", { count: aVenirCount })}
         </p>
 
         <details className="group">
-          <summary className="inline-flex cursor-pointer select-none items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-sm font-medium text-white transition-colors duration-150 ease-out-strong motion-safe:active:scale-[0.98] hover:bg-primary-dark [&::-webkit-details-marker]:hidden">
+          <summary className="inline-flex cursor-pointer select-none items-center gap-1.5 rounded-lg bg-admin-forest px-3.5 py-2 text-sm font-medium text-white transition-colors duration-150 ease-out-strong motion-safe:active:scale-[0.98] hover:bg-admin-forest-light [&::-webkit-details-marker]:hidden">
             <svg
               className="h-4 w-4"
               fill="none"
@@ -390,16 +393,16 @@ export default function EvenementsAdmin() {
                 d="M12 4.5v15m7.5-7.5h-15"
               />
             </svg>
-            Nouvel événement
+            {t("new")}
           </summary>
 
-          <div className="mt-3 rounded-2xl border border-admin-champagne-soft bg-admin-ivory-warm/70 p-5">
+          <div className="mt-3 rounded-2xl border border-admin-champagne-soft bg-surface-muted/70 p-5">
             <form onSubmit={handleCreate} className="space-y-3">
               {/* Catégorie + Statut */}
               <div className="grid gap-3 sm:grid-cols-2">
                 <div>
                   <label htmlFor="evt-categorie" className={labelCls}>
-                    Catégorie <span className="text-red-500">*</span>
+                    {tc("category")} <span className="text-admin-danger">*</span>
                   </label>
                   <select
                     id="evt-categorie"
@@ -407,16 +410,16 @@ export default function EvenementsAdmin() {
                     onChange={(e) => setFormCategorie(e.target.value as Categorie)}
                     className={inputCls}
                   >
-                    {CATEGORIES.map((c) => (
+                    {CATEGORIE_VALUES.map((c) => (
                       <option key={c} value={c}>
-                        {c}
+                        {t(`categories.${c}`)}
                       </option>
                     ))}
                   </select>
                 </div>
                 <div>
                   <label htmlFor="evt-statut" className={labelCls}>
-                    Statut <span className="text-red-500">*</span>
+                    {tc("status")} <span className="text-admin-danger">*</span>
                   </label>
                   <select
                     id="evt-statut"
@@ -424,8 +427,8 @@ export default function EvenementsAdmin() {
                     onChange={(e) => setFormStatut(e.target.value as Statut)}
                     className={inputCls}
                   >
-                    <option value="brouillon">Brouillon</option>
-                    <option value="publie">Publié</option>
+                    <option value="brouillon">{tc("draft")}</option>
+                    <option value="publie">{tc("published")}</option>
                   </select>
                 </div>
               </div>
@@ -434,7 +437,7 @@ export default function EvenementsAdmin() {
               <div className="grid gap-3 sm:grid-cols-2">
                 <div>
                   <label htmlFor="evt-date-debut" className={labelCls}>
-                    Date
+                    {t("date")}
                   </label>
                   <input
                     id="evt-date-debut"
@@ -446,7 +449,7 @@ export default function EvenementsAdmin() {
                 </div>
                 <div>
                   <label htmlFor="evt-heure" className={labelCls}>
-                    Heure
+                    {t("time")}
                   </label>
                   <input
                     id="evt-heure"
@@ -459,7 +462,7 @@ export default function EvenementsAdmin() {
               </div>
 
               <div className="flex items-center gap-2 pt-2">
-                <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-muted-foreground">Contenu (FR / EN / AR)</span>
+                <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-muted-foreground">{tc("contentSection")}</span>
                 <span aria-hidden="true" className="h-px flex-1 bg-admin-champagne-soft/60" />
               </div>
 
@@ -475,13 +478,13 @@ export default function EvenementsAdmin() {
               />
 
               <div className="flex items-center gap-2 pt-2">
-                <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-muted-foreground">Médias</span>
+                <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-muted-foreground">{tc("mediaSection")}</span>
                 <span aria-hidden="true" className="h-px flex-1 bg-admin-champagne-soft/60" />
               </div>
 
               {/* Image principale */}
               <ImageUploader
-                label="Image principale"
+                label={tc("mainImage")}
                 currentUrl={null}
                 onChange={(file) => setFormImageFile(file)}
               />
@@ -489,7 +492,7 @@ export default function EvenementsAdmin() {
               {/* Vidéo URL */}
               <div>
                 <label htmlFor="evt-video-url" className={labelCls}>
-                  Vidéo (URL YouTube ou Vimeo)
+                  {t("video")}
                 </label>
                 <input
                   id="evt-video-url"
@@ -503,7 +506,7 @@ export default function EvenementsAdmin() {
 
               {/* Photos supplémentaires */}
               <MultiImageUploader
-                label="Photos supplémentaires"
+                label={tc("additionalPhotos")}
                 existingPhotos={[]}
                 removedUrls={[]}
                 onRemoveExisting={() => {}}
@@ -513,16 +516,16 @@ export default function EvenementsAdmin() {
               <button
                 type="submit"
                 disabled={formLoading}
-                className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors duration-150 motion-safe:active:scale-[0.98] hover:bg-primary-dark disabled:opacity-50"
+                className="rounded-lg bg-admin-forest px-4 py-2 text-sm font-medium text-white transition-colors duration-150 motion-safe:active:scale-[0.98] hover:bg-admin-forest-light disabled:opacity-50"
               >
-                {formLoading ? "Création…" : "Créer l'événement"}
+                {formLoading ? t("creating") : t("create")}
               </button>
 
               {formSuccess && (
-                <p className="admin-reveal text-sm text-primary">{formSuccess}</p>
+                <p className="admin-reveal text-sm text-admin-ink">{formSuccess}</p>
               )}
               {formError && (
-                <p className="admin-reveal text-sm text-red-600">{formError}</p>
+                <p className="admin-reveal text-sm text-admin-danger">{formError}</p>
               )}
             </form>
           </div>
@@ -531,15 +534,15 @@ export default function EvenementsAdmin() {
 
       {/* Liste */}
       {loading ? (
-        <p className="mt-4 text-sm text-muted-foreground">Chargement…</p>
+        <p className="mt-4 text-sm text-muted-foreground">{tc("loading")}</p>
       ) : evenements.length === 0 ? (
-        <div className="mt-4 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-admin-champagne-soft bg-admin-ivory-warm/60 px-4 py-14 text-center">
-          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white ring-1 ring-admin-champagne-soft">
-            <svg className="h-5 w-5 text-admin-forest" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+        <div className="mt-4 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-admin-champagne-soft bg-surface-muted/60 px-4 py-14 text-center">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-surface ring-1 ring-admin-champagne-soft">
+            <svg className="h-5 w-5 text-admin-ink" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
             </svg>
           </span>
-          <p className="text-sm text-muted-foreground">Aucun événement pour l&apos;instant.</p>
+          <p className="text-sm text-muted-foreground">{t("empty")}</p>
         </div>
       ) : (
         <div className="mt-4 space-y-2.5">
@@ -550,40 +553,38 @@ export default function EvenementsAdmin() {
             return (
               <div
                 key={e.id}
-                className="rounded-xl border border-admin-champagne-soft/60 bg-white transition-shadow duration-200 hover:shadow-[0_2px_16px_-4px_rgba(20,48,31,0.1)]"
+                className="rounded-xl border border-admin-champagne-soft/60 bg-surface transition-shadow duration-200 hover:shadow-[0_2px_16px_-4px_rgba(20,48,31,0.1)]"
               >
                 {/* En-tête de la carte */}
                 <div className="flex items-start justify-between gap-4 p-4 sm:p-5">
                   <div className="flex min-w-0 flex-1 items-start gap-3.5">
                     {e.image_url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={e.image_url}
-                        alt=""
-                        className="h-12 w-12 shrink-0 rounded-lg object-cover ring-1 ring-admin-champagne-soft"
-                      />
+                      <PhotoFrame variant="thumbnail" className="h-12 w-12 shrink-0">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={e.image_url} alt="" className="h-full w-full object-cover" />
+                      </PhotoFrame>
                     ) : (
-                      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-admin-ivory-warm ring-1 ring-admin-champagne-soft">
-                        <svg className="h-5 w-5 text-admin-forest/70" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+                      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-surface-muted ring-1 ring-admin-champagne-soft">
+                        <svg className="h-5 w-5 text-admin-ink/70" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
                         </svg>
                       </span>
                     )}
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
-                        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-foreground/70">
+                        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-admin-ink/70">
                           <span
-                            className={`h-1.5 w-1.5 shrink-0 rounded-full ${e.statut === "publie" ? "bg-primary" : "bg-admin-champagne"}`}
+                            className={`h-1.5 w-1.5 shrink-0 rounded-full ${e.statut === "publie" ? "bg-admin-forest" : "bg-admin-champagne"}`}
                             aria-hidden="true"
                           />
-                          {e.statut === "publie" ? "Publié" : "Brouillon"}
+                          {e.statut === "publie" ? tc("published") : tc("draft")}
                         </span>
                         {avenir ? (
                           <span className="inline-flex items-center rounded-full bg-admin-champagne/20 px-2 py-0.5 text-xs font-semibold text-admin-forest">
-                            À venir
+                            {t("upcoming")}
                           </span>
                         ) : (
-                          <span className="text-xs text-muted-foreground">Passé</span>
+                          <span className="text-xs text-muted-foreground">{t("past")}</span>
                         )}
                       </div>
                       <p className="mt-1.5 truncate text-sm font-semibold text-admin-ink">
@@ -596,7 +597,7 @@ export default function EvenementsAdmin() {
                         {e.heure ? ` · ${e.heure.substring(0, 5)}` : ""}
                         {e.lieu ? ` · ${e.lieu}` : ""}
                         {" · "}
-                        {e.categorie}
+                        {t(`categories.${e.categorie}` as "categories.Environnement")}
                       </p>
                       {e.slug && (
                         <p className="mt-0.5 text-xs text-muted-foreground">
@@ -610,23 +611,23 @@ export default function EvenementsAdmin() {
                       onClick={() =>
                         isEditing ? setEditingId(null) : openEdit(e)
                       }
-                      className="rounded-lg border border-admin-forest/20 px-3 py-1.5 text-xs font-semibold text-admin-forest transition-colors duration-150 ease-out-strong motion-safe:active:scale-[0.97] hover:bg-admin-forest/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                      className="rounded-lg border border-admin-champagne-soft px-3 py-1.5 text-xs font-semibold text-admin-ink transition-colors duration-150 ease-out-strong motion-safe:active:scale-[0.97] hover:bg-admin-forest/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-admin-champagne/50"
                     >
-                      {isEditing ? "Annuler" : "Modifier"}
+                      {isEditing ? tc("cancel") : tc("edit")}
                     </button>
                     <button
                       onClick={() => handleDelete(e.id)}
                       disabled={deleting === e.id}
-                      className="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600 transition-colors duration-150 ease-out-strong motion-safe:active:scale-[0.97] hover:bg-red-50 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400/50"
+                      className="rounded-lg border border-admin-danger-border px-3 py-1.5 text-xs font-semibold text-admin-danger transition-colors duration-150 ease-out-strong motion-safe:active:scale-[0.97] hover:bg-admin-danger-bg disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-admin-danger/50"
                     >
-                      {deleting === e.id ? "…" : "Supprimer"}
+                      {deleting === e.id ? tc("deletingEllipsis") : tc("delete")}
                     </button>
                   </div>
                 </div>
 
                 {/* Formulaire d'édition inline */}
                 {isEditing && (
-                  <div className="admin-reveal border-t border-admin-champagne-soft/60 bg-admin-ivory-warm/70 p-4 sm:p-5">
+                  <div className="admin-reveal border-t border-admin-champagne-soft/60 bg-surface-muted/70 p-4 sm:p-5">
                     <form
                       onSubmit={(ev) => handleUpdate(ev, e.id)}
                       className="space-y-3"
@@ -634,7 +635,7 @@ export default function EvenementsAdmin() {
                       <div className="grid gap-3 sm:grid-cols-2">
                         <div>
                           <label className={labelCls}>
-                            Catégorie <span className="text-red-500">*</span>
+                            {tc("category")} <span className="text-admin-danger">*</span>
                           </label>
                           <select
                             value={editForm.categorie}
@@ -646,16 +647,16 @@ export default function EvenementsAdmin() {
                             }
                             className={inputCls}
                           >
-                            {CATEGORIES.map((c) => (
+                            {CATEGORIE_VALUES.map((c) => (
                               <option key={c} value={c}>
-                                {c}
+                                {t(`categories.${c}`)}
                               </option>
                             ))}
                           </select>
                         </div>
                         <div>
                           <label className={labelCls}>
-                            Statut <span className="text-red-500">*</span>
+                            {tc("status")} <span className="text-admin-danger">*</span>
                           </label>
                           <select
                             value={editForm.statut}
@@ -667,15 +668,15 @@ export default function EvenementsAdmin() {
                             }
                             className={inputCls}
                           >
-                            <option value="brouillon">Brouillon</option>
-                            <option value="publie">Publié</option>
+                            <option value="brouillon">{tc("draft")}</option>
+                            <option value="publie">{tc("published")}</option>
                           </select>
                         </div>
                       </div>
 
                       <div className="grid gap-3 sm:grid-cols-2">
                         <div>
-                          <label className={labelCls}>Date</label>
+                          <label className={labelCls}>{t("date")}</label>
                           <input
                             type="date"
                             value={editForm.date_debut}
@@ -689,7 +690,7 @@ export default function EvenementsAdmin() {
                           />
                         </div>
                         <div>
-                          <label className={labelCls}>Heure</label>
+                          <label className={labelCls}>{t("time")}</label>
                           <input
                             type="time"
                             value={editForm.heure}
@@ -705,7 +706,7 @@ export default function EvenementsAdmin() {
                       </div>
 
                       <div className="flex items-center gap-2 pt-2">
-                        <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-muted-foreground">Contenu (FR / EN / AR)</span>
+                        <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-muted-foreground">{tc("contentSection")}</span>
                         <span aria-hidden="true" className="h-px flex-1 bg-admin-champagne-soft/60" />
                       </div>
 
@@ -721,13 +722,13 @@ export default function EvenementsAdmin() {
                       />
 
                       <div className="flex items-center gap-2 pt-2">
-                        <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-muted-foreground">Médias</span>
+                        <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-muted-foreground">{tc("mediaSection")}</span>
                         <span aria-hidden="true" className="h-px flex-1 bg-admin-champagne-soft/60" />
                       </div>
 
                       <ImageUploader
                         key={`img-${e.id}`}
-                        label="Image principale"
+                        label={tc("mainImage")}
                         currentUrl={editCurrentImageUrl}
                         onChange={(file, removeCurrent) => {
                           setEditImageFile(file);
@@ -737,7 +738,7 @@ export default function EvenementsAdmin() {
 
                       <div>
                         <label className={labelCls}>
-                          Vidéo (URL YouTube ou Vimeo)
+                          {t("video")}
                         </label>
                         <input
                           type="text"
@@ -754,7 +755,7 @@ export default function EvenementsAdmin() {
 
                       <MultiImageUploader
                         key={`photos-${e.id}`}
-                        label="Photos supplémentaires"
+                        label={tc("additionalPhotos")}
                         existingPhotos={editExistingPhotos}
                         removedUrls={editRemovedPhotoUrls}
                         onRemoveExisting={(url) =>
@@ -767,24 +768,24 @@ export default function EvenementsAdmin() {
                         <button
                           type="submit"
                           disabled={editLoading}
-                          className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors duration-150 motion-safe:active:scale-[0.98] hover:bg-primary-dark disabled:opacity-50"
+                          className="rounded-lg bg-admin-forest px-4 py-2 text-sm font-medium text-white transition-colors duration-150 motion-safe:active:scale-[0.98] hover:bg-admin-forest-light disabled:opacity-50"
                         >
-                          {editLoading ? "Enregistrement…" : "Enregistrer"}
+                          {editLoading ? tc("saving") : tc("save")}
                         </button>
                         <button
                           type="button"
                           onClick={() => setEditingId(null)}
-                          className="text-sm text-muted-foreground hover:text-foreground"
+                          className="text-sm text-muted-foreground hover:text-admin-ink"
                         >
-                          Annuler
+                          {tc("cancel")}
                         </button>
                       </div>
 
                       {editSuccess && (
-                        <p className="admin-reveal text-sm text-primary">{editSuccess}</p>
+                        <p className="admin-reveal text-sm text-admin-ink">{editSuccess}</p>
                       )}
                       {editError && (
-                        <p className="admin-reveal text-sm text-red-600">{editError}</p>
+                        <p className="admin-reveal text-sm text-admin-danger">{editError}</p>
                       )}
                     </form>
                   </div>

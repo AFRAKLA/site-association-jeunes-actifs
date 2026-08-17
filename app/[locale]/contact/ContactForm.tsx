@@ -124,7 +124,7 @@ export default function ContactForm() {
         {status === "loading" ? t("submitting") : t("submit")}
       </button>
       {status === "success" && (
-        <p className="admin-reveal rounded-xl border border-forest/20 bg-forest/5 px-4 py-3 text-center text-sm font-medium text-forest">
+        <p className="admin-reveal rounded-xl border border-forest/20 bg-forest/5 px-4 py-3 text-center text-sm font-medium text-ink">
           {t("success")}
         </p>
       )}

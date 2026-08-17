@@ -74,18 +74,28 @@ export default function ActualitesContent({
             className="pointer-events-none absolute -end-10 -top-10 h-40 w-40 text-champagne/[0.14]"
           />
           <div className="relative mx-auto max-w-2xl text-center">
-            <p className="text-xs font-medium uppercase tracking-[0.16em] text-champagne">{t("hero.kicker")}</p>
+            <p className="text-xs font-medium uppercase tracking-[0.16em] text-ink">{t("hero.kicker")}</p>
             <h1 className="mt-3 text-4xl font-semibold tracking-tight text-ink md:text-5xl">{t("hero.title")}</h1>
             <p className="mt-5 text-base leading-relaxed text-muted-foreground">{t("hero.text")}</p>
           </div>
         </section>
 
-        {/* ── Photos du terrain ── */}
-        <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
-          {photosTerrain.map((p) => (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img key={p.src} src={p.src} alt={p.alt} className="aspect-[4/3] w-full object-cover" />
-          ))}
+        {/* ── Photos du terrain ── bande plein-bord volontairement frameless
+            (voir PhotoFrame.tsx) : un liseré ring-inset très discret évite
+            que ça lise comme un oubli, sans ajouter de coins arrondis qui
+            la confondraient avec les cartes/vignettes du reste du système. */}
+        <div className="border-y border-champagne-soft/60">
+          <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
+            {photosTerrain.map((p) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={p.src}
+                src={p.src}
+                alt={p.alt}
+                className="aspect-[4/3] w-full object-cover ring-1 ring-inset ring-champagne-soft/25"
+              />
+            ))}
+          </div>
         </div>
 
         {/* ── Filtres ── */}
@@ -98,7 +108,7 @@ export default function ActualitesContent({
                 className={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-150 ${
                   filtre === cat
                     ? "bg-forest text-ivory"
-                    : "border border-champagne-soft text-muted-foreground hover:border-forest/30 hover:text-forest"
+                    : "border border-champagne-soft text-muted-foreground hover:border-forest/30 hover:text-ink"
                 }`}
               >
                 {t(`categories.${cat}`)}
@@ -118,7 +128,7 @@ export default function ActualitesContent({
               <div className="grid gap-10 lg:grid-cols-[1.3fr_1fr]">
                 <article>
                   <div className="flex flex-wrap items-center gap-2.5">
-                    <span className="inline-flex items-center gap-1.5 text-xs font-medium text-forest">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-medium text-ink">
                       <span className="h-1.5 w-1.5 rounded-full bg-champagne" aria-hidden="true" />
                       {t(`categories.${articleVedette.categorie}` as "categories.tous")}
                     </span>
@@ -137,7 +147,7 @@ export default function ActualitesContent({
                     {autresArticles.map((article) => (
                       <div key={article.id} className="py-5 first:pt-0">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="text-xs font-medium text-forest">
+                          <span className="text-xs font-medium text-ink">
                             {t(`categories.${article.categorie}` as "categories.tous")}
                           </span>
                           <span className="text-xs text-muted-foreground">· {formatLocalizedDate(article.created_at, locale)}</span>

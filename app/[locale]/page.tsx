@@ -5,9 +5,11 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import GrowthMark from "@/components/GrowthMark";
 import ScrollReveal from "@/components/ScrollReveal";
+import { PhotoFrame, PhotoCaption } from "@/components/PhotoFrame";
 import { supabase } from "@/lib/supabase";
 import { formatLocalizedDate } from "@/lib/date-format";
 import { localizeField, type SupportedLocale } from "@/lib/i18n-content";
+import { CategoryIcon } from "@/lib/gallery-icons";
 
 export const dynamic = "force-dynamic";
 
@@ -78,6 +80,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   let derniersMoments: {
     id: string;
     titre: string;
+    categorie: string;
     image_url: string;
     titre_en?: string | null;
     titre_ar?: string | null;
@@ -127,7 +130,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 aria-hidden="true"
                 className="pointer-events-none absolute -start-10 -top-16 h-40 w-40 text-champagne/[0.18] lg:-start-16"
               />
-              <p className="relative text-xs font-medium uppercase tracking-[0.16em] text-champagne">
+              <p className="relative text-xs font-medium uppercase tracking-[0.16em] text-ink">
                 {t("hero.kicker")}
               </p>
               <h1 className="relative mt-3 text-4xl font-semibold leading-[1.08] tracking-tight text-ink md:text-5xl">
@@ -145,28 +148,70 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 </Link>
                 <Link
                   href="/activites"
-                  className="rounded-full border border-forest/25 px-7 py-3.5 text-sm font-medium text-forest transition duration-150 ease-out-strong motion-safe:active:scale-[0.98] hover:bg-forest/5"
+                  className="rounded-full border border-forest/25 px-7 py-3.5 text-sm font-medium text-ink transition duration-150 ease-out-strong motion-safe:active:scale-[0.98] hover:bg-forest/5"
                 >
                   {t("hero.ctaSecondary")}
                 </Link>
               </div>
             </div>
 
-            {/* Photo réelle — bord qui déborde vers la marge, dégradé de fondu */}
+            {/* Photo réelle — composition en profondeur : halo doux, empilement
+                de tirages légèrement pivotés (façon collection de photos),
+                cadre "mat" ivoire autour de la photo, médaillon et cartouche
+                flottants. Les calques décoratifs précèdent la photo dans le
+                DOM et n'ont pas de z-index : l'ordre source suffit à les
+                garder derrière (cf. GrowthMark du bloc texte ci-dessus, même
+                principe). */}
             <div className="relative">
-              <div className="relative aspect-[4/3] overflow-hidden rounded-[1.75rem] shadow-[0_30px_60px_-24px_rgba(20,48,31,0.35)] lg:-me-6">
-                <Image
-                  src="/images/accueil/animation-enfants.jpg"
-                  alt="Membres de l'association Jeunes Actifs lors d'une animation avec des enfants dans la région de l'Oriental"
-                  fill
-                  sizes="(min-width: 1024px) 55vw, 100vw"
-                  className="object-cover"
-                  priority
+              <div className="relative">
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -inset-6 rounded-[2.5rem] bg-champagne/25 blur-2xl lg:-inset-8"
                 />
-                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/35 to-transparent" />
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 rotate-[-3deg] rounded-[2rem] bg-surface shadow-[0_18px_40px_-22px_rgba(20,48,31,0.3)] ring-1 ring-champagne-soft/50"
+                />
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 rotate-[2.5deg] rounded-[2rem] bg-ivory-warm shadow-[0_18px_40px_-22px_rgba(20,48,31,0.22)] ring-1 ring-champagne-soft/40"
+                />
+                <GrowthMark
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -end-8 -top-10 h-24 w-24 rotate-12 text-champagne/[0.18] sm:h-28 sm:w-28"
+                />
+                <GrowthMark
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -bottom-10 -end-4 h-32 w-32 -rotate-6 text-champagne/[0.12]"
+                />
+
+                <div className="relative rounded-[2rem] bg-background p-3 shadow-[0_10px_24px_-12px_rgba(20,48,31,0.35),0_40px_70px_-28px_rgba(20,48,31,0.32)] ring-1 ring-champagne-soft/40 sm:p-4 lg:-me-6">
+                  <div className="relative aspect-[4/3] overflow-hidden rounded-[1.5rem]">
+                    <Image
+                      src="/images/accueil/animation-enfants.jpg"
+                      alt="Membres de l'association Jeunes Actifs lors d'une animation avec des enfants dans la région de l'Oriental"
+                      fill
+                      sizes="(min-width: 1024px) 55vw, 100vw"
+                      className="object-cover transition-transform duration-700 ease-out-strong motion-safe:hover:scale-[1.02]"
+                      priority
+                    />
+                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/45 via-black/10 to-transparent" />
+                  </div>
+                </div>
+
+                <div
+                  aria-hidden="true"
+                  className="absolute -bottom-7 start-6 z-20 flex h-14 w-14 items-center justify-center rounded-full border border-champagne-soft/60 bg-background shadow-[0_12px_28px_-14px_rgba(20,48,31,0.35)] sm:-bottom-8 sm:start-8 sm:h-16 sm:w-16"
+                >
+                  <GrowthMark className="h-6 w-6 text-ink sm:h-7 sm:w-7" />
+                </div>
               </div>
-              <div className="relative z-10 mx-4 -mt-8 rounded-2xl bg-background px-5 py-4 shadow-[0_16px_40px_-16px_rgba(20,48,31,0.25)] sm:mx-8">
-                <p className="text-sm font-medium text-ink">{t("hero.caption")}</p>
+
+              {/* Le médaillon (h-14/16, ancré à start-6/8) chevauche le bord
+                  gauche de ce cartouche par-dessus (z-20 > z-10) : le padding
+                  start le laisse "posé" dessus sans jamais couvrir le texte. */}
+              <div className="relative z-10 mx-6 -mt-8 rounded-2xl border border-champagne-soft/50 bg-background/90 py-3.5 ps-16 pe-4 shadow-[0_16px_40px_-16px_rgba(20,48,31,0.28)] backdrop-blur-md sm:mx-8 sm:ps-20 sm:pe-5">
+                <p className="text-sm font-medium leading-snug text-ink">{t("hero.caption")}</p>
               </div>
             </div>
           </div>
@@ -176,12 +221,12 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         <ScrollReveal>
           <section className="px-6 py-16 md:py-20">
             <div className="mx-auto max-w-2xl">
-              <p className="text-xs font-medium uppercase tracking-[0.16em] text-champagne">{t("mission.kicker")}</p>
+              <p className="text-xs font-medium uppercase tracking-[0.16em] text-ink">{t("mission.kicker")}</p>
               <h2 className="mt-3 text-2xl font-semibold tracking-tight text-ink md:text-3xl">{t("mission.title")}</h2>
               <p className="mt-5 text-base leading-relaxed text-muted-foreground">{t("mission.text")}</p>
               <Link
                 href="/a-propos"
-                className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-forest underline decoration-champagne/50 decoration-2 underline-offset-4 transition-colors duration-150 hover:decoration-champagne"
+                className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-ink underline decoration-champagne/50 decoration-2 underline-offset-4 transition-colors duration-150 hover:decoration-champagne"
               >
                 {t("mission.link")}
               </Link>
@@ -195,12 +240,12 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             <div className="mx-auto max-w-5xl">
               <div className="flex items-end justify-between gap-4">
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-[0.16em] text-champagne">{t("actions.kicker")}</p>
+                  <p className="text-xs font-medium uppercase tracking-[0.16em] text-ink">{t("actions.kicker")}</p>
                   <h2 className="mt-3 text-2xl font-semibold tracking-tight text-ink md:text-3xl">{t("actions.title")}</h2>
                 </div>
                 <Link
                   href="/activites"
-                  className="hidden shrink-0 text-sm font-medium text-forest transition-colors duration-150 hover:text-forest-light sm:inline-block"
+                  className="hidden shrink-0 text-sm font-medium text-ink transition-opacity duration-150 hover:opacity-70 sm:inline-block"
                 >
                   {t("actions.link")}
                 </Link>
@@ -230,7 +275,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               </div>
 
               <div className="mt-8 text-center sm:hidden">
-                <Link href="/activites" className="text-sm font-medium text-forest hover:text-forest-light">
+                <Link href="/activites" className="text-sm font-medium text-ink hover:opacity-70">
                   {t("actions.link")}
                 </Link>
               </div>
@@ -272,10 +317,10 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             <div className="mx-auto max-w-5xl">
               <div className="flex items-end justify-between gap-4">
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-[0.16em] text-champagne">{t("actualites.kicker")}</p>
+                  <p className="text-xs font-medium uppercase tracking-[0.16em] text-ink">{t("actualites.kicker")}</p>
                   <h2 className="mt-3 text-2xl font-semibold tracking-tight text-ink md:text-3xl">{t("actualites.title")}</h2>
                 </div>
-                <Link href="/actualites" className="hidden shrink-0 text-sm font-medium text-forest hover:text-forest-light sm:inline-block">
+                <Link href="/actualites" className="hidden shrink-0 text-sm font-medium text-ink hover:opacity-70 sm:inline-block">
                   {t("actualites.link")}
                 </Link>
               </div>
@@ -296,7 +341,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               )}
 
               <div className="mt-8 text-center sm:hidden">
-                <Link href="/actualites" className="text-sm font-medium text-forest hover:text-forest-light">
+                <Link href="/actualites" className="text-sm font-medium text-ink hover:opacity-70">
                   {t("actualites.link")}
                 </Link>
               </div>
@@ -310,10 +355,10 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             <div className="mx-auto max-w-5xl">
               <div className="flex items-end justify-between gap-4">
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-[0.16em] text-champagne">{t("evenements.kicker")}</p>
+                  <p className="text-xs font-medium uppercase tracking-[0.16em] text-ink">{t("evenements.kicker")}</p>
                   <h2 className="mt-3 text-2xl font-semibold tracking-tight text-ink md:text-3xl">{t("evenements.title")}</h2>
                 </div>
-                <Link href="/evenements" className="hidden shrink-0 text-sm font-medium text-forest hover:text-forest-light sm:inline-block">
+                <Link href="/evenements" className="hidden shrink-0 text-sm font-medium text-ink hover:opacity-70 sm:inline-block">
                   {t("evenements.link")}
                 </Link>
               </div>
@@ -336,7 +381,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               )}
 
               <div className="mt-8 text-center sm:hidden">
-                <Link href="/evenements" className="text-sm font-medium text-forest hover:text-forest-light">
+                <Link href="/evenements" className="text-sm font-medium text-ink hover:opacity-70">
                   {t("evenements.link")}
                 </Link>
               </div>
@@ -351,37 +396,40 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               <div className="mx-auto max-w-5xl">
                 <div className="flex items-end justify-between gap-4">
                   <div>
-                    <p className="text-xs font-medium uppercase tracking-[0.16em] text-champagne">{t("moments.kicker")}</p>
+                    <p className="text-xs font-medium uppercase tracking-[0.16em] text-ink">{t("moments.kicker")}</p>
                     <h2 className="mt-3 text-2xl font-semibold tracking-tight text-ink md:text-3xl">{t("moments.title")}</h2>
                   </div>
-                  <Link href="/galerie" className="hidden shrink-0 text-sm font-medium text-forest hover:text-forest-light sm:inline-block">
+                  <Link href="/galerie" className="hidden shrink-0 text-sm font-medium text-ink hover:opacity-70 sm:inline-block">
                     {t("moments.link")}
                   </Link>
                 </div>
 
-                <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:grid-rows-2">
+                <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4 sm:grid-rows-2 sm:gap-5">
                   {derniersMoments.map((photo, i) => (
-                    <Link
+                    <PhotoFrame
                       key={photo.id}
+                      as={Link}
+                      variant="gallery"
                       href="/galerie"
-                      className={`group relative overflow-hidden rounded-2xl ${
-                        i === 0 ? "col-span-2 row-span-2 aspect-square sm:aspect-auto" : "aspect-square"
-                      }`}
+                      className={i === 0 ? "col-span-2 row-span-2 aspect-square sm:aspect-auto" : "aspect-square"}
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={photo.image_url}
                         alt={localizeField(photo, "titre", locale as SupportedLocale)}
                         loading="lazy"
-                        className="h-full w-full object-cover transition-transform duration-500 ease-out-strong motion-safe:group-hover:scale-[1.05]"
+                        className="h-full w-full object-cover transition-transform duration-500 ease-out-strong motion-safe:group-hover:scale-[1.04]"
                       />
-                      <div className="pointer-events-none absolute inset-0 bg-forest/0 transition-colors duration-300 group-hover:bg-forest/10" />
-                    </Link>
+                      <PhotoCaption
+                        icon={<CategoryIcon categorie={photo.categorie} className="h-4 w-4 text-ink" />}
+                        title={localizeField(photo, "titre", locale as SupportedLocale)}
+                      />
+                    </PhotoFrame>
                   ))}
                 </div>
 
                 <div className="mt-8 text-center sm:hidden">
-                  <Link href="/galerie" className="text-sm font-medium text-forest hover:text-forest-light">
+                  <Link href="/galerie" className="text-sm font-medium text-ink hover:opacity-70">
                     {t("moments.link")}
                   </Link>
                 </div>
@@ -447,7 +495,7 @@ function ActionItem({
   return (
     <div className="flex gap-4 px-0 py-6 first:pt-0 sm:px-8 sm:py-8 sm:first:ps-0">
       <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-background ring-1 ring-champagne-soft">
-        <svg className="h-5 w-5 text-forest" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true">
+        <svg className="h-5 w-5 text-ink" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true">
           <path strokeLinecap="round" strokeLinejoin="round" d={iconPath} />
         </svg>
       </span>
@@ -499,7 +547,7 @@ function ArticleVedette({
   return (
     <article>
       <div className="flex flex-wrap items-center gap-2.5">
-        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-forest">
+        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-ink">
           <span className="h-1.5 w-1.5 rounded-full bg-champagne" aria-hidden="true" />
           {categorieLabels[article.categorie] ?? article.categorie}
         </span>
@@ -513,7 +561,7 @@ function ArticleVedette({
       </p>
       <Link
         href="/actualites"
-        className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-forest underline decoration-champagne/50 decoration-2 underline-offset-4 hover:decoration-champagne"
+        className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-ink underline decoration-champagne/50 decoration-2 underline-offset-4 hover:decoration-champagne"
       >
         {readMore} <span aria-hidden="true" className="rtl:rotate-180">→</span>
       </Link>
@@ -539,7 +587,7 @@ function ArticleLigne({
   return (
     <div className="py-4 first:pt-0 lg:first:pt-0">
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-xs font-medium text-forest">{categorieLabels[article.categorie] ?? article.categorie}</span>
+        <span className="text-xs font-medium text-ink">{categorieLabels[article.categorie] ?? article.categorie}</span>
         <span className="text-xs text-muted-foreground">· {formatLocalizedDate(article.created_at, locale)}</span>
       </div>
       <h4 className="mt-1.5 text-sm font-semibold leading-snug text-ink">
@@ -585,12 +633,10 @@ function EvenementLigne({
       className="group flex items-center gap-4 rounded-2xl bg-background p-3 transition-colors duration-150 hover:bg-champagne-soft/20 sm:gap-5 sm:p-4"
     >
       {evenement.image_url ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={evenement.image_url}
-          alt=""
-          className="h-16 w-16 shrink-0 rounded-xl object-cover ring-1 ring-champagne-soft sm:h-20 sm:w-20"
-        />
+        <PhotoFrame variant="thumbnail" className="h-16 w-16 shrink-0 sm:h-20 sm:w-20">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={evenement.image_url} alt="" className="h-full w-full object-cover" />
+        </PhotoFrame>
       ) : (
         <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-surface-muted ring-1 ring-champagne-soft sm:h-20 sm:w-20">
           <svg className="h-6 w-6 text-forest/60" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true">
@@ -600,7 +646,7 @@ function EvenementLigne({
       )}
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-forest">
+          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-ink">
             <span className="h-1.5 w-1.5 rounded-full bg-champagne" aria-hidden="true" />
             {avnr ? aVenirLabel : passeLabel}
           </span>

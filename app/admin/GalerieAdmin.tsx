@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, type FormEvent, type ChangeEvent } from "react";
+import { useTranslations } from "next-intl";
 import ImageUploader from "@/components/admin/ImageUploader";
 import TranslatedFields, { type TranslatedFieldDef } from "@/components/admin/TranslatedFields";
 
@@ -31,23 +32,19 @@ interface PhotoI18n {
 
 const EMPTY_PHOTO_I18N: PhotoI18n = { titre: "", description: "" };
 
-const PHOTO_I18N_FIELDS: TranslatedFieldDef<PhotoI18n>[] = [
-  { key: "titre", label: "Titre", type: "input", requiredOnFr: true, placeholder: "Titre de la photo" },
-  { key: "description", label: "Description", type: "textarea", rows: 3, requiredOnFr: true, placeholder: "Description courte de la photo..." },
-];
-
-/* --- Constantes --- */
-
-const CATEGORIES: { valeur: Categorie; label: string }[] = [
-  { valeur: "environnement", label: "Environnement" },
-  { valeur: "culture", label: "Culture" },
-  { valeur: "solidarite", label: "Solidarité" },
-  { valeur: "formations", label: "Formations" },
-];
+const CATEGORIE_VALUES: Categorie[] = ["environnement", "culture", "solidarite", "formations"];
 
 /* --- Composant principal --- */
 
 export default function GalerieAdmin() {
+  const t = useTranslations("galerieAdmin");
+  const tc = useTranslations("common");
+
+  const PHOTO_I18N_FIELDS: TranslatedFieldDef<PhotoI18n>[] = [
+    { key: "titre", label: tc("title"), type: "input", requiredOnFr: true, placeholder: t("titlePlaceholder") },
+    { key: "description", label: tc("description"), type: "textarea", rows: 3, requiredOnFr: true, placeholder: t("descriptionPlaceholder") },
+  ];
+
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
@@ -117,7 +114,7 @@ export default function GalerieAdmin() {
     setFormSuccess("");
 
     if (!formFile) {
-      setFormError("Veuillez sélectionner une image.");
+      setFormError(t("selectImageError"));
       return;
     }
 
@@ -144,11 +141,11 @@ export default function GalerieAdmin() {
       const data = await res.json();
 
       if (!res.ok) {
-        setFormError(data.error || "Erreur lors de l'upload.");
+        setFormError(data.error || t("createError"));
         return;
       }
 
-      setFormSuccess("Photo ajoutée avec succès.");
+      setFormSuccess(t("createSuccess"));
       setFormI18n({ fr: EMPTY_PHOTO_I18N, en: EMPTY_PHOTO_I18N, ar: EMPTY_PHOTO_I18N });
       setFormStatut("brouillon");
       setFormCategorie("environnement");
@@ -160,14 +157,14 @@ export default function GalerieAdmin() {
         setPhotos((prev) => [data.photo, ...prev]);
       }
     } catch {
-      setFormError("Erreur serveur.");
+      setFormError(tc("serverError"));
     } finally {
       setFormLoading(false);
     }
   }
 
   async function handleDelete(id: string) {
-    if (!confirm("Supprimer cette photo ?")) return;
+    if (!confirm(t("confirmDelete"))) return;
     setDeleting(id);
     try {
       const res = await fetch("/api/admin/galerie/delete", {
@@ -232,17 +229,17 @@ export default function GalerieAdmin() {
       const data = await res.json();
 
       if (!res.ok) {
-        setEditError(data.error || "Erreur lors de la mise à jour.");
+        setEditError(data.error || t("updateError"));
         return;
       }
 
-      setEditSuccess("Photo mise à jour.");
+      setEditSuccess(t("updateSuccess"));
       if (data.photo) {
         setPhotos((prev) => prev.map((p) => (p.id === id ? data.photo : p)));
       }
       setEditingId(null);
     } catch {
-      setEditError("Erreur serveur.");
+      setEditError(tc("serverError"));
     } finally {
       setEditLoading(false);
     }
@@ -261,29 +258,29 @@ export default function GalerieAdmin() {
   const brouillons = photos.filter((p) => p.statut === "brouillon").length;
 
   const fieldClass =
-    "w-full rounded-lg border border-admin-champagne-soft bg-white px-3 py-2 text-sm text-foreground outline-none transition-colors duration-150 focus:border-primary focus:ring-2 focus:ring-primary/20";
-  const labelClass = "mb-1 block text-sm font-medium text-foreground/80";
+    "w-full rounded-lg border border-admin-champagne-soft bg-surface px-3 py-2 text-sm text-admin-ink outline-none transition-colors duration-150 focus:border-admin-forest focus:ring-2 focus:ring-admin-champagne/20";
+  const labelClass = "mb-1 block text-sm font-medium text-admin-ink/80";
 
   return (
     <div>
       {/* Barre d'actions */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-muted-foreground">
-          {photos.length} photo{photos.length !== 1 ? "s" : ""} · {publiees} publié{publiees !== 1 ? "es" : "e"} · {brouillons} brouillon{brouillons !== 1 ? "s" : ""}
+          {t("countTotal", { count: photos.length })} · {t("countPublished", { count: publiees })} · {t("countDraft", { count: brouillons })}
         </p>
         <details className="group">
-          <summary className="inline-flex cursor-pointer select-none items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-sm font-medium text-white transition-colors duration-150 ease-out-strong motion-safe:active:scale-[0.98] hover:bg-primary-dark [&::-webkit-details-marker]:hidden">
+          <summary className="inline-flex cursor-pointer select-none items-center gap-1.5 rounded-lg bg-admin-forest px-3.5 py-2 text-sm font-medium text-white transition-colors duration-150 ease-out-strong motion-safe:active:scale-[0.98] hover:bg-admin-forest-light [&::-webkit-details-marker]:hidden">
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
-            Ajouter une photo
+            {t("new")}
           </summary>
-          <div className="mt-3 rounded-2xl border border-admin-champagne-soft bg-admin-ivory-warm/70 p-5">
+          <div className="mt-3 rounded-2xl border border-admin-champagne-soft bg-surface-muted/70 p-5">
             <form onSubmit={handleCreate} className="space-y-3">
               <div className="grid gap-3 sm:grid-cols-2">
                 <div>
                   <label htmlFor="gal-categorie" className={labelClass}>
-                    Catégorie
+                    {tc("category")}
                   </label>
                   <select
                     id="gal-categorie"
@@ -291,14 +288,14 @@ export default function GalerieAdmin() {
                     onChange={(e) => setFormCategorie(e.target.value as Categorie)}
                     className={fieldClass}
                   >
-                    {CATEGORIES.map((c) => (
-                      <option key={c.valeur} value={c.valeur}>{c.label}</option>
+                    {CATEGORIE_VALUES.map((c) => (
+                      <option key={c} value={c}>{t(`categories.${c}`)}</option>
                     ))}
                   </select>
                 </div>
                 <div>
                   <label htmlFor="gal-statut" className={labelClass}>
-                    Statut
+                    {tc("status")}
                   </label>
                   <select
                     id="gal-statut"
@@ -306,8 +303,8 @@ export default function GalerieAdmin() {
                     onChange={(e) => setFormStatut(e.target.value as "brouillon" | "publie")}
                     className={fieldClass}
                   >
-                    <option value="brouillon">Brouillon</option>
-                    <option value="publie">Publié</option>
+                    <option value="brouillon">{tc("draft")}</option>
+                    <option value="publie">{tc("published")}</option>
                   </select>
                 </div>
               </div>
@@ -325,21 +322,21 @@ export default function GalerieAdmin() {
 
               <div>
                 <label htmlFor="gal-file" className={labelClass}>
-                  Image (JPG, PNG ou WebP — max 5 Mo)
+                  {t("imageField")}
                 </label>
                 <input
                   id="gal-file"
                   type="file"
                   accept="image/jpeg,image/png,image/webp"
                   onChange={handleFileChange}
-                  className="w-full text-sm text-muted-foreground file:mr-3 file:rounded-lg file:border-0 file:bg-primary/10 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-primary hover:file:bg-primary/15"
+                  className="w-full text-sm text-muted-foreground file:me-3 file:rounded-lg file:border-0 file:bg-admin-forest/10 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-admin-ink hover:file:bg-admin-forest/15"
                 />
                 {formPreview && (
                   <div className="mt-2">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={formPreview}
-                      alt="Aperçu"
+                      alt={tc("preview")}
                       className="h-28 w-auto rounded-lg border border-admin-champagne-soft object-contain"
                     />
                   </div>
@@ -349,13 +346,13 @@ export default function GalerieAdmin() {
               <button
                 type="submit"
                 disabled={formLoading}
-                className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors duration-150 motion-safe:active:scale-[0.98] hover:bg-primary-dark disabled:opacity-50"
+                className="rounded-lg bg-admin-forest px-4 py-2 text-sm font-medium text-white transition-colors duration-150 motion-safe:active:scale-[0.98] hover:bg-admin-forest-light disabled:opacity-50"
               >
-                {formLoading ? "Upload en cours…" : "Ajouter la photo"}
+                {formLoading ? t("creating") : t("create")}
               </button>
 
-              {formSuccess && <p className="admin-reveal text-sm text-primary">{formSuccess}</p>}
-              {formError && <p className="admin-reveal text-sm text-red-600">{formError}</p>}
+              {formSuccess && <p className="admin-reveal text-sm text-admin-ink">{formSuccess}</p>}
+              {formError && <p className="admin-reveal text-sm text-admin-danger">{formError}</p>}
             </form>
           </div>
         </details>
@@ -363,24 +360,24 @@ export default function GalerieAdmin() {
 
       {/* Grille — médiathèque */}
       {loading ? (
-        <p className="mt-4 text-sm text-muted-foreground">Chargement…</p>
+        <p className="mt-4 text-sm text-muted-foreground">{tc("loading")}</p>
       ) : photos.length === 0 ? (
-        <div className="mt-4 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-admin-champagne-soft bg-admin-ivory-warm/60 px-4 py-14 text-center">
-          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white ring-1 ring-admin-champagne-soft">
-            <svg className="h-5 w-5 text-admin-forest" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+        <div className="mt-4 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-admin-champagne-soft bg-surface-muted/60 px-4 py-14 text-center">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-surface ring-1 ring-admin-champagne-soft">
+            <svg className="h-5 w-5 text-admin-ink" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5a2.25 2.25 0 0 0 2.25-2.25V5.25a2.25 2.25 0 0 0-2.25-2.25H3.75a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 3.75 21Z" />
             </svg>
           </span>
-          <p className="text-sm text-muted-foreground">Aucune photo pour l&apos;instant.</p>
+          <p className="text-sm text-muted-foreground">{t("empty")}</p>
         </div>
       ) : (
         <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {photos.map((p) => (
             <div
               key={p.id}
-              className="group overflow-hidden rounded-2xl border border-admin-champagne-soft/60 bg-white transition-shadow duration-200 hover:shadow-[0_4px_24px_-6px_rgba(20,48,31,0.14)]"
+              className="group overflow-hidden rounded-2xl border border-admin-champagne-soft/60 bg-surface transition-shadow duration-200 hover:shadow-[0_4px_24px_-6px_rgba(20,48,31,0.14)]"
             >
-              <div className="aspect-video overflow-hidden bg-admin-ivory-warm">
+              <div className="aspect-video overflow-hidden bg-surface-muted">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={p.image_url}
@@ -390,12 +387,12 @@ export default function GalerieAdmin() {
               </div>
               <div className="p-4">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="inline-flex items-center gap-1.5 text-xs font-medium text-foreground/70">
+                  <span className="inline-flex items-center gap-1.5 text-xs font-medium text-admin-ink/70">
                     <span
-                      className={`h-1.5 w-1.5 shrink-0 rounded-full ${p.statut === "publie" ? "bg-primary" : "bg-admin-champagne"}`}
+                      className={`h-1.5 w-1.5 shrink-0 rounded-full ${p.statut === "publie" ? "bg-admin-forest" : "bg-admin-champagne"}`}
                       aria-hidden="true"
                     />
-                    {p.statut === "publie" ? "Publié" : "Brouillon"}
+                    {p.statut === "publie" ? tc("published") : tc("draft")}
                     <span className="text-muted-foreground">· {formatDate(p.created_at)}</span>
                   </span>
                   <div className="flex items-center gap-1.5">
@@ -403,16 +400,16 @@ export default function GalerieAdmin() {
                       onClick={() =>
                         editingId === p.id ? closeEdit() : openEdit(p)
                       }
-                      className="rounded-lg border border-admin-forest/20 px-2.5 py-1 text-xs font-semibold text-admin-forest transition-colors duration-150 ease-out-strong motion-safe:active:scale-[0.97] hover:bg-admin-forest/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                      className="rounded-lg border border-admin-champagne-soft px-2.5 py-1 text-xs font-semibold text-admin-ink transition-colors duration-150 ease-out-strong motion-safe:active:scale-[0.97] hover:bg-admin-forest/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-admin-champagne/50"
                     >
-                      {editingId === p.id ? "Annuler" : "Modifier"}
+                      {editingId === p.id ? tc("cancel") : tc("edit")}
                     </button>
                     <button
                       onClick={() => handleDelete(p.id)}
                       disabled={deleting === p.id}
-                      className="rounded-lg border border-red-200 px-2.5 py-1 text-xs font-semibold text-red-600 transition-colors duration-150 ease-out-strong motion-safe:active:scale-[0.97] hover:bg-red-50 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400/50"
+                      className="rounded-lg border border-admin-danger-border px-2.5 py-1 text-xs font-semibold text-admin-danger transition-colors duration-150 ease-out-strong motion-safe:active:scale-[0.97] hover:bg-admin-danger-bg disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-admin-danger/50"
                     >
-                      {deleting === p.id ? "…" : "Supprimer"}
+                      {deleting === p.id ? tc("deletingEllipsis") : tc("delete")}
                     </button>
                   </div>
                 </div>
@@ -427,7 +424,7 @@ export default function GalerieAdmin() {
                     <div className="grid gap-3 sm:grid-cols-2">
                       <div>
                         <label htmlFor={`edit-categorie-${p.id}`} className={labelClass}>
-                          Catégorie
+                          {tc("category")}
                         </label>
                         <select
                           id={`edit-categorie-${p.id}`}
@@ -437,16 +434,16 @@ export default function GalerieAdmin() {
                           }
                           className={fieldClass}
                         >
-                          {CATEGORIES.map((c) => (
-                            <option key={c.valeur} value={c.valeur}>
-                              {c.label}
+                          {CATEGORIE_VALUES.map((c) => (
+                            <option key={c} value={c}>
+                              {t(`categories.${c}`)}
                             </option>
                           ))}
                         </select>
                       </div>
                       <div>
                         <label htmlFor={`edit-statut-${p.id}`} className={labelClass}>
-                          Statut
+                          {tc("status")}
                         </label>
                         <select
                           id={`edit-statut-${p.id}`}
@@ -456,8 +453,8 @@ export default function GalerieAdmin() {
                           }
                           className={fieldClass}
                         >
-                          <option value="brouillon">Brouillon</option>
-                          <option value="publie">Publié</option>
+                          <option value="brouillon">{tc("draft")}</option>
+                          <option value="publie">{tc("published")}</option>
                         </select>
                       </div>
                     </div>
@@ -475,7 +472,7 @@ export default function GalerieAdmin() {
 
                     <ImageUploader
                       key={p.id}
-                      label="Image"
+                      label={tc("mainImage")}
                       currentUrl={editCurrentImageUrl}
                       onChange={(file) => setEditImageFile(file)}
                     />
@@ -484,23 +481,23 @@ export default function GalerieAdmin() {
                       <button
                         type="submit"
                         disabled={editLoading}
-                        className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors duration-150 motion-safe:active:scale-[0.98] hover:bg-primary-dark disabled:opacity-50"
+                        className="rounded-lg bg-admin-forest px-4 py-2 text-sm font-medium text-white transition-colors duration-150 motion-safe:active:scale-[0.98] hover:bg-admin-forest-light disabled:opacity-50"
                       >
-                        {editLoading ? "Enregistrement…" : "Enregistrer"}
+                        {editLoading ? tc("saving") : tc("save")}
                       </button>
                       <button
                         type="button"
                         onClick={closeEdit}
-                        className="text-sm text-muted-foreground hover:text-foreground"
+                        className="text-sm text-muted-foreground hover:text-admin-ink"
                       >
-                        Annuler
+                        {tc("cancel")}
                       </button>
                     </div>
 
                     {editSuccess && (
-                      <p className="admin-reveal text-sm text-primary">{editSuccess}</p>
+                      <p className="admin-reveal text-sm text-admin-ink">{editSuccess}</p>
                     )}
-                    {editError && <p className="admin-reveal text-sm text-red-600">{editError}</p>}
+                    {editError && <p className="admin-reveal text-sm text-admin-danger">{editError}</p>}
                   </form>
                 )}
               </div>

@@ -20,7 +20,7 @@ export default async function MentionsLegales({ params }: { params: Promise<{ lo
       <main id="main-content">
       <section className="px-6 py-20">
         <div className="mx-auto max-w-2xl">
-          <p className="text-xs font-medium uppercase tracking-[0.16em] text-champagne">{t("kicker")}</p>
+          <p className="text-xs font-medium uppercase tracking-[0.16em] text-ink">{t("kicker")}</p>
           <h1 className="mt-3 text-3xl font-semibold tracking-tight text-ink">{t("title")}</h1>
 
           <div className="mt-10 space-y-8 text-sm leading-relaxed text-muted-foreground">
@@ -35,7 +35,7 @@ export default async function MentionsLegales({ params }: { params: Promise<{ lo
                 {t("editeur.email")}{" "}
                 <a
                   href="mailto:contact@jeunes-actifs.ma"
-                  className="text-forest hover:underline"
+                  className="text-ink hover:underline"
                 >
                   contact@jeunes-actifs.ma
                 </a>
@@ -56,7 +56,7 @@ export default async function MentionsLegales({ params }: { params: Promise<{ lo
                   href="https://vercel.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-forest hover:underline"
+                  className="text-ink hover:underline"
                 >
                   vercel.com
                 </a>
@@ -84,7 +84,7 @@ export default async function MentionsLegales({ params }: { params: Promise<{ lo
                 {t("note.text1")}{" "}
                 <a
                   href="mailto:contact@jeunes-actifs.ma"
-                  className="text-forest hover:underline"
+                  className="text-ink hover:underline"
                 >
                   contact@jeunes-actifs.ma
                 </a>

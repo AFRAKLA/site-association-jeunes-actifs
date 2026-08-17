@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, type ChangeEvent } from "react";
+import { useTranslations } from "next-intl";
 
 export interface ExistingPhoto {
   url: string;
@@ -16,12 +17,14 @@ interface MultiImageUploaderProps {
 }
 
 export default function MultiImageUploader({
-  label = "Photos supplémentaires",
+  label,
   existingPhotos,
   removedUrls,
   onRemoveExisting,
   onNewFilesChange,
 }: MultiImageUploaderProps) {
+  const tc = useTranslations("common");
+  const resolvedLabel = label ?? tc("additionalPhotos");
   const [newFiles, setNewFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -59,10 +62,10 @@ export default function MultiImageUploader({
 
   return (
     <div>
-      <p className="mb-1.5 text-sm font-medium text-foreground/80">{label}</p>
+      <p className="mb-1.5 text-sm font-medium text-admin-ink/80">{resolvedLabel}</p>
 
       {total === 0 ? (
-        <p className="mb-2 text-xs text-muted-foreground">Aucune photo pour le moment.</p>
+        <p className="mb-2 text-xs text-muted-foreground">{tc("noPhotosYet")}</p>
       ) : (
         <div className="mb-3 grid grid-cols-3 gap-2 sm:grid-cols-4">
           {/* Photos existantes */}
@@ -77,8 +80,8 @@ export default function MultiImageUploader({
               <button
                 type="button"
                 onClick={() => onRemoveExisting(photo.url)}
-                className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-white shadow transition-colors duration-150 ease-out-strong motion-safe:active:scale-[0.92] hover:bg-red-700"
-                aria-label="Supprimer cette photo"
+                className="absolute -end-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-white shadow transition-colors duration-150 ease-out-strong motion-safe:active:scale-[0.92] hover:bg-red-700"
+                aria-label={tc("removePhoto")}
               >
                 <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -99,8 +102,8 @@ export default function MultiImageUploader({
               <button
                 type="button"
                 onClick={() => removeNew(i)}
-                className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-admin-forest text-white shadow transition-colors duration-150 ease-out-strong motion-safe:active:scale-[0.92] hover:bg-admin-forest-light"
-                aria-label="Annuler cette photo"
+                className="absolute -end-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-admin-forest text-white shadow transition-colors duration-150 ease-out-strong motion-safe:active:scale-[0.92] hover:bg-admin-forest-light"
+                aria-label={tc("cancelPhoto")}
               >
                 <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -114,12 +117,12 @@ export default function MultiImageUploader({
       <button
         type="button"
         onClick={() => inputRef.current?.click()}
-        className="flex items-center gap-2 rounded-lg border border-dashed border-admin-champagne-soft bg-admin-ivory-warm/60 px-3 py-2 text-sm text-muted-foreground transition-colors duration-150 hover:border-primary/40 hover:bg-admin-ivory-warm"
+        className="flex items-center gap-2 rounded-lg border border-dashed border-admin-champagne-soft bg-surface-muted/60 px-3 py-2 text-sm text-muted-foreground transition-colors duration-150 hover:border-admin-champagne hover:bg-surface-muted"
       >
         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
         </svg>
-        Ajouter des photos
+        {tc("addPhotos")}
       </button>
 
       <input
@@ -130,7 +133,7 @@ export default function MultiImageUploader({
         onChange={handleFilesAdded}
         className="hidden"
       />
-      <p className="mt-1 text-xs text-muted-foreground">JPG, PNG ou WebP — 5 Mo par photo</p>
+      <p className="mt-1 text-xs text-muted-foreground">{tc("allowedFormatsMulti")}</p>
     </div>
   );
 }

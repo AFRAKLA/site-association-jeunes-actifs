@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import GrowthMark from "@/components/GrowthMark";
 import ScrollReveal from "@/components/ScrollReveal";
+import { PhotoFrame } from "@/components/PhotoFrame";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -32,13 +33,13 @@ export default async function DevenirMembre({ params }: { params: Promise<{ loca
                 aria-hidden="true"
                 className="pointer-events-none absolute -start-10 -top-14 h-36 w-36 text-champagne/[0.18]"
               />
-              <p className="relative text-xs font-medium uppercase tracking-[0.16em] text-champagne">{t("hero.kicker")}</p>
+              <p className="relative text-xs font-medium uppercase tracking-[0.16em] text-ink">{t("hero.kicker")}</p>
               <h1 className="relative mt-3 text-4xl font-semibold leading-[1.08] tracking-tight text-ink md:text-5xl">
                 {t("hero.title")}
               </h1>
               <p className="relative mt-5 max-w-md text-base leading-relaxed text-muted-foreground">{t("hero.text")}</p>
             </div>
-            <div className="relative aspect-[4/3] overflow-hidden rounded-[1.75rem] shadow-[0_30px_60px_-24px_rgba(20,48,31,0.35)]">
+            <PhotoFrame variant="editorial" className="aspect-[4/3]">
               <Image
                 src="/images/evenements/repas-solidaire.jpg"
                 alt="Membres de l'Association Jeunes Actifs réunis autour d'un repas solidaire"
@@ -47,7 +48,7 @@ export default async function DevenirMembre({ params }: { params: Promise<{ loca
                 className="object-cover"
                 priority
               />
-            </div>
+            </PhotoFrame>
           </div>
         </section>
 
@@ -56,7 +57,7 @@ export default async function DevenirMembre({ params }: { params: Promise<{ loca
           <section className="px-6 py-16 md:py-20">
             <div className="mx-auto grid max-w-5xl gap-x-14 gap-y-12 lg:grid-cols-2">
               <div>
-                <p className="text-xs font-medium uppercase tracking-[0.16em] text-champagne">{t("pourquoi.kicker")}</p>
+                <p className="text-xs font-medium uppercase tracking-[0.16em] text-ink">{t("pourquoi.kicker")}</p>
                 <h2 className="mt-3 text-xl font-semibold tracking-tight text-ink md:text-2xl">{t("pourquoi.title")}</h2>
                 <ul className="mt-6 space-y-4">
                   {pourquoiItems.map((texte) => (
@@ -66,7 +67,7 @@ export default async function DevenirMembre({ params }: { params: Promise<{ loca
               </div>
 
               <div>
-                <p className="text-xs font-medium uppercase tracking-[0.16em] text-champagne">{t("missions.kicker")}</p>
+                <p className="text-xs font-medium uppercase tracking-[0.16em] text-ink">{t("missions.kicker")}</p>
                 <h2 className="mt-3 text-xl font-semibold tracking-tight text-ink md:text-2xl">{t("missions.title")}</h2>
                 <ul className="mt-6 divide-y divide-champagne-soft/60">
                   {missionsItems.map((texte) => (
@@ -82,7 +83,7 @@ export default async function DevenirMembre({ params }: { params: Promise<{ loca
         <ScrollReveal>
           <section className="border-t border-champagne-soft/60 bg-surface-muted px-6 py-16 md:py-20">
             <div className="mx-auto max-w-2xl rounded-[1.75rem] bg-background p-8 shadow-[0_20px_50px_-24px_rgba(20,48,31,0.2)] md:p-10">
-              <p className="text-center text-[11px] font-medium uppercase tracking-[0.14em] text-champagne">{t("form.kicker")}</p>
+              <p className="text-center text-[11px] font-medium uppercase tracking-[0.14em] text-ink">{t("form.kicker")}</p>
               <h2 className="mt-2 text-center text-2xl font-semibold tracking-tight text-ink md:text-3xl">{t("form.title")}</h2>
               <p className="mt-3 text-center text-sm text-muted-foreground">{t("form.text")}</p>
               <AdhesionForm />
@@ -100,7 +101,7 @@ function AvantageItem({ texte }: { texte: string }) {
   return (
     <li className="flex gap-3">
       <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-forest/8">
-        <svg className="h-3.5 w-3.5 text-forest" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" aria-hidden="true">
+        <svg className="h-3.5 w-3.5 text-ink" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" aria-hidden="true">
           <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
         </svg>
       </span>
