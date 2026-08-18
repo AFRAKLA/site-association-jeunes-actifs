@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
+import { SITE_URL } from "@/lib/site-config";
 
-const baseUrl = "https://jeunes-actifs.vercel.app";
+const baseUrl = SITE_URL;
 
 // Chemin absolu par locale, respectant le préfixe "as-needed" du routeur
 // (français sans préfixe, anglais/arabe préfixés) — une seule source de

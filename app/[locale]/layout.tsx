@@ -6,6 +6,7 @@ import { geistSans, geistMono } from "@/lib/fonts";
 import { routing } from "@/i18n/routing";
 import ThemeScript from "@/components/ThemeScript";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { SITE_URL } from "@/lib/site-config";
 import "../globals.css";
 
 export function generateStaticParams() {
@@ -22,13 +23,13 @@ export async function generateMetadata({
   const ogLocale = locale === "ar" ? "ar_MA" : locale === "en" ? "en_MA" : "fr_MA";
 
   return {
-    metadataBase: new URL("https://jeunes-actifs.vercel.app"),
+    metadataBase: new URL(SITE_URL),
     title: { default: "Association Jeunes Actifs", template: "%s" },
     description: t("description"),
     openGraph: {
       title: "Association Jeunes Actifs",
       description: t("description"),
-      url: "https://jeunes-actifs.vercel.app",
+      url: SITE_URL,
       siteName: "Association Jeunes Actifs",
       locale: ogLocale,
       type: "website",
